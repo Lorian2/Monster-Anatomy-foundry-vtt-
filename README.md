@@ -1,10 +1,11 @@
+Modulo feito por vibecoding
 # Monster Anatomy
 
 Sistema de anatomia, partes destrutíveis e feedback visual para **Foundry VTT v13+**.
 Foco inicial: **D&D 5e**. Inspirado em *Monster Hunter* (partes/hitzones/part break)
 com direção visual de impacto (Persona/JRPG).
 
-> Status: **1.0.0** — release pública (Foundry v14 + dnd5e). Ver `CHANGELOG.md`.
+> Status: **1.1.0** — release pública (Foundry v14 + dnd5e). Ver `CHANGELOG.md`.
 
 ## Requisitos
 
