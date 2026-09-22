@@ -1,0 +1,797 @@
+@import "./fonts.css";
+
+/* Monster Anatomy — estilos do módulo (Foundry v13: Cascade Layers + temas). */
+@layer monster-anatomy {
+  .monster-anatomy-panel .window-content,
+  .monster-anatomy-editor .window-content {
+    color: var(--color-text-primary);
+    background: var(--color-bg-primary);
+    font-family: var(--font-primary);
+    padding: 0.75rem;
+  }
+
+  .monster-anatomy .ma-header {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 0.6rem;
+  }
+
+  .monster-anatomy .ma-actor-img {
+    width: 44px;
+    height: 44px;
+    object-fit: cover;
+    border-radius: var(--border-radius);
+    border: 1px solid var(--color-border);
+  }
+
+  .monster-anatomy .ma-actor-name {
+    flex: 1;
+    margin: 0;
+    font-size: var(--font-size-20);
+    border: none;
+  }
+
+  .monster-anatomy .ma-add,
+  .monster-anatomy .ma-save {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.35rem 0.6rem;
+    border-radius: var(--border-radius);
+    border: 1px solid var(--color-border);
+    background: var(--color-warm-2);
+    color: var(--color-text-primary);
+    cursor: pointer;
+  }
+
+  .monster-anatomy .ma-tracker-open {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.35rem 0.55rem;
+    border-radius: var(--border-radius);
+    border: 1px solid var(--color-border);
+    background: var(--color-bg-tertiary);
+    color: var(--color-text-primary);
+    cursor: pointer;
+  }
+
+  .monster-anatomy .ma-empty {
+    color: var(--color-text-secondary);
+    font-style: italic;
+  }
+
+  .monster-anatomy .ma-parts {
+    list-style: none;
+    margin: 0;
+    padding: 0 0.25rem 0.25rem 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    max-height: 45vh;
+    overflow-y: auto;
+  }
+
+  .monster-anatomy .ma-part {
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius);
+    background: var(--color-bg-secondary);
+    padding: 0.5rem 0.6rem;
+  }
+
+  .monster-anatomy .ma-part-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+
+  .monster-anatomy .ma-part-name {
+    font-weight: bold;
+    font-size: var(--font-size-16);
+  }
+
+  .monster-anatomy .ma-badge {
+    font-size: var(--font-size-12);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: 0.1rem 0.45rem;
+    border-radius: 999px;
+    border: 1px solid var(--color-border);
+    background: var(--color-bg-tertiary);
+    white-space: nowrap;
+  }
+
+  .monster-anatomy .ma-state-damaged .ma-badge {
+    background: var(--color-warm-1);
+  }
+
+  .monster-anatomy .ma-state-broken .ma-badge,
+  .monster-anatomy .ma-state-severed .ma-badge,
+  .monster-anatomy .ma-state-destroyed .ma-badge {
+    background: var(--color-warm-3);
+  }
+
+  .monster-anatomy .ma-part-stats {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.4rem;
+  }
+
+  .monster-anatomy .ma-ac {
+    white-space: nowrap;
+    font-weight: bold;
+  }
+
+  .monster-anatomy .ma-hpbar {
+    flex: 1;
+    height: 10px;
+    border-radius: 999px;
+    border: 1px solid var(--color-border-dark);
+    background: var(--color-bg-tertiary);
+    overflow: hidden;
+  }
+
+  .monster-anatomy .ma-hpfill {
+    height: 100%;
+    background: var(--color-cool-2);
+    transition: width 0.2s ease;
+  }
+
+  .monster-anatomy .ma-state-broken .ma-hpfill,
+  .monster-anatomy .ma-state-severed .ma-hpfill,
+  .monster-anatomy .ma-state-destroyed .ma-hpfill {
+    background: var(--color-warm-2);
+  }
+
+  .monster-anatomy .ma-hptext {
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+    color: var(--color-text-secondary);
+  }
+
+  .monster-anatomy .ma-severbar .ma-hpfill {
+    background: var(--color-warm-1);
+  }
+
+  .monster-anatomy .ma-state-severed .ma-hpfill {
+    background: var(--color-cool-1);
+  }
+
+  .monster-anatomy .ma-part-flags {
+    display: flex;
+    gap: 0.35rem;
+    margin-top: 0.35rem;
+  }
+
+  .monster-anatomy .ma-flag {
+    font-size: var(--font-size-12);
+    color: var(--color-text-secondary);
+    border: 1px dashed var(--color-border-light);
+    border-radius: var(--border-radius);
+    padding: 0 0.35rem;
+  }
+
+  .monster-anatomy .ma-id {
+    margin-left: auto;
+    font-size: var(--font-size-11);
+    font-family: monospace;
+    color: var(--color-text-secondary);
+    opacity: 0.7;
+    user-select: all;
+  }
+
+  .monster-anatomy .ma-part-actions {
+    display: flex;
+    gap: 0.35rem;
+    margin-top: 0.4rem;
+  }
+
+  .monster-anatomy .ma-part-actions button {
+    padding: 0.2rem 0.5rem;
+    border-radius: var(--border-radius);
+    border: 1px solid var(--color-border);
+    background: var(--color-bg-tertiary);
+    cursor: pointer;
+  }
+
+  .monster-anatomy .ma-quick {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    margin-left: auto;
+  }
+
+  .monster-anatomy .ma-amount {
+    width: 3.5em;
+  }
+
+  /* -- Editor -------------------------------------------------------- */
+  .monster-anatomy-editor .monster-anatomy-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+    max-height: 70vh;
+    overflow-y: auto;
+    padding-right: 0.25rem;
+  }
+
+  .monster-anatomy .ma-editing-for {
+    margin: 0;
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-13);
+  }
+
+  .monster-anatomy .ma-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+
+  .monster-anatomy .ma-field label {
+    font-weight: bold;
+    font-size: var(--font-size-13);
+  }
+
+  .monster-anatomy .ma-row {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .monster-anatomy .ma-row .ma-field {
+    flex: 1;
+  }
+
+  .monster-anatomy .ma-check {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+
+  .monster-anatomy .ma-label {
+    font-weight: bold;
+    font-size: var(--font-size-13);
+  }
+
+  .monster-anatomy .ma-checks {
+    display: flex;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+  }
+
+  .monster-anatomy .ma-hzgrid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.3rem 0.5rem;
+  }
+
+  .monster-anatomy .ma-hz {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+    font-size: var(--font-size-12);
+  }
+
+  .monster-anatomy .ma-hz input {
+    width: 100%;
+  }
+
+  .monster-anatomy .ma-rewards {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+
+  .monster-anatomy .ma-reward {
+    display: flex;
+    gap: 0.3rem;
+    align-items: center;
+  }
+
+  .monster-anatomy .ma-reward select[name="rw_event"] {
+    flex: 0 0 6.5em;
+  }
+
+  .monster-anatomy .ma-reward select[name="rw_kind"] {
+    flex: 0 0 5.5em;
+  }
+
+  .monster-anatomy .ma-reward input[name="rw_table"] {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .monster-anatomy .ma-reward input[name="rw_draws"] {
+    flex: 0 0 3.2em;
+  }
+
+  .monster-anatomy .ma-add-reward {
+    margin-top: 0.3rem;
+    align-self: flex-start;
+  }
+
+  .monster-anatomy .ma-summary h4 {
+    margin: 0.6rem 0 0.25rem;
+  }
+
+  .monster-anatomy .ma-summary-parts,
+  .monster-anatomy .ma-summary-loot {
+    margin: 0;
+    padding-left: 1.1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+
+  .monster-anatomy .ma-form-footer {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 0.25rem;
+  }
+
+  /* -- Anúncio de Part Break (overlay central, §21) ---------------------- */
+  .monster-anatomy-announce {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.2rem;
+    pointer-events: none;
+    opacity: 0;
+    background: linear-gradient(
+      115deg,
+      transparent 42%,
+      rgb(0 0 0 / 55%) 42%,
+      rgb(0 0 0 / 55%) 58%,
+      transparent 58%
+    );
+  }
+
+  .monster-anatomy-announce.is-showing {
+    animation: ma-break var(--ma-duration, 2.5s) ease forwards;
+  }
+
+  .monster-anatomy-announce .ma-announce-kicker {
+    font-size: clamp(3rem, 9vw, 5.5rem);
+    font-weight: 900;
+    font-style: italic;
+    letter-spacing: 0.02em;
+    color: #fff;
+    text-shadow:
+      4px 4px 0 #c00,
+      -2px -2px 0 #111,
+      0 0 24px rgb(255 0 0 / 60%);
+    transform: skewX(-8deg);
+  }
+
+  .monster-anatomy-announce .ma-announce-part {
+    font-size: clamp(1.5rem, 4vw, 2.5rem);
+    font-weight: 800;
+    text-transform: uppercase;
+    color: #ffd23f;
+    text-shadow: 2px 2px 0 #111;
+    transform: skewX(-8deg);
+  }
+
+  .monster-anatomy-announce .ma-announce-actor {
+    font-size: var(--font-size-16);
+    color: var(--color-text-secondary);
+  }
+
+  /* Tema Monster Hunter: rústico, osso e brasa (§27) */
+  .monster-anatomy-announce.theme-monsterhunter .ma-announce-kicker {
+    font-family: Georgia, "Times New Roman", serif;
+    font-style: normal;
+    color: #f3e2b3;
+    text-shadow:
+      3px 3px 0 #3a1c00,
+      -1px -1px 0 #000,
+      0 0 28px rgb(255 140 0 / 55%);
+    transform: skewX(-4deg);
+  }
+
+  .monster-anatomy-announce.theme-monsterhunter .ma-announce-part {
+    color: #ffb454;
+  }
+
+  .monster-anatomy-announce.theme-monsterhunter {
+    background: linear-gradient(
+      to bottom,
+      transparent 30%,
+      rgb(20 8 0 / 72%) 30%,
+      rgb(20 8 0 / 72%) 70%,
+      transparent 70%
+    );
+  }
+
+  /* Tema JRPG: elegante, espaçado, dourado (§27) */
+  .monster-anatomy-announce.theme-jrpg .ma-announce-kicker {
+    font-style: normal;
+    font-weight: 600;
+    letter-spacing: 0.28em;
+    color: #f5d67b;
+    text-shadow: 0 0 18px rgb(245 214 123 / 45%), 2px 2px 0 #111;
+    transform: none;
+  }
+
+  .monster-anatomy-announce.theme-jrpg .ma-announce-part {
+    letter-spacing: 0.12em;
+    color: #fff6dd;
+    transform: none;
+  }
+
+  .monster-anatomy-announce.theme-jrpg {
+    background: linear-gradient(
+      to bottom,
+      transparent 38%,
+      rgb(0 0 0 / 60%) 38%,
+      rgb(0 0 0 / 60%) 62%,
+      transparent 62%
+    );
+  }
+
+  /* Tema Minimal: faixa pequena e direta (§27) */
+  .monster-anatomy-announce.theme-minimal {
+    justify-content: flex-end;
+    padding-bottom: 12vh;
+    background: none;
+  }
+
+  .monster-anatomy-announce.theme-minimal .ma-announce-kicker {
+    font-size: 1.4rem;
+    font-style: normal;
+    transform: none;
+    text-shadow: 1px 1px 0 #111;
+  }
+
+  .monster-anatomy-announce.theme-minimal .ma-announce-part {
+    font-size: 1.05rem;
+    transform: none;
+  }
+
+  .monster-anatomy-announce.theme-minimal .ma-announce-actor {
+    font-size: var(--font-size-13);
+  }
+
+  @keyframes ma-break-minimal {
+    0% { opacity: 0; transform: translateY(8px); }
+    12% { opacity: 1; transform: translateY(0); }
+    80% { opacity: 1; transform: translateY(0); }
+    100% { opacity: 0; transform: translateY(-6px); }
+  }
+
+  .monster-anatomy-announce.theme-minimal.is-showing {
+    animation: ma-break-minimal var(--ma-duration, 2.5s) ease forwards;
+  }
+
+  /* FX dirigidos por JS: partículas, cascata de letras */
+  .monster-anatomy-particles {
+    position: fixed;
+    inset: 0;
+    z-index: 1001;
+    pointer-events: none;
+  }
+
+  .monster-anatomy-announce .ma-announce-kicker .ma-letter {
+    display: inline-block;
+    animation: ma-letter-in 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275) backwards;
+    animation-delay: calc(var(--i, 0) * 45ms);
+  }
+
+  @keyframes ma-letter-in {
+    0% { opacity: 0; transform: scale(2.4) rotate(-10deg); }
+    100% { opacity: 1; transform: scale(1) rotate(0deg); }
+  }
+
+  .monster-anatomy-announce.is-reduced .ma-announce-kicker .ma-letter {
+    animation: none;
+  }
+
+  /* Flash de tela */
+  .monster-anatomy-flash {
+    position: fixed;
+    inset: 0;
+    z-index: 999;
+    pointer-events: none;
+    opacity: 0;
+    background: radial-gradient(ellipse at center, rgb(255 60 40 / 28%) 0%, rgb(255 0 0 / 12%) 60%, transparent 100%);
+    transition: opacity 0.12s ease;
+  }
+
+  .monster-anatomy-flash.is-sever {
+    background: radial-gradient(ellipse at center, rgb(80 200 255 / 26%) 0%, rgb(0 140 255 / 12%) 60%, transparent 100%);
+  }
+
+  .monster-anatomy-flash.is-showing {
+    opacity: 1;
+  }
+
+  /* Tema Impact: HQ/luta — Anton + halftone + starburst + spring */
+  .monster-anatomy-announce.theme-impact {
+    background: rgb(0 0 0 / 45%);
+  }
+
+  .monster-anatomy-announce.theme-impact::before {
+    content: "";
+    position: absolute;
+    inset: -25%;
+    z-index: -1;
+    background: repeating-conic-gradient(
+      from 0deg at 50% 50%,
+      rgb(255 35 35 / 15%) 0deg 7deg,
+      transparent 7deg 14deg
+    );
+    -webkit-mask-image: radial-gradient(circle, #000 22%, transparent 66%);
+    mask-image: radial-gradient(circle, #000 22%, transparent 66%);
+    animation: ma-rays 26s linear infinite;
+    pointer-events: none;
+  }
+
+  @keyframes ma-rays {
+    to { transform: rotate(360deg); }
+  }
+
+  .monster-anatomy-announce.theme-impact .ma-announce-kicker {
+    font-family: "Anton", "Arial Black", Impact, sans-serif;
+    font-style: normal;
+    letter-spacing: 0.01em;
+    background-image: radial-gradient(circle at 2px 2px, #ff3b3b 1.6px, #160404 2px);
+    background-size: 8px 8px;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-stroke: 2px #0a0a0a;
+    paint-order: stroke fill;
+    transform: skewX(-8deg);
+    text-shadow: none;
+    filter: drop-shadow(5px 5px 0 #0a0a0a);
+  }
+
+  .monster-anatomy-announce.theme-impact .ma-announce-part {
+    font-family: "Anton", "Arial Black", Impact, sans-serif;
+    color: #fff;
+    -webkit-text-stroke: 1.5px #0a0a0a;
+    paint-order: stroke fill;
+    text-shadow: 3px 3px 0 #0a0a0a;
+    transform: skewX(-8deg);
+  }
+
+  @keyframes ma-impact-in {
+    0% { opacity: 0; transform: scale(0.6) rotate(-3deg); }
+    12% { opacity: 1; transform: scale(1.06) rotate(0deg); }
+    20% { opacity: 1; transform: scale(1); }
+    80% { opacity: 1; transform: scale(1); }
+    100% { opacity: 0; transform: scale(1.04); }
+  }
+
+  .monster-anatomy-announce.theme-impact.is-showing {
+    animation: ma-impact-in var(--ma-duration, 2.5s) ease forwards;
+  }
+
+  .monster-anatomy-announce.theme-impact.is-reduced::before {
+    animation: none;
+  }
+
+  /* Tema Arcade: letreiro metálico — Bungee + gradiente ouro/prata */
+  .monster-anatomy-announce.theme-arcade {
+    background: linear-gradient(rgb(0 0 0 / 62%), rgb(0 0 0 / 62%)),
+      repeating-linear-gradient(
+        to bottom,
+        transparent 0 3px,
+        rgb(255 255 255 / 4%) 3px 4px
+      );
+  }
+
+  .monster-anatomy-announce.theme-arcade .ma-announce-kicker {
+    font-family: "Bungee", "Arial Black", sans-serif;
+    font-style: normal;
+    transform: skewX(-10deg);
+    background-image: linear-gradient(
+      to bottom,
+      #fffbe8 0%,
+      #ffe36e 32%,
+      #c88a00 52%,
+      #ffefa8 72%,
+      #8a5a00 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-stroke: 2px #2a1500;
+    paint-order: stroke fill;
+    text-shadow: none;
+    filter: drop-shadow(3px 3px 0 #5a2400) drop-shadow(6px 6px 0 #120800);
+  }
+
+  .monster-anatomy-announce.theme-arcade .ma-announce-part {
+    font-family: "Bungee", "Arial Black", sans-serif;
+    transform: skewX(-10deg);
+    background-image: linear-gradient(to bottom, #fff 0%, #9aa3b2 50%, #eef2f8 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-stroke: 1.5px #14181f;
+    paint-order: stroke fill;
+    text-shadow: none;
+    filter: drop-shadow(2px 2px 0 #14181f);
+  }
+
+  /* Tema Carved: MH cinzelado — Alfa Slab One + relevo */
+  .monster-anatomy-announce.theme-carved {
+    background: linear-gradient(
+      to bottom,
+      transparent 32%,
+      rgb(24 14 4 / 78%) 32%,
+      rgb(24 14 4 / 78%) 68%,
+      transparent 68%
+    );
+  }
+
+  .monster-anatomy-announce.theme-carved .ma-announce-kicker {
+    font-family: "Alfa Slab One", Georgia, serif;
+    font-style: normal;
+    font-weight: 400;
+    letter-spacing: 0.05em;
+    transform: none;
+    background-image: linear-gradient(
+      to bottom,
+      #fdf3d0 0%,
+      #e8d5a0 45%,
+      #a67c3d 75%,
+      #6b4a1c 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-shadow: none;
+    filter: drop-shadow(0 2px 0 #241503) drop-shadow(0 5px 0 #000);
+  }
+
+  .monster-anatomy-announce.theme-carved .ma-announce-part {
+    font-family: "Alfa Slab One", Georgia, serif;
+    font-weight: 400;
+    transform: none;
+    color: #ffb454;
+    text-shadow: 2px 2px 0 #241503, 0 0 16px rgb(255 180 84 / 35%);
+  }
+
+  /* Identidade SEVERED: aço frio + corte horizontal (§24) */
+  .monster-anatomy-announce.is-sever .ma-announce-kicker {
+    text-shadow:
+      4px 4px 0 #0e4d64,
+      -2px -2px 0 #111,
+      0 0 24px rgb(0 180 255 / 60%);
+  }
+
+  .monster-anatomy-announce.is-sever .ma-announce-part {
+    color: #9adcff;
+  }
+
+  .monster-anatomy-announce.is-sever {
+    background: linear-gradient(
+      to bottom,
+      transparent 46%,
+      rgb(0 120 180 / 35%) 46%,
+      rgb(0 120 180 / 35%) 54%,
+      transparent 54%
+    );
+  }
+
+  @keyframes ma-break {
+    0% { opacity: 0; transform: scale(1.6); }
+    10% { opacity: 1; transform: scale(1); }
+    80% { opacity: 1; transform: scale(1); }
+    100% { opacity: 0; transform: scale(1.05); }
+  }
+
+  .monster-anatomy-announce.is-reduced {
+    background: rgb(0 0 0 / 45%);
+  }
+
+  .monster-anatomy-announce.is-reduced.is-showing {
+    animation: ma-break-reduced var(--ma-duration, 2.5s) ease forwards;
+  }
+
+  @keyframes ma-break-reduced {
+    0% { opacity: 0; }
+    10% { opacity: 1; }
+    80% { opacity: 1; }
+    100% { opacity: 0; }
+  }
+
+  .monster-anatomy .ma-linked {
+    margin-top: 0.3rem;
+    font-size: var(--font-size-12);
+    color: var(--color-text-secondary);
+  }
+
+  .monster-anatomy .ma-linked.is-disabled {
+    color: var(--color-warm-3);
+    font-weight: bold;
+  }
+
+  .monster-anatomy-editor .ma-break {
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius);
+    padding: 0.5rem 0.6rem;
+    margin-top: 0.25rem;
+  }
+
+  .monster-anatomy-editor .ma-break legend {
+    font-weight: bold;
+    padding: 0 0.35rem;
+  }
+
+  /* -- Tracker de combate ------------------------------------------------ */
+  .monster-anatomy-tracker .window-content {
+    color: var(--color-text-primary);
+    background: var(--color-bg-primary);
+    font-family: var(--font-primary);
+    padding: 0.6rem;
+  }
+
+  .monster-anatomy .ma-tracker-title {
+    margin: 0 0 0.45rem;
+    font-size: var(--font-size-16);
+  }
+
+  .monster-anatomy .ma-tracker-parts {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  .monster-anatomy .ma-tracker-row {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+  }
+
+  .monster-anatomy .ma-tracker-name {
+    flex: 0 0 38%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: var(--font-size-13);
+  }
+
+  .monster-anatomy .ma-tracker-row .ma-hpbar {
+    flex: 1;
+  }
+
+  .monster-anatomy .ma-tracker-row .ma-hptext {
+    flex: 0 0 3em;
+    text-align: right;
+  }
+
+  /* -- Mensagem de chat -------------------------------------------------- */
+  .monster-anatomy-chat.ma-break h3 {
+    margin: 0 0 0.25rem;
+    font-size: var(--font-size-20);
+    font-style: italic;
+  }
+
+  .monster-anatomy-chat.ma-break p {
+    margin: 0.15rem 0;
+  }
+
+  .monster-anatomy-chat.ma-attack p {
+    margin: 0.15rem 0;
+    font-weight: bold;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  @layer monster-anatomy {
+    .monster-anatomy .ma-hpfill {
+      transition: none;
+    }
+  }
+}

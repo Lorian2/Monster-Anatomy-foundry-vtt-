@@ -1,0 +1,214 @@
+{
+  "MONSTER_ANATOMY": {
+    "Panel": {
+      "Title": "Monster Anatomy",
+      "OpenButton": "Anatomy",
+      "AddPart": "Add part",
+      "OpenTracker": "Open combat tracker",
+      "OpenSummary": "Open battle results",
+      "Empty": "No anatomical parts yet. Add the first one.",
+      "AcLabel": "Part Armor Class",
+      "HpLabel": "Part hit points",
+      "Edit": "Edit part",
+      "Delete": "Delete part",
+      "IdLabel": "Part ID (for macros)",
+      "StateMismatch": "Manual state differs from the HP-derived state",
+      "Disabled": "disabled",
+      "Amount": "Amount",
+      "Damage": "Apply damage",
+      "Heal": "Apply healing",
+      "SeverLabel": "Sever pool (cutting damage)"
+    },
+    "Editor": {
+      "Title": "Edit Part",
+      "Name": "Name",
+      "Ac": "AC",
+      "HpValue": "Current HP",
+      "HpMax": "Max HP",
+      "Breakable": "Breakable",
+      "Severable": "Severable",
+      "SeverHp": "Sever HP",
+      "SeverTypes": "Cutting damage types",
+      "Hitzones": "Damage multipliers (hitzones)",
+      "State": "State",
+      "Notes": "Notes (break effects, linked abilities…)",
+      "Save": "Save",
+      "Invalid": "Check the highlighted fields: name, AC and HP are required.",
+      "BreakSection": "On break",
+      "DisableItem": "Disable item/attack",
+      "EffectName": "Effect name",
+      "EffectIcon": "Effect icon",
+      "EffectDuration": "Duration (rounds, empty = until repaired)",
+      "Condition": "Apply condition",
+      "SetAttrPath": "Attribute path",      "SetAttrValue": "New value",
+      "MacroUuid": "Run macro (uuid)",
+      "Rewards": "Rewards (tables or items)",
+      "RewardEvent": "Event",
+      "RewardKind": "Type",
+      "RewardTable": "UUID (RollTable or Item)",
+      "RewardDraws": "Draws",
+      "RewardAdd": "Add reward",
+      "RewardRemove": "Remove reward"
+    },
+    "Part": {
+      "New": "New part"
+    },
+    "State": {
+      "Intact": "Intact",
+      "Damaged": "Damaged",
+      "Broken": "Broken",
+      "Severed": "Severed",
+      "Destroyed": "Destroyed"
+    },
+    "Delete": {
+      "Title": "Delete part",
+      "Prompt": "Delete \"{name}\" from this creature?"
+    },
+    "Announce": {
+      "Break": "BREAK!",
+      "Severed": "SEVERED!"
+    },
+    "Chat": {
+      "BreakText": "The {part} of {actor} breaks! ({amount} damage)",
+      "BreakBy": "{attacker} broke the {part} of {actor}!",
+      "SeverText": "The {part} of {actor} is severed! ({amount} cutting damage)",
+      "SeverBy": "{attacker} severed the {part} of {actor}!"
+    },
+    "Effect": {
+      "BrokenName": "💥 {part} broken",
+      "ConditionName": "{status} ({part})",
+      "SeveredName": "🗡️ {part} severed"
+    },
+    "Reward": {
+      "Break": "On break",
+      "Sever": "On sever",
+      "TableKind": "Table",
+      "ItemKind": "Item"
+    },
+    "Loot": {
+      "Title": "Loot",
+      "Text": "{part} of {actor} yielded: {items}"
+    },
+    "Summary": {
+      "Title": "Battle Results",
+      "Parts": "Parts",
+      "Rewards": "Rewards",
+      "Empty": "No rewards yet — break or sever parts with configured tables.",
+      "Clear": "Clear rewards"
+    },
+    "Usage": {
+      "Blocked": "⛔ {item} is disabled ({part} of {actor} is broken)!"
+    },
+    "Tracker": {
+      "Title": "Anatomy Tracker",
+      "Empty": "No parts to track."
+    },
+    "Target": {
+      "Title": "Choose target part",
+      "Prompt": "Where does the attack land on {actor}?",
+      "Normal": "Normal attack (no part)",
+      "SentToGM": "Part damage sent to the GM ({part}).",
+      "NoGM": "No GM online to apply part damage."
+    },
+    "Attack": {
+      "Hit": "⚔️ {attacker} → {part} ({actor}): {total} vs AC {ac} — HIT",
+      "Miss": "⚔️ {attacker} → {part} ({actor}): {total} vs AC {ac} — MISS",
+      "CritSuffix": "(critical!)"
+    },
+    "Settings": {
+      "ShowHeaderButton": {
+        "Name": "Header button on actor sheets",
+        "Hint": "Show the Anatomy button in the actor sheet header."
+      },
+      "DefaultAc": {
+        "Name": "Default AC for new parts",
+        "Hint": "Armor Class suggested when creating a part."
+      },
+      "DefaultHp": {
+        "Name": "Default HP for new parts",
+        "Hint": "Hit points suggested when creating a part."
+      },
+      "DamageModel": {
+        "Name": "Damage model (part vs global HP)",
+        "Hint": "What happens to the creature's global HP when a part takes damage.",
+        "Independent": "Independent (part HP only)",
+        "Shared": "Shared (full damage also hits global HP)",
+        "Percent": "Percent (a fraction hits global HP)"
+      },
+      "DamagePercent": {
+        "Name": "Global damage percent",
+        "Hint": "Used only by the Percent model: % of part damage applied globally."
+      },
+      "ShowAnnouncement": {
+        "Name": "Screen announcements",
+        "Hint": "Show the full-screen BREAK! announcement."
+      },
+      "AnnounceDuration": {
+        "Name": "Announcement duration (s)",
+        "Hint": "How long the BREAK! announcement stays on screen."
+      },
+      "ChatMessage": {
+        "Name": "Chat message on break",
+        "Hint": "Post a part-break message to chat."
+      },
+      "TokenEffect": {
+        "Name": "Token effect on break",
+        "Hint": "Apply a marker ActiveEffect to the token when a part breaks."
+      },
+      "BreakSound": {
+        "Name": "Break sound",
+        "Hint": "Optional audio path played on part break (leave empty for silence)."
+      },
+      "PromptOnTarget": {
+        "Name": "Ask target part when targeting",
+        "Hint": "Open the part selector whenever you target a token that has anatomy."
+      },
+      "AttackNotes": {
+        "Name": "Attack notes in chat",
+        "Hint": "Post hit/miss vs part AC in chat on every part-targeted attack."
+      },
+      "AnnounceTheme": {
+        "Name": "Announcement theme",
+        "Hint": "Visual style of the BREAK!/SEVERED! screen announcement.",
+        "Persona": "Persona (graphic, fast)",
+        "MonsterHunter": "Monster Hunter (rugged)",
+        "Jrpg": "JRPG (elegant)",
+        "Minimal": "Minimal (discreet)",
+        "Impact": "Impact (comic, halftone)",
+        "Arcade": "Arcade (metallic)",
+        "Carved": "Carved (slab)"
+      },
+      "CustomKickerBreak": {
+        "Name": "Custom break headline",
+        "Hint": "Overrides BREAK! (empty = default)."
+      },
+      "CustomKickerSever": {
+        "Name": "Custom sever headline",
+        "Hint": "Overrides SEVERED! (empty = default)."
+      },
+      "TokenShake": {
+        "Name": "Token shake",
+        "Hint": "Shake the monster token on break/sever."
+      },
+      "ScreenFlash": {
+        "Name": "Screen flash",
+        "Hint": "Brief fullscreen flash on break/sever (skipped with reduced motion)."
+      },
+      "ReducedMotion": {
+        "Name": "Reduced motion",
+        "Hint": "Disables shake, flash and aggressive animations."
+      },
+      "Particles": {
+        "Name": "Shard particles",
+        "Hint": "Debris burst on break/sever."
+      },
+      "ScreenShake": {
+        "Name": "Screen shake",
+        "Hint": "Shake the game canvas on break/sever."
+      }
+    },
+    "Errors": {
+      "NoPermission": "You don't have permission to edit this actor."
+    }
+  }
+}

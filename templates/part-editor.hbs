@@ -1,0 +1,163 @@
+<form class="monster-anatomy-form" autocomplete="off">
+  <p class="ma-editing-for">{{actorName}}</p>
+
+  <div class="ma-field">
+    <label for="ma-name">{{localize "MONSTER_ANATOMY.Editor.Name"}}</label>
+    <input id="ma-name" name="name" type="text" value="{{part.name}}" required maxlength="120" />
+  </div>
+
+  <div class="ma-row">
+    <div class="ma-field">
+      <label for="ma-ac">{{localize "MONSTER_ANATOMY.Editor.Ac"}}</label>
+      <input id="ma-ac" name="ac" type="number" min="0" step="1" value="{{part.ac}}" />
+    </div>
+    <div class="ma-field">
+      <label for="ma-hpvalue">{{localize "MONSTER_ANATOMY.Editor.HpValue"}}</label>
+      <input id="ma-hpvalue" name="hpValue" type="number" min="0" step="1" value="{{part.hp.value}}" />
+    </div>
+    <div class="ma-field">
+      <label for="ma-hpmax">{{localize "MONSTER_ANATOMY.Editor.HpMax"}}</label>
+      <input id="ma-hpmax" name="hpMax" type="number" min="1" step="1" value="{{part.hp.max}}" />
+    </div>
+  </div>
+
+  <div class="ma-row">
+    <label class="ma-check">
+      <input name="breakable" type="checkbox" {{checked part.breakable}} />
+      {{localize "MONSTER_ANATOMY.Editor.Breakable"}}
+    </label>
+    <label class="ma-check">
+      <input name="severable" type="checkbox" {{checked part.severable}} />
+      {{localize "MONSTER_ANATOMY.Editor.Severable"}}
+    </label>
+  </div>
+
+  <div class="ma-row">
+    <div class="ma-field">
+      <label for="ma-severmax">{{localize "MONSTER_ANATOMY.Editor.SeverHp"}}</label>
+      <input id="ma-severmax" name="severMax" type="number" min="1" step="1" value="{{sever.max}}" />
+    </div>
+  </div>
+
+  <div class="ma-field">
+    <span class="ma-label">{{localize "MONSTER_ANATOMY.Editor.SeverTypes"}}</span>
+    <div class="ma-checks">
+      {{#each physicalTypes}}
+      <label class="ma-check">
+        <input name="severType" type="checkbox" value="{{key}}" {{checked checked}} />
+        {{label}}
+      </label>
+      {{/each}}
+    </div>
+  </div>
+
+  <div class="ma-field">
+    <span class="ma-label">{{localize "MONSTER_ANATOMY.Editor.Hitzones"}}</span>
+    <div class="ma-hzgrid">
+      {{#each hitzones}}
+      <label class="ma-hz" title="{{label}}">
+        <span>{{label}}</span>
+        <input name="hz_{{key}}" type="number" min="0" step="0.1" value="{{value}}" />
+      </label>
+      {{/each}}
+    </div>
+  </div>
+
+  <div class="ma-field">
+    <label for="ma-state">{{localize "MONSTER_ANATOMY.Editor.State"}}</label>
+    <select id="ma-state" name="state">
+      {{selectOptions states selected=part.state valueAttr="value" labelAttr="label" localize=false}}
+    </select>
+  </div>
+
+  <div class="ma-field">
+    <label for="ma-notes">{{localize "MONSTER_ANATOMY.Editor.Notes"}}</label>
+    <textarea id="ma-notes" name="notes" rows="3">{{part.notes}}</textarea>
+  </div>
+
+  <fieldset class="ma-break">
+    <legend>{{localize "MONSTER_ANATOMY.Editor.BreakSection"}}</legend>
+
+    <div class="ma-field">
+      <label for="ma-disable">{{localize "MONSTER_ANATOMY.Editor.DisableItem"}}</label>
+      <select id="ma-disable" name="disableItemId">
+        <option value="">—</option>
+        {{selectOptions items selected=link.disableItemId valueAttr="id" labelAttr="label" localize=false}}
+      </select>
+    </div>
+
+    <div class="ma-row">
+      <div class="ma-field">
+        <label for="ma-effectname">{{localize "MONSTER_ANATOMY.Editor.EffectName"}}</label>
+        <input id="ma-effectname" name="effectName" type="text" value="{{link.effectName}}" maxlength="120" />
+      </div>
+      <div class="ma-field">
+        <label for="ma-effectdur">{{localize "MONSTER_ANATOMY.Editor.EffectDuration"}}</label>
+        <input id="ma-effectdur" name="effectDuration" type="number" min="0" step="1" value="{{link.effectDuration}}" />
+      </div>
+    </div>
+
+    <div class="ma-field">
+      <label for="ma-effecticon">{{localize "MONSTER_ANATOMY.Editor.EffectIcon"}}</label>
+      <input id="ma-effecticon" name="effectIcon" type="text" value="{{link.effectIcon}}" placeholder="icons/svg/skull.svg" />
+    </div>
+
+    <div class="ma-field">
+      <label for="ma-condition">{{localize "MONSTER_ANATOMY.Editor.Condition"}}</label>
+      <select id="ma-condition" name="condition">
+        <option value="">—</option>
+        {{selectOptions statuses selected=link.condition valueAttr="value" labelAttr="label" localize=false}}
+      </select>
+    </div>
+
+    <div class="ma-row">
+      <div class="ma-field">
+        <label for="ma-attrpath">{{localize "MONSTER_ANATOMY.Editor.SetAttrPath"}}</label>
+        <input id="ma-attrpath" name="setAttrPath" type="text" value="{{link.setAttrPath}}" placeholder="system.attributes.movement.fly" />
+      </div>
+      <div class="ma-field">
+        <label for="ma-attrvalue">{{localize "MONSTER_ANATOMY.Editor.SetAttrValue"}}</label>
+        <input id="ma-attrvalue" name="setAttrValue" type="text" value="{{link.setAttrValue}}" placeholder="0" />
+      </div>
+    </div>
+
+    <div class="ma-field">
+      <label for="ma-macro">{{localize "MONSTER_ANATOMY.Editor.MacroUuid"}}</label>
+      <input id="ma-macro" name="macroUuid" type="text" value="{{link.macroUuid}}" placeholder="Macro.xxx" />
+    </div>
+  </fieldset>
+
+  <div class="ma-field">
+    <span class="ma-label">{{localize "MONSTER_ANATOMY.Editor.Rewards"}}</span>
+    <div class="ma-rewards" data-rewards>
+      {{#each rewards}}
+      <div class="ma-reward" data-reward data-reward-id="{{id}}">
+        <select name="rw_event" title="{{localize "MONSTER_ANATOMY.Editor.RewardEvent"}}">
+          <option value="break" {{#if (eq onEvent "break")}}selected{{/if}}>{{localize "MONSTER_ANATOMY.Reward.Break"}}</option>
+          <option value="sever" {{#if (eq onEvent "sever")}}selected{{/if}}>{{localize "MONSTER_ANATOMY.Reward.Sever"}}</option>
+        </select>
+        <select name="rw_kind" title="{{localize "MONSTER_ANATOMY.Editor.RewardKind"}}">
+          <option value="table" {{#if (eq kind "table")}}selected{{/if}}>{{localize "MONSTER_ANATOMY.Reward.TableKind"}}</option>
+          <option value="item" {{#if (eq kind "item")}}selected{{/if}}>{{localize "MONSTER_ANATOMY.Reward.ItemKind"}}</option>
+        </select>
+        <input name="rw_table" type="text" value="{{uuid}}" placeholder="RollTable.xxx / Item.xxx" title="{{localize "MONSTER_ANATOMY.Editor.RewardTable"}}" />
+        <input name="rw_draws" type="number" min="1" max="20" step="1" value="{{draws}}" title="{{localize "MONSTER_ANATOMY.Editor.RewardDraws"}}" />
+        <button type="button" data-action="remove-reward" title="{{localize "MONSTER_ANATOMY.Editor.RewardRemove"}}">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      {{/each}}
+    </div>
+    <button type="button" class="ma-add-reward" data-action="add-reward">
+      <i class="fa-solid fa-plus"></i>
+      <span>{{localize "MONSTER_ANATOMY.Editor.RewardAdd"}}</span>
+    </button>
+  </div>
+
+  <footer class="ma-form-footer">
+    <button type="submit" class="ma-save">
+      <i class="fa-solid fa-check"></i>
+      <span>{{localize "MONSTER_ANATOMY.Editor.Save"}}</span>
+    </button>
+  </footer>
+</form>

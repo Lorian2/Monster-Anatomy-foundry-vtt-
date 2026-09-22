@@ -1,0 +1,18 @@
+<div class="ma-tracker">
+  <h3 class="ma-tracker-title">{{actorName}}</h3>
+  {{#if empty}}
+  <p class="ma-empty">{{localize "MONSTER_ANATOMY.Tracker.Empty"}}</p>
+  {{else}}
+  <ul class="ma-tracker-parts">
+    {{#each parts}}
+    <li class="ma-tracker-row ma-state-{{state}}">
+      <span class="ma-tracker-name">{{name}}</span>
+      <div class="ma-hpbar" role="progressbar" aria-valuenow="{{hp.value}}" aria-valuemin="0" aria-valuemax="{{hp.max}}" title="{{hp.value}} / {{hp.max}} — {{stateLabel}}">
+        <div class="ma-hpfill" style="width: {{hpPct}}%;"></div>
+      </div>
+      <span class="ma-hptext">{{hpPct}}%</span>
+    </li>
+    {{/each}}
+  </ul>
+  {{/if}}
+</div>

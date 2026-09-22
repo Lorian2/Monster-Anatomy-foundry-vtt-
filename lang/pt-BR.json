@@ -1,0 +1,215 @@
+{
+  "MONSTER_ANATOMY": {
+    "Panel": {
+      "Title": "Monster Anatomy",
+      "OpenButton": "Anatomia",
+      "AddPart": "Adicionar parte",
+      "OpenTracker": "Abrir tracker de combate",
+      "OpenSummary": "Abrir resultado da batalha",
+      "Empty": "Nenhuma parte anatômica ainda. Adicione a primeira.",
+      "AcLabel": "Classe de Armadura da parte",
+      "HpLabel": "Pontos de vida da parte",
+      "Edit": "Editar parte",
+      "Delete": "Excluir parte",
+      "IdLabel": "ID da parte (para macros)",
+      "StateMismatch": "Estado manual difere do estado derivado do HP",
+      "Disabled": "desabilitado",
+      "Amount": "Valor",
+      "Damage": "Aplicar dano",
+      "Heal": "Aplicar cura",
+      "SeverLabel": "Reserva de corte (dano cortante)"
+    },
+    "Editor": {
+      "Title": "Editar parte",
+      "Name": "Nome",
+      "Ac": "CA",
+      "HpValue": "HP atual",
+      "HpMax": "HP máximo",
+      "Breakable": "Quebrável",
+      "Severable": "Cortável",
+      "SeverHp": "HP de corte",
+      "SeverTypes": "Tipos de dano cortante",
+      "Hitzones": "Multiplicadores de dano (hitzones)",
+      "State": "Estado",
+      "Notes": "Notas (efeitos ao quebrar, habilidades vinculadas…)",
+      "Save": "Salvar",
+      "Invalid": "Verifique os campos: nome, CA e HP são obrigatórios.",
+      "BreakSection": "Ao quebrar",
+      "DisableItem": "Desabilitar item/ataque",
+      "EffectName": "Nome do efeito",
+      "EffectIcon": "Ícone do efeito",
+      "EffectDuration": "Duração (rodadas, vazio = até reparar)",
+      "Condition": "Aplicar condição",
+      "SetAttrPath": "Caminho do atributo",
+      "SetAttrValue": "Novo valor",
+      "MacroUuid": "Executar macro (uuid)",
+      "Rewards": "Recompensas (tabelas ou itens)",
+      "RewardEvent": "Evento",
+      "RewardKind": "Tipo",
+      "RewardTable": "UUID (RollTable ou Item)",
+      "RewardDraws": "Sorteios",
+      "RewardAdd": "Adicionar recompensa",
+      "RewardRemove": "Remover recompensa"
+    },
+    "Part": {
+      "New": "Nova parte"
+    },
+    "State": {
+      "Intact": "Íntegra",
+      "Damaged": "Danificada",
+      "Broken": "Quebrada",
+      "Severed": "Cortada",
+      "Destroyed": "Destruída"
+    },
+    "Delete": {
+      "Title": "Excluir parte",
+      "Prompt": "Excluir \"{name}\" desta criatura?"
+    },
+    "Announce": {
+      "Break": "BREAK!",
+      "Severed": "SEVERED!"
+    },
+    "Chat": {
+      "BreakText": "A {part} de {actor} foi quebrada! ({amount} de dano)",
+      "BreakBy": "{attacker} quebrou a {part} de {actor}!",
+      "SeverText": "A {part} de {actor} foi cortada! ({amount} de dano cortante)",
+      "SeverBy": "{attacker} cortou a {part} de {actor}!"
+    },
+    "Effect": {
+      "BrokenName": "💥 {part} quebrada",
+      "ConditionName": "{status} ({part})",
+      "SeveredName": "🗡️ {part} cortada"
+    },
+    "Reward": {
+      "Break": "Ao quebrar",
+      "Sever": "Ao cortar",
+      "TableKind": "Tabela",
+      "ItemKind": "Item"
+    },
+    "Loot": {
+      "Title": "Espólios",
+      "Text": "{part} de {actor} rendeu: {items}"
+    },
+    "Summary": {
+      "Title": "Resultado da batalha",
+      "Parts": "Partes",
+      "Rewards": "Recompensas",
+      "Empty": "Sem recompensas ainda — quebre ou corte partes com tabelas configuradas.",
+      "Clear": "Limpar recompensas"
+    },
+    "Usage": {
+      "Blocked": "⛔ {item} está desabilitado ({part} de {actor} quebrada)!"
+    },
+    "Tracker": {
+      "Title": "Tracker de Anatomia",
+      "Empty": "Sem partes para acompanhar."
+    },
+    "Target": {
+      "Title": "Escolher parte do alvo",
+      "Prompt": "Onde o ataque atinge {actor}?",
+      "Normal": "Ataque normal (sem parte)",
+      "SentToGM": "Dano na parte enviado ao Mestre ({part}).",
+      "NoGM": "Sem Mestre online para aplicar dano na parte."
+    },
+    "Attack": {
+      "Hit": "⚔️ {attacker} → {part} ({actor}): {total} vs CA {ac} — ACERTO",
+      "Miss": "⚔️ {attacker} → {part} ({actor}): {total} vs CA {ac} — ERROU",
+      "CritSuffix": "(crítico!)"
+    },
+    "Settings": {
+      "ShowHeaderButton": {
+        "Name": "Botão no cabeçalho das fichas",
+        "Hint": "Exibe o botão de Anatomia no cabeçalho da ficha do ator."
+      },
+      "DefaultAc": {
+        "Name": "CA padrão de novas partes",
+        "Hint": "Classe de Armadura sugerida ao criar uma parte."
+      },
+      "DefaultHp": {
+        "Name": "HP padrão de novas partes",
+        "Hint": "Pontos de vida sugeridos ao criar uma parte."
+      },
+      "DamageModel": {
+        "Name": "Modelo de dano (parte vs HP global)",
+        "Hint": "O que acontece com o HP global da criatura quando uma parte sofre dano.",
+        "Independent": "Independente (só HP da parte)",
+        "Shared": "Compartilhado (dano cheio também atinge o global)",
+        "Percent": "Percentual (uma fração atinge o global)"
+      },
+      "DamagePercent": {
+        "Name": "Percentual de dano global",
+        "Hint": "Usado só no modelo Percentual: % do dano da parte aplicado ao global."
+      },
+      "ShowAnnouncement": {
+        "Name": "Anúncios na tela",
+        "Hint": "Exibe o anúncio BREAK! em tela cheia."
+      },
+      "AnnounceDuration": {
+        "Name": "Duração do anúncio (s)",
+        "Hint": "Quanto tempo o anúncio BREAK! fica na tela."
+      },
+      "ChatMessage": {
+        "Name": "Mensagem no chat ao quebrar",
+        "Hint": "Publica mensagem de part break no chat."
+      },
+      "TokenEffect": {
+        "Name": "Efeito no token ao quebrar",
+        "Hint": "Aplica um ActiveEffect marcador no token quando a parte quebra."
+      },
+      "BreakSound": {
+        "Name": "Som de quebra",
+        "Hint": "Caminho de áudio opcional tocado ao quebrar (vazio = silêncio)."
+      },
+      "PromptOnTarget": {
+        "Name": "Perguntar parte ao mirar",
+        "Hint": "Abre o seletor de parte sempre que você mirar num token com anatomia."
+      },
+      "AttackNotes": {
+        "Name": "Notas de ataque no chat",
+        "Hint": "Publica acerto/erro vs CA da parte no chat a cada ataque mirado."
+      },
+      "AnnounceTheme": {
+        "Name": "Tema do anúncio",
+        "Hint": "Estilo visual do anúncio BREAK!/SEVERED! na tela.",
+        "Persona": "Persona (gráfico, rápido)",
+        "MonsterHunter": "Monster Hunter (rústico)",
+        "Jrpg": "JRPG (elegante)",
+        "Minimal": "Minimalista (discreto)",
+        "Impact": "Impacto (HQ, halftone)",
+        "Arcade": "Arcade (metálico)",
+        "Carved": "Entalhado (slab)"
+      },
+      "CustomKickerBreak": {
+        "Name": "Manchete custom de quebra",
+        "Hint": "Substitui BREAK! (vazio = padrão)."
+      },
+      "CustomKickerSever": {
+        "Name": "Manchete custom de corte",
+        "Hint": "Substitui SEVERED! (vazio = padrão)."
+      },
+      "TokenShake": {
+        "Name": "Tremor no token",
+        "Hint": "Treme o token do monstro ao quebrar/cortar."
+      },
+      "ScreenFlash": {
+        "Name": "Flash na tela",
+        "Hint": "Flash rápido em tela cheia ao quebrar/cortar (ignorado com movimento reduzido)."
+      },
+      "ReducedMotion": {
+        "Name": "Movimento reduzido",
+        "Hint": "Desativa tremor, flash e animações agressivas."
+      },
+      "Particles": {
+        "Name": "Partículas de estilhaços",
+        "Hint": "Explosão de detritos ao quebrar/cortar."
+      },
+      "ScreenShake": {
+        "Name": "Tremor de tela",
+        "Hint": "Treme o canvas do jogo ao quebrar/cortar."
+      }
+    },
+    "Errors": {
+      "NoPermission": "Você não tem permissão para editar este ator."
+    }
+  }
+}

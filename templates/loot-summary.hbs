@@ -1,0 +1,31 @@
+<div class="ma-summary">
+  <h3 class="ma-summary-title">{{actorName}} — {{localize "MONSTER_ANATOMY.Summary.Title"}}</h3>
+
+  <h4>{{localize "MONSTER_ANATOMY.Summary.Parts"}}</h4>
+  {{#if emptyParts}}
+  <p class="ma-empty">{{localize "MONSTER_ANATOMY.Panel.Empty"}}</p>
+  {{else}}
+  <ul class="ma-summary-parts">
+    {{#each parts}}
+    <li><span class="ma-summary-part">{{name}}</span> — <span class="ma-badge">{{stateLabel}}</span> <span class="ma-hptext">{{hp}}</span></li>
+    {{/each}}
+  </ul>
+  {{/if}}
+
+  <h4>{{localize "MONSTER_ANATOMY.Summary.Rewards"}}</h4>
+  {{#if emptyLoot}}
+  <p class="ma-empty">{{localize "MONSTER_ANATOMY.Summary.Empty"}}</p>
+  {{else}}
+  <ul class="ma-summary-loot">
+    {{#each loot}}
+    <li>🎁 <strong>{{partName}}</strong> ({{eventLabel}}): {{itemsText}}{{#if grantedTo}} → <em>{{grantedTo}}</em>{{/if}}</li>
+    {{/each}}
+  </ul>
+  {{#if canClear}}
+  <button type="button" data-action="clear-loot">
+    <i class="fa-solid fa-broom"></i>
+    <span>{{localize "MONSTER_ANATOMY.Summary.Clear"}}</span>
+  </button>
+  {{/if}}
+  {{/if}}
+</div>

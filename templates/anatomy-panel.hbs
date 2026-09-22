@@ -1,0 +1,82 @@
+<div class="ma-panel">
+<div class="ma-header">
+  <img class="ma-actor-img" src="{{actorImg}}" alt="{{actorName}}" />
+  <h2 class="ma-actor-name">{{actorName}}</h2>
+  {{#if canEdit}}
+  <button type="button" class="ma-add" data-action="add-part">
+    <i class="fa-solid fa-plus"></i>
+    <span>{{localize "MONSTER_ANATOMY.Panel.AddPart"}}</span>
+  </button>
+  {{/if}}
+  <button type="button" class="ma-tracker-open" data-action="open-tracker" title="{{localize "MONSTER_ANATOMY.Panel.OpenTracker"}}">
+    <i class="fa-solid fa-heart-pulse"></i>
+  </button>
+  <button type="button" class="ma-tracker-open" data-action="open-summary" title="{{localize "MONSTER_ANATOMY.Panel.OpenSummary"}}">
+    <i class="fa-solid fa-scroll"></i>
+  </button>
+</div>
+
+{{#if empty}}
+<p class="ma-empty">{{localize "MONSTER_ANATOMY.Panel.Empty"}}</p>
+{{else}}
+<ul class="ma-parts">
+  {{#each parts}}
+  <li class="ma-part ma-state-{{state}}" data-part-id="{{id}}">
+    <div class="ma-part-top">
+      <span class="ma-part-name">{{name}}</span>
+      <span class="ma-badge" title="{{stateLabel}}">
+        {{stateLabel}}{{#if hpMismatch}} <i class="fa-solid fa-triangle-exclamation" title="{{localize "MONSTER_ANATOMY.Panel.StateMismatch"}}"></i>{{/if}}
+      </span>
+    </div>
+    <div class="ma-part-stats">
+      <span class="ma-ac" title="{{localize "MONSTER_ANATOMY.Panel.AcLabel"}}">
+        <i class="fa-solid fa-shield-halved"></i> {{ac}}
+      </span>
+      <div class="ma-hpbar" role="progressbar" aria-valuenow="{{hp.value}}" aria-valuemin="0" aria-valuemax="{{hp.max}}" title="{{hp.value}} / {{hp.max}}">
+        <div class="ma-hpfill" style="width: {{hpPct}}%;"></div>
+      </div>
+      <span class="ma-hptext">{{hp.value}} / {{hp.max}}</span>
+    </div>
+    {{#if severable}}
+    <div class="ma-part-stats ma-sever" title="{{localize "MONSTER_ANATOMY.Panel.SeverLabel"}}">
+      <span class="ma-ac">🗡️</span>
+      <div class="ma-hpbar ma-severbar" role="progressbar" aria-valuenow="{{sever.value}}" aria-valuemin="0" aria-valuemax="{{sever.max}}" title="{{sever.value}} / {{sever.max}}">
+        <div class="ma-hpfill" style="width: {{severPct}}%;"></div>
+      </div>
+      <span class="ma-hptext">{{sever.value}} / {{sever.max}}</span>
+    </div>
+    {{/if}}
+    <div class="ma-part-flags">
+      {{#if breakable}}<span class="ma-flag">{{localize "MONSTER_ANATOMY.Editor.Breakable"}}</span>{{/if}}
+      {{#if severable}}<span class="ma-flag">{{localize "MONSTER_ANATOMY.Editor.Severable"}}</span>{{/if}}
+      <span class="ma-id" title="{{localize "MONSTER_ANATOMY.Panel.IdLabel"}}">{{id}}</span>
+    </div>
+    {{#if linkedItemName}}
+    <div class="ma-linked{{#if linkedDisabled}} is-disabled{{/if}}" title="{{linkedItemName}}">
+      🔗 {{linkedItemName}}{{#if linkedDisabled}} — {{localize "MONSTER_ANATOMY.Panel.Disabled"}}{{/if}}
+    </div>
+    {{/if}}
+    {{#if ../canEdit}}
+    <div class="ma-part-actions">
+      <button type="button" data-action="edit-part" data-part-id="{{id}}" title="{{localize "MONSTER_ANATOMY.Panel.Edit"}}">
+        <i class="fa-solid fa-pen"></i>
+      </button>
+      <button type="button" data-action="delete-part" data-part-id="{{id}}" title="{{localize "MONSTER_ANATOMY.Panel.Delete"}}">
+        <i class="fa-solid fa-trash"></i>
+      </button>
+      <span class="ma-quick">
+        <input class="ma-amount" type="number" min="1" step="1" value="10" title="{{localize "MONSTER_ANATOMY.Panel.Amount"}}" />
+        <button type="button" data-action="damage-part" data-part-id="{{id}}" title="{{localize "MONSTER_ANATOMY.Panel.Damage"}}">
+          <i class="fa-solid fa-heart-crack"></i>
+        </button>
+        <button type="button" data-action="heal-part" data-part-id="{{id}}" title="{{localize "MONSTER_ANATOMY.Panel.Heal"}}">
+          <i class="fa-solid fa-heart-pulse"></i>
+        </button>
+      </span>
+    </div>
+    {{/if}}
+  </li>
+  {{/each}}
+</ul>
+{{/if}}
+</div>

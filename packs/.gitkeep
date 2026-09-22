@@ -1,0 +1,3 @@
+# Packs de compêndio futuros (etapa 0.4+: monstros-preset, macros, RollTables).
+# Formato v13: LevelDB (pastas). Gerenciar com @foundryvtt/foundryvtt-cli.
+# Fontes versionáveis em packs/src/, compilados via `fvtt package pack "<nome>"`.

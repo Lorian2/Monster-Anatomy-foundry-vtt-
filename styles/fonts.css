@@ -1,0 +1,25 @@
+/* Fontes display embutidas (SIL Open Font License 1.1 — ver OFL-*.txt).
+ * Subsets latin em woff2 para anúncio de impacto (offline, sem CDN). */
+@font-face {
+  font-family: "Anton";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("../assets/fonts/Anton-latin.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Alfa Slab One";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("../assets/fonts/AlfaSlabOne-latin.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Bungee";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("../assets/fonts/Bungee-latin.woff2") format("woff2");
+}
