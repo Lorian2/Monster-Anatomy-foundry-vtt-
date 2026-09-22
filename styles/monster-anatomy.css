@@ -726,6 +726,106 @@
     padding: 0 0.35rem;
   }
 
+  .monster-anatomy .ma-templates {
+    display: flex;
+    gap: 0.3rem;
+    align-items: center;
+    margin-bottom: 0.5rem;
+  }
+
+  .monster-anatomy .ma-template-select {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .monster-anatomy .ma-templates button {
+    padding: 0.2rem 0.5rem;
+    border-radius: var(--border-radius);
+    border: 1px solid var(--color-border);
+    background: var(--color-bg-tertiary);
+    cursor: pointer;
+  }
+
+  .monster-anatomy .ma-tracker-open.is-on {
+    border-color: var(--color-warm-2);
+    color: var(--color-warm-2);
+  }
+
+  /* -- Mira visual: mapa corporal ----------------------------------------- */  .monster-anatomy-target .window-content {
+    color: var(--color-text-primary);
+    background: var(--color-bg-primary);
+    font-family: var(--font-primary);
+    padding: 0.6rem;
+  }
+
+  .monster-anatomy .ma-map {
+    display: block;
+    width: 100%;
+    max-height: 46vh;
+  }
+
+  .monster-anatomy .ma-zone :is(circle, ellipse, path, rect) {
+    fill: rgb(255 70 50 / 22%);
+    stroke: var(--color-warm-2);
+    stroke-width: 1.5;
+    cursor: pointer;
+    transition: fill 0.12s ease;
+  }
+
+  .monster-anatomy .ma-zone:hover :is(circle, ellipse, path, rect),
+  .monster-anatomy .ma-zone.is-active :is(circle, ellipse, path, rect) {
+    fill: rgb(255 70 50 / 48%);
+  }
+
+  .monster-anatomy .ma-zone.is-active :is(circle, ellipse, path, rect) {
+    stroke: #ffd23f;
+    stroke-width: 2.5;
+  }
+
+  .monster-anatomy .ma-zone.is-damaged :is(circle, ellipse, path, rect) {
+    stroke: #ffb454;
+  }
+
+  .monster-anatomy .ma-zone.is-broken :is(circle, ellipse, path, rect) {
+    fill: rgb(120 10 10 / 55%);
+    stroke: #ff3b3b;
+    stroke-dasharray: 4 3;
+  }
+
+  .monster-anatomy .ma-zone.is-empty {
+    opacity: 0.3;
+  }
+
+  .monster-anatomy .ma-zone.is-empty :is(circle, ellipse, path, rect) {
+    cursor: default;
+  }
+
+  .monster-anatomy .ma-map text {
+    fill: var(--color-text-primary);
+    font-size: 11px;
+    font-weight: bold;
+    text-anchor: middle;
+    pointer-events: none;
+  }
+
+  .monster-anatomy .ma-zonehint {
+    margin: 0.4rem 0 0.2rem;
+    font-size: var(--font-size-13);
+    color: var(--color-text-secondary);
+  }
+
+  .monster-anatomy .ma-zoneparts {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    margin-bottom: 0.4rem;
+  }
+
+  .monster-anatomy .ma-zoneparts button,
+  .monster-anatomy-target footer button {
+    width: 100%;
+  }
+
   /* -- Tracker de combate ------------------------------------------------ */
   .monster-anatomy-tracker .window-content {
     color: var(--color-text-primary);
@@ -785,6 +885,11 @@
   .monster-anatomy-chat.ma-attack p {
     margin: 0.15rem 0;
     font-weight: bold;
+  }
+
+  .monster-anatomy-chat.ma-routed p {
+    margin: 0.15rem 0;
+    color: var(--color-text-secondary);
   }
 }
 

@@ -71,6 +71,16 @@ export function registerSettings(): void {
     default: 50,
   });
 
+  game.settings!.register(MODULE_ID, "brokenBonus", {
+    name: "MONSTER_ANATOMY.Settings.BrokenBonus.Name",
+    hint: "MONSTER_ANATOMY.Settings.BrokenBonus.Hint",
+    scope: "world",
+    config: true,
+    type: Number,
+    range: { min: 0, max: 200, step: 5 },
+    default: 50,
+  });
+
   game.settings!.register(MODULE_ID, "showAnnouncement", {
     name: "MONSTER_ANATOMY.Settings.ShowAnnouncement.Name",
     hint: "MONSTER_ANATOMY.Settings.ShowAnnouncement.Hint",
@@ -215,6 +225,15 @@ export function registerSettings(): void {
     type: Boolean,
     default: true,
   });
+
+  game.settings!.register(MODULE_ID, "templatesJson", {
+    name: "MONSTER_ANATOMY.Settings.TemplatesJson.Name",
+    hint: "MONSTER_ANATOMY.Settings.TemplatesJson.Hint",
+    scope: "world",
+    config: false,
+    type: String,
+    default: "[]",
+  });
 }
 
 function resolveActor(app: unknown): Actor | undefined {
@@ -281,5 +300,6 @@ export async function preloadTemplates(): Promise<void> {
     "modules/monster-anatomy/templates/anatomy-tracker.hbs",
     "modules/monster-anatomy/templates/loot-summary.hbs",
     "modules/monster-anatomy/templates/part-editor.hbs",
+    "modules/monster-anatomy/templates/target-map.hbs",
   ]);
 }

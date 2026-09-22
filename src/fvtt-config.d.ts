@@ -18,6 +18,8 @@ declare global {
         parts: MonsterPart[];
         attrBackup?: Record<string, Record<string, unknown>>;
         loot?: LootEntry[];
+        hideAc?: boolean;
+        mapLayout?: string;
       };
     };
     ActiveEffect: {
@@ -34,6 +36,7 @@ declare global {
     "monster-anatomy.defaultHp": number;
     "monster-anatomy.damageModel": string;
     "monster-anatomy.damagePercent": number;
+    "monster-anatomy.brokenBonus": number;
     "monster-anatomy.showAnnouncement": boolean;
     "monster-anatomy.announceDuration": number;
     "monster-anatomy.chatMessage": boolean;
@@ -49,6 +52,7 @@ declare global {
     "monster-anatomy.reducedMotion": boolean;
     "monster-anatomy.particles": boolean;
     "monster-anatomy.screenShake": boolean;
+    "monster-anatomy.templatesJson": string;
   }
 
   interface ModuleConfig {

@@ -10,7 +10,7 @@
 import { getParts } from "./anatomy-store.js";
 import { MODULE_ID } from "./constants.js";
 import { damagePartDetailed, type DamageComponent } from "./damage.js";
-import { showBreakAnnouncement, showSeverAnnouncement } from "./presentation.js";
+import { showBreakAnnouncement, showSeverAnnouncement, sendRoutedNote } from "./presentation.js";
 
 interface ApplyMsg {
   t: "apply";
@@ -91,6 +91,14 @@ async function onSocketMessage(msg: unknown): Promise<void> {
       str(m.partId),
       sanitizeComponents(m.components),
       { attacker, attackerUuid },
+    );
+    await sendRoutedNote(
+      actor,
+      getParts(actor).find((p) => p.id === str(m.partId))?.name ?? str(m.partId),
+      result.applied,
+      result.globalApplied,
+      result.bonus,
+      result.bonusFlat,
     );
     if (result.broke) emitPresent(str(m.actorUuid), str(m.partId), "break");
     if (result.severed) emitPresent(str(m.actorUuid), str(m.partId), "sever");

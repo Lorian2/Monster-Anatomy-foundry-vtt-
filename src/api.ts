@@ -1,11 +1,14 @@
 /**
  * API pública do módulo (convenção oficial: `game.modules.get(id).api`).
  * Macros e outros módulos devem consumir DAQUI — nunca importar arquivos internos.
- *
- * Futuro (0.4): partBreak/partSever/partDamage/conditionApply + Hooks.callAll.
  */
 import { MODULE_ID } from "./constants.js";
-import { canEdit, getParts } from "./anatomy-store.js";
+import {
+  applyTemplate as applyTpl,
+  canEdit,
+  getParts,
+  getTemplates as getTpls,
+} from "./anatomy-store.js";
 import {
   damagePart,
   damagePartDetailed,
@@ -21,6 +24,7 @@ import {
   promptTargetSelection as promptSel,
   type TargetSelection,
 } from "./targeting.js";
+import type { AnatomyTemplate } from "./part-model.js";
 import { AnatomyPanel } from "./apps/anatomy-panel.js";
 import { AnatomyTracker } from "./apps/anatomy-tracker.js";
 import { LootSummary } from "./apps/loot-summary.js";
@@ -55,6 +59,10 @@ export interface MonsterAnatomyAPI {
    * "partDamage", "partsChanged", "panelRender". Retorna função p/ cancelar.
    */
   on(event: string, fn: (...args: unknown[]) => void): () => void;
+  /** Modelos de anatomia (presets + customs). */
+  getTemplates(): AnatomyTemplate[];
+  /** Aplica modelo ao ator (anexa partes). Retorna nº de partes criadas. */
+  applyTemplate(actor: Actor, templateId: string): Promise<number>;
 }
 
 export function buildApi(): MonsterAnatomyAPI {
@@ -103,6 +111,12 @@ export function buildApi(): MonsterAnatomyAPI {
       const name = event.startsWith("monsterAnatomy.") ? event : `monsterAnatomy.${event}`;
       const id = onHook(name, fn);
       return () => offHook(name, id);
+    },
+    getTemplates(): AnatomyTemplate[] {
+      return getTpls();
+    },
+    applyTemplate(actor: Actor, templateId: string): Promise<number> {
+      return applyTpl(actor, templateId);
     },
   };
 }

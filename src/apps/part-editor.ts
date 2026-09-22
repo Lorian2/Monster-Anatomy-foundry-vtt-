@@ -161,8 +161,11 @@ export class PartEditor extends HandlebarsApplicationMixin(ApplicationV2) {
     const previous = partId ? getParts(actor).find((p) => p.id === partId) : undefined;
 
     const max = Math.max(1, Math.floor(num("hpMax", previous?.hp.max ?? 10)));
-    const durRaw = str("effectDuration");    const link: BreakLinkage = {
-      disableItemId: str("disableItemId"),
+    const durRaw = str("effectDuration");
+    const disableItemId = str("disableItemId");
+    const link: BreakLinkage = {
+      disableItemId,
+      disableItemName: actor.items.get(disableItemId)?.name ?? "",
       effectName: str("effectName"),
       effectIcon: str("effectIcon"),
       effectDuration: durRaw === "" ? null : Math.max(0, Math.floor(num("effectDuration", 0))),
@@ -187,6 +190,15 @@ export class PartEditor extends HandlebarsApplicationMixin(ApplicationV2) {
       Math.floor(num("severMax", previous?.sever?.max ?? max)),
     );
     const prevSeverValue = previous?.sever?.value ?? severMax;
+    const bonusModeRaw = str("bonusMode");
+    const bonus = {
+      mode: (
+        bonusModeRaw === "off" || bonusModeRaw === "percent" || bonusModeRaw === "flat"
+          ? bonusModeRaw
+          : "inherit"
+      ) as "inherit" | "off" | "percent" | "flat",
+      value: Math.max(0, num("bonusValue", 0)),
+    };
     const rewards: PartReward[] = [];
     form.querySelectorAll("[data-reward]").forEach((row) => {
       const qa = (sel: string): string =>
@@ -220,6 +232,7 @@ export class PartEditor extends HandlebarsApplicationMixin(ApplicationV2) {
       sever: { value: Math.min(severMax, prevSeverValue), max: severMax },
       severTypes,
       rewards,
+      bonus,
     };
 
     if (validatePart(candidate).length > 0) {

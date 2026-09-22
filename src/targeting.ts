@@ -1,15 +1,15 @@
 /**
  * Seleção de parte no momento da mira (doc de design, §7).
  *
- * Fluxo: jogador mira o token do monstro (`targetToken`) → dialog pergunta
- * ONDE o ataque atinge → seleção guardada por cliente → rolagens de ataque
- * (`dnd5e.rollAttackV2`) e dano (`dnd5e.rollDamageV2`) consomem a seleção.
+ * Fluxo: jogador mira o token do monstro (`targetToken`) → mapa corporal
+ * pergunta ONDE o ataque atinge (região → parte) → seleção guardada por
+ * cliente → rolagens de ataque (`dnd5e.rollAttackV2`) e dano
+ * (`dnd5e.rollDamageV2`) consomem a seleção.
  * Nada bloqueia a rolagem no meio: a escolha acontece ANTES de rolar.
  */
 import { getParts } from "./anatomy-store.js";
-import { MODULE_ID } from "./constants.js";
-import { PART_STATE_CHOICES } from "./part-model.js";
-import { getSetting, t, tf, tokenUuid } from "./fvtt.js";
+import { getSetting, tokenUuid } from "./fvtt.js";
+import { TargetMapDialog } from "./apps/target-map.js";
 
 export interface TargetSelection {
   tokenUuid: string;
@@ -59,25 +59,8 @@ export async function promptTargetSelection(source?: unknown): Promise<void> {
     clearSelection();
     return;
   }
-  const buttons: Array<{ action: string; label: string; icon: string }> = parts.map((p) => ({
-    action: p.id,
-    label: `${p.name} — CA ${p.ac} — ${p.hp.value}/${p.hp.max} • ${t(PART_STATE_CHOICES[p.state])}`,
-    icon: p.state === "intact" ? "fa-solid fa-crosshairs" : "fa-solid fa-burst",
-  }));
-  buttons.push({
-    action: "__normal",
-    label: t("MONSTER_ANATOMY.Target.Normal"),
-    icon: "fa-solid fa-xmark",
-  });
-  const content =
-    `<p>${tf("MONSTER_ANATOMY.Target.Prompt", { actor: actor.name })}</p>`;
-  const choice: unknown = await foundry.applications.api.DialogV2.wait({
-    window: { title: t("MONSTER_ANATOMY.Target.Title") },
-    content,
-    buttons,
-    modal: true,
-  });
-  if (typeof choice !== "string" || choice === "__normal") {
+  const choice = await TargetMapDialog.pick(actor);
+  if (!choice) {
     clearSelection();
     return;
   }

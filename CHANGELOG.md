@@ -2,6 +2,30 @@
 
 Todas as mudanças notáveis deste módulo. Formato inspirado no Keep a Changelog.
 
+## [1.1.0] — 2026-09-22
+
+### Modelos de anatomia
+- Presets embutidos **Draconídeo** e **Humanoide** (protegidos) + customs salvos
+  da anatomia atual (só GM salva/exclui); aplicar anexa partes, com itens
+  vinculados resolvidos por nome no destino e layout de mapa junto
+- API: `getTemplates()` / `applyTemplate(actor, id)`
+
+### Mira visual
+- Mapa corporal SVG clicável em dois toques (região → parte), com dois layouts
+  (draconídeo/humanoide, por ator, trocável no painel) e fallback em lista
+- Zonas refletem severidade (âmbar ao danificar, vermelho tracejado ao romper)
+
+### CA secreta e clareza de combate
+- Toggle por ator (só GM): jogadores veem `??` no painel, mapa, tracker e chat
+- Nota de dano roteado no chat com parcela global (`➡️ X → parte · global −Y`)
+  e marca de bônus — dispensa o botão de dano padrão (sem duplo global)
+
+### Bônus de foco e recompensas diretas
+- Setting global de bônus vs rompidas (%) + sobrescrita por parte no editor
+  (herdar, desligado, percentual, fixo); vale ruptura, corte e global
+- Recompensa pode ser **item direto** (UUID) entregue a quem quebrou, com
+  fallback ao pool; quantidade via nº configurado quando suportado
+
 ## [1.0.0] — 2026-09-22
 
 Primeira release pública. Testada em Foundry VTT v14 (build 364) com dnd5e 5.3.3.

@@ -2,6 +2,11 @@
 <div class="ma-header">
   <img class="ma-actor-img" src="{{actorImg}}" alt="{{actorName}}" />
   <h2 class="ma-actor-name">{{actorName}}</h2>
+  {{#if isGM}}
+  <button type="button" class="ma-tracker-open{{#if hideAc}} is-on{{/if}}" data-action="toggle-hide-ac" title="{{#if hideAc}}{{localize "MONSTER_ANATOMY.Panel.ShowAc"}}{{else}}{{localize "MONSTER_ANATOMY.Panel.HideAc"}}{{/if}}">
+    <i class="fa-solid {{#if hideAc}}fa-eye-slash{{else}}fa-eye{{/if}}"></i>
+  </button>
+  {{/if}}
   {{#if canEdit}}
   <button type="button" class="ma-add" data-action="add-part">
     <i class="fa-solid fa-plus"></i>
@@ -15,6 +20,30 @@
     <i class="fa-solid fa-scroll"></i>
   </button>
 </div>
+{{#if canEdit}}
+<div class="ma-templates">
+  <select class="ma-template-select" title="{{localize "MONSTER_ANATOMY.Panel.ApplyTemplate"}}">
+    {{#each templates}}
+    <option value="{{id}}">{{name}}</option>
+    {{/each}}
+  </select>
+  <button type="button" data-action="apply-template" title="{{localize "MONSTER_ANATOMY.Panel.ApplyTemplate"}}">
+    <i class="fa-solid fa-download"></i>
+  </button>
+  {{#if isGM}}
+  <button type="button" data-action="save-template" title="{{localize "MONSTER_ANATOMY.Panel.SaveTemplate"}}">
+    <i class="fa-solid fa-floppy-disk"></i>
+  </button>
+  <button type="button" data-action="delete-template" title="{{localize "MONSTER_ANATOMY.Panel.DeleteTemplate"}}">
+    <i class="fa-solid fa-trash-can"></i>
+  </button>
+  {{/if}}
+  <select class="ma-map-select" title="{{localize "MONSTER_ANATOMY.Panel.MapLayout"}}">
+    <option value="dragonoid" {{#if (eq mapLayout "dragonoid")}}selected{{/if}}>{{localize "MONSTER_ANATOMY.Template.Dragonoid"}}</option>
+    <option value="humanoid" {{#if (eq mapLayout "humanoid")}}selected{{/if}}>{{localize "MONSTER_ANATOMY.Template.Humanoid"}}</option>
+  </select>
+</div>
+{{/if}}
 
 {{#if empty}}
 <p class="ma-empty">{{localize "MONSTER_ANATOMY.Panel.Empty"}}</p>
@@ -30,7 +59,7 @@
     </div>
     <div class="ma-part-stats">
       <span class="ma-ac" title="{{localize "MONSTER_ANATOMY.Panel.AcLabel"}}">
-        <i class="fa-solid fa-shield-halved"></i> {{ac}}
+        <i class="fa-solid fa-shield-halved"></i> {{acDisplay}}
       </span>
       <div class="ma-hpbar" role="progressbar" aria-valuenow="{{hp.value}}" aria-valuemin="0" aria-valuemax="{{hp.max}}" title="{{hp.value}} / {{hp.max}}">
         <div class="ma-hpfill" style="width: {{hpPct}}%;"></div>

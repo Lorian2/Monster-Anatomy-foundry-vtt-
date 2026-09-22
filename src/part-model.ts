@@ -25,8 +25,7 @@ export interface MonsterPart {
   state: PartState;
   notes: string;
   /** Ações automáticas ao quebrar (0.2). Ausente em partes legadas → defaults. */
-  onBreak?: BreakLinkage;
-  /** Multiplicadores por tipo de dano, esparsos (ausente = 1.0). */
+  onBreak?: BreakLinkage;  /** Multiplicadores por tipo de dano, esparsos (ausente = 1.0). */
   hitzone?: Record<string, number>;
   /** Pool de corte (0.3). Dano cortante acumula aqui em paralelo ao HP. */
   sever?: { value: number; max: number };
@@ -34,6 +33,28 @@ export interface MonsterPart {
   severTypes?: string[];
   /** Recompensas por ruptura/corte (0.4). */
   rewards?: PartReward[];
+  /** Bônus ao atingir já rompida (sobrescreve o global conforme o modo). */
+  bonus?: PartBonus;
+}
+
+/**
+ * Bônus de foco por parte: `inherit` usa o setting global, `off` desliga,
+ * `percent` multiplica, `flat` soma valor fixo.
+ */
+export interface PartBonus {
+  mode: "inherit" | "off" | "percent" | "flat";
+  value: number;
+}
+
+export const EMPTY_BONUS: PartBonus = { mode: "inherit", value: 0 };
+
+/** Normaliza o bônus (partes antigas herdam o global). */
+export function bonusOf(part: Pick<MonsterPart, "bonus">): PartBonus {
+  const raw = part.bonus;
+  if (!raw || typeof raw !== "object") return { ...EMPTY_BONUS };
+  const mode = raw.mode === "off" || raw.mode === "percent" || raw.mode === "flat" ? raw.mode : "inherit";
+  const value = Number.isFinite(Number(raw.value)) ? Math.max(0, Number(raw.value)) : 0;
+  return { mode, value };
 }
 
 /**
@@ -78,7 +99,6 @@ export function rewardsOf(part: Pick<MonsterPart, "rewards">): PartReward[] {
 
 /** Tipos físicos (corte/perfuração/impacto) — base do sever. */
 export const PHYSICAL_DAMAGE_TYPES = ["slashing", "piercing", "bludgeoning"] as const;
-
 /** Fallback quando o sistema não expõe a lista (CONFIG.DND5E.damageTypes). */
 export const FALLBACK_DAMAGE_TYPES = [
   "slashing",
@@ -126,6 +146,8 @@ export function linkageActive(state: PartState): boolean {
 export interface BreakLinkage {
   /** Item (ataque/habilidade) desabilitado enquanto a parte estiver quebrada. */
   disableItemId: string;
+  /** Nome do item (portabilidade de modelos entre atores). */
+  disableItemName: string;
   /** ActiveEffect próprio aplicado ao quebrar. */
   effectName: string;
   effectIcon: string;
@@ -143,6 +165,7 @@ export interface BreakLinkage {
 
 export const EMPTY_LINKAGE: BreakLinkage = {
   disableItemId: "",
+  disableItemName: "",
   effectName: "",
   effectIcon: "",
   effectDuration: null,
@@ -156,6 +179,118 @@ export const EMPTY_LINKAGE: BreakLinkage = {
 export function linkageOf(part: Pick<MonsterPart, "onBreak">): BreakLinkage {
   return { ...EMPTY_LINKAGE, ...(part.onBreak ?? {}) };
 }
+
+/** Parte de modelo (sem id/estado/HP atual — material para criar partes). */
+export interface TemplatePart {
+  name: string;
+  ac: number;
+  hpMax: number;
+  breakable: boolean;
+  severable: boolean;
+  hitzone: Record<string, number>;
+  severMax: number;
+  severTypes: string[];
+  onBreak: BreakLinkage;
+  rewards: PartReward[];
+}
+
+export interface AnatomyTemplate {
+  id: string;
+  name: string;
+  /** Presets embutidos não podem ser excluídos. */
+  builtin?: boolean;
+  /** Layout do mapa corporal ("dragonoid" padrão). */
+  map?: string;
+  parts: TemplatePart[];
+}
+
+/** Congela as partes atuais como material de modelo. */
+export function templateFromParts(
+  name: string,
+  parts: MonsterPart[],
+  map?: string,
+): AnatomyTemplate {
+  return {
+    id: foundry.utils.randomID(),
+    name,
+    ...(map ? { map } : {}),
+    parts: parts.map((p) => ({
+      name: p.name,
+      ac: p.ac,
+      hpMax: p.hp.max,
+      breakable: p.breakable,
+      severable: p.severable,
+      hitzone: { ...(p.hitzone ?? {}) },
+      severMax: p.sever?.max ?? p.hp.max,
+      severTypes: [...(p.severTypes ?? ["slashing"])],
+      onBreak: linkageOf(p),
+      rewards: rewardsOf(p).map((r) => ({ ...r })),
+    })),
+  };
+}
+
+/** Materializa um modelo em partes novas (ids frescos, HP cheio, íntegras). */
+export function partsFromTemplate(t: AnatomyTemplate, actor: Actor): MonsterPart[] {
+  return t.parts.map((tp) => {
+    const max = Math.max(1, Math.floor(tp.hpMax));
+    const part = createDefaultPart(tp.name || "Nova parte", {
+      ac: Math.max(0, Math.floor(tp.ac)),
+      hp: max,
+    });
+    part.breakable = tp.breakable !== false;
+    part.severable = tp.severable === true;
+    part.hitzone = { ...(tp.hitzone ?? {}) };
+    const severMax = Math.max(1, Math.floor(tp.severMax || max));
+    part.sever = { value: severMax, max: severMax };
+    part.severTypes = [...(tp.severTypes ?? ["slashing"])];
+    part.onBreak = { ...EMPTY_LINKAGE, ...(tp.onBreak ?? {}) };
+    part.rewards = (tp.rewards ?? []).map((r) => ({ ...r }));
+    // Item vinculado por NOME (portável entre atores); id direto como fallback.
+    const wantName = part.onBreak.disableItemName.trim();
+    const byName = wantName
+      ? [...actor.items].find((i) => i.name === wantName)
+      : undefined;
+    const byId =
+      !byName && part.onBreak.disableItemId.trim()
+        ? actor.items.get(part.onBreak.disableItemId.trim())
+        : undefined;
+    const resolved = byName ?? byId;
+    part.onBreak.disableItemId = typeof resolved?.id === "string" ? resolved.id : "";
+    part.onBreak.disableItemName = typeof resolved?.name === "string" ? resolved.name : wantName;
+    return part;
+  });
+}
+
+/** Presets embutidos (nomes via i18n, prefixo builtin-). */
+export const BUILTIN_TEMPLATES: AnatomyTemplate[] = [
+  {
+    id: "builtin-dragonoid",
+    name: "MONSTER_ANATOMY.Template.Dragonoid",
+    builtin: true,
+    map: "dragonoid",
+    parts: [
+      { name: "Cabeça", ac: 21, hpMax: 80, breakable: true, severable: false, hitzone: { bludgeoning: 1.5, piercing: 0.8 }, severMax: 80, severTypes: ["slashing"], onBreak: { ...EMPTY_LINKAGE }, rewards: [] },
+      { name: "Corpo", ac: 19, hpMax: 100, breakable: true, severable: false, hitzone: {}, severMax: 100, severTypes: ["slashing"], onBreak: { ...EMPTY_LINKAGE }, rewards: [] },
+      { name: "Asa Esquerda", ac: 20, hpMax: 60, breakable: true, severable: false, hitzone: {}, severMax: 60, severTypes: ["slashing"], onBreak: { ...EMPTY_LINKAGE }, rewards: [] },
+      { name: "Asa Direita", ac: 20, hpMax: 60, breakable: true, severable: false, hitzone: {}, severMax: 60, severTypes: ["slashing"], onBreak: { ...EMPTY_LINKAGE }, rewards: [] },
+      { name: "Cauda", ac: 22, hpMax: 70, breakable: true, severable: true, hitzone: {}, severMax: 40, severTypes: ["slashing"], onBreak: { ...EMPTY_LINKAGE, disableItemName: "Tail Swipe" }, rewards: [] },
+    ],
+  },
+  {
+    id: "builtin-humanoid",
+    name: "MONSTER_ANATOMY.Template.Humanoid",
+    builtin: true,
+    map: "humanoid",
+    parts: [
+      { name: "Cabeça", ac: 20, hpMax: 50, breakable: true, severable: false, hitzone: { bludgeoning: 1.5 }, severMax: 50, severTypes: ["slashing"], onBreak: { ...EMPTY_LINKAGE }, rewards: [] },
+      { name: "Corpo", ac: 18, hpMax: 80, breakable: true, severable: false, hitzone: {}, severMax: 80, severTypes: ["slashing"], onBreak: { ...EMPTY_LINKAGE }, rewards: [] },
+      { name: "Braço Esquerdo", ac: 18, hpMax: 40, breakable: true, severable: false, hitzone: {}, severMax: 40, severTypes: ["slashing"], onBreak: { ...EMPTY_LINKAGE }, rewards: [] },
+      { name: "Braço Direito", ac: 18, hpMax: 40, breakable: true, severable: false, hitzone: {}, severMax: 40, severTypes: ["slashing"], onBreak: { ...EMPTY_LINKAGE }, rewards: [] },
+      { name: "Perna Esquerda", ac: 18, hpMax: 50, breakable: true, severable: false, hitzone: {}, severMax: 50, severTypes: ["slashing"], onBreak: { ...EMPTY_LINKAGE }, rewards: [] },
+      { name: "Perna Direita", ac: 18, hpMax: 50, breakable: true, severable: false, hitzone: {}, severMax: 50, severTypes: ["slashing"], onBreak: { ...EMPTY_LINKAGE }, rewards: [] },
+    ],
+  },
+];
 
 /** Estados configuráveis por parte (o Mestre pode não usar todos — §12). */
 export const PART_STATE_CHOICES: Record<PartState, string> = {
@@ -193,6 +328,8 @@ export function createDefaultPart(
     hitzone: {},
     sever: { value: max, max },
     severTypes: ["slashing"],
+    rewards: [],
+    bonus: { ...EMPTY_BONUS },
   };
 }
 
@@ -228,5 +365,6 @@ export function clonePart(part: MonsterPart): MonsterPart {
     sever: part.sever ? { ...part.sever } : { value: part.hp.max, max: part.hp.max },
     severTypes: [...(part.severTypes ?? ["slashing"])],
     rewards: rewardsOf(part).map((r) => ({ ...r })),
+    bonus: bonusOf(part),
   };
 }

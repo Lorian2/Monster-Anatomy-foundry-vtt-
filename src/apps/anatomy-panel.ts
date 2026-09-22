@@ -5,7 +5,21 @@
  * quando as flags do Actor mudam (hook `updateActor`).
  */
 import type { DeepPartial } from "fvtt-types/utils";
-import { canEdit, deletePart, getParts } from "../anatomy-store.js";
+import {
+  applyTemplate,
+  canEdit,
+  deletePart,
+  deleteTemplate,
+  getMapLayout,
+  getParts,
+  getTemplates,
+  isAcSecret,
+  isGm,
+  saveTemplate,
+  setHideAc,
+  setMapLayout,
+  templateDisplayName,
+} from "../anatomy-store.js";
 import { damagePart, healPart } from "../damage.js";
 import { HOOKS } from "../constants.js";
 import { callHook, t, tf } from "../fvtt.js";
@@ -22,9 +36,10 @@ interface RowViewModel extends MonsterPart {
   linkedItemName: string;
   linkedDisabled: boolean;
   severPct: number;
+  acDisplay: string;
 }
 
-function toRow(part: MonsterPart, actor: Actor): RowViewModel {
+function toRow(part: MonsterPart, actor: Actor, maskAc: boolean): RowViewModel {
   const pct = part.hp.max > 0 ? (part.hp.value / part.hp.max) * 100 : 0;
   const linkedId = linkageOf(part).disableItemId.trim();
   const linkedItem = linkedId ? actor.items.get(linkedId) : undefined;
@@ -40,6 +55,7 @@ function toRow(part: MonsterPart, actor: Actor): RowViewModel {
     linkedItemName: linkedItem?.name ?? linkedId,
     linkedDisabled: linkedId !== "" && linkageActive(part.state),
     severPct: Math.max(0, Math.min(100, Math.round(severPct))),
+    acDisplay: maskAc ? "??" : String(part.ac),
   };
 }
 
@@ -69,6 +85,10 @@ export class AnatomyPanel extends HandlebarsApplicationMixin(ApplicationV2) {  s
       "open-summary": AnatomyPanel.onOpenSummary,
       "damage-part": AnatomyPanel.onDamagePart,
       "heal-part": AnatomyPanel.onHealPart,
+      "apply-template": AnatomyPanel.onApplyTemplate,
+      "save-template": AnatomyPanel.onSaveTemplate,
+      "delete-template": AnatomyPanel.onDeleteTemplate,
+      "toggle-hide-ac": AnatomyPanel.onToggleHideAc,
     },
   };
 
@@ -93,12 +113,19 @@ export class AnatomyPanel extends HandlebarsApplicationMixin(ApplicationV2) {  s
   ): Promise<AnatomyPanel.RenderContext> {
     const base = await super._prepareContext(options);
     const actor = this.actor;
-    const parts = getParts(actor).map((p) => toRow(p, actor));
+    const gm = isGm();
+    const secret = isAcSecret(actor);
+    const maskAc = secret && !gm;
+    const parts = getParts(actor).map((p) => toRow(p, actor, maskAc));
     return {
       ...base,
       actorName: actor.name,
       actorImg: actor.img ?? "icons/svg/mystery-man.svg",
       canEdit: canEdit(actor),
+      isGM: gm,
+      hideAc: secret,
+      mapLayout: getMapLayout(actor),
+      templates: getTemplates().map((v) => ({ id: v.id, name: templateDisplayName(v) })),
       parts,
       empty: parts.length === 0,
     };
@@ -109,6 +136,13 @@ export class AnatomyPanel extends HandlebarsApplicationMixin(ApplicationV2) {  s
     options: DeepPartial<AnatomyPanel.RenderOptions>,
   ): Promise<void> {
     await super._onRender(context, options);
+    const mapSelect = this.element.querySelector<HTMLSelectElement>("select.ma-map-select");
+    if (mapSelect) {
+      mapSelect.onchange = () => {
+        if (!canEdit(this.actor)) return;
+        void setMapLayout(this.actor, mapSelect.value);
+      };
+    }
     if (this.#updateHook === null) {
       this.#updateHook = Hooks.on("updateActor", (doc) => {
         if (doc.uuid === this.actor.uuid) void this.render();
@@ -190,6 +224,83 @@ export class AnatomyPanel extends HandlebarsApplicationMixin(ApplicationV2) {  s
     await deletePart(panel.actor, partId);
     // O hook updateActor (disparado pelo setFlag) já re-renderiza o painel.
   }
+
+  static async onApplyTemplate(this: unknown, _event: PointerEvent, _target: HTMLElement): Promise<void> {
+    const panel = this as AnatomyPanel;
+    if (!canEdit(panel.actor)) return;
+    const select = panel.element.querySelector<HTMLSelectElement>("select.ma-template-select");
+    const id = select?.value;
+    if (!id) return;
+    try {
+      const n = await applyTemplate(panel.actor, id);
+      ui.notifications?.info(tf("MONSTER_ANATOMY.Template.Applied", { count: String(n) }));
+    } catch (err) {
+      console.warn("monster-anatomy | falha ao aplicar modelo", err);
+    }
+  }
+
+  static async onSaveTemplate(this: unknown, _event: PointerEvent, _target: HTMLElement): Promise<void> {
+    const panel = this as AnatomyPanel;
+    if (!isGm()) return;
+    const parts = getParts(panel.actor);
+    if (parts.length === 0) {
+      ui.notifications?.warn(t("MONSTER_ANATOMY.Template.Empty"));
+      return;
+    }
+    const name = await promptTemplateName(panel.actor.name);
+    if (!name) return;
+    await saveTemplate(name, parts, getMapLayout(panel.actor));
+    ui.notifications?.info(tf("MONSTER_ANATOMY.Template.Saved", { name }));
+    void panel.render();
+  }
+
+  static async onDeleteTemplate(this: unknown, _event: PointerEvent, _target: HTMLElement): Promise<void> {
+    const panel = this as AnatomyPanel;
+    if (!isGm()) return;
+    const select = panel.element.querySelector<HTMLSelectElement>("select.ma-template-select");
+    const id = select?.value;
+    if (!id) return;
+    const ok = await deleteTemplate(id);
+    if (!ok) {
+      ui.notifications?.warn(t("MONSTER_ANATOMY.Template.Protected"));
+      return;
+    }
+    ui.notifications?.info(t("MONSTER_ANATOMY.Template.Deleted"));
+    void panel.render();
+  }
+
+  static async onToggleHideAc(this: unknown, _event: PointerEvent, _target: HTMLElement): Promise<void> {
+    const panel = this as AnatomyPanel;
+    if (!isGm()) return;
+    await setHideAc(panel.actor, !isAcSecret(panel.actor));
+    // setFlag dispara updateActor → re-render automático.
+  }
+}
+
+/** Prompt de nome via DialogV2.wait com callback lendo o input. */
+async function promptTemplateName(fallback: string): Promise<string | null> {
+  const result: unknown = await foundry.applications.api.DialogV2.wait({
+    window: { title: t("MONSTER_ANATOMY.Template.NameTitle") },
+    content:
+      `<div class="form-group"><label>${t("MONSTER_ANATOMY.Template.NamePrompt")}</label>` +
+      `<input name="templateName" type="text" value="${fallback}" maxlength="80" /></div>`,
+    buttons: [
+      {
+        action: "save",
+        label: t("MONSTER_ANATOMY.Editor.Save"),
+        default: true,
+        callback: (_event, button) => {
+          const input = button.form?.querySelector<HTMLInputElement>(
+            'input[name="templateName"]',
+          );
+          return input?.value?.trim() ?? "";
+        },
+      },
+    ],
+    modal: true,
+  });
+  if (typeof result !== "string" || result.trim() === "") return null;
+  return result.trim();
 }
 
 export namespace AnatomyPanel {
@@ -199,6 +310,10 @@ export namespace AnatomyPanel {
     actorName: string;
     actorImg: string;
     canEdit: boolean;
+    isGM: boolean;
+    hideAc: boolean;
+    mapLayout: string;
+    templates: Array<{ id: string; name: string }>;
     parts: RowViewModel[];
     empty: boolean;
   }

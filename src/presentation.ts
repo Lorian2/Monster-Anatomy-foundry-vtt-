@@ -232,8 +232,42 @@ async function sendBreakChat(actor: Actor, part: MonsterPart, info: BreakInfo): 
   });
 }
 
-async function sendSeverChat(actor: Actor, part: MonsterPart, info: BreakInfo): Promise<void> {
-  const attackerLine = info.attacker
+/** Nota de dano roteado (fecha o loop: confirma aplicação + parcela global). */
+export async function sendRoutedNote(
+  actor: Actor,
+  partName: string,
+  applied: number,
+  globalApplied: number,
+  bonusPct = 0,
+  bonusFlat = 0,
+): Promise<void> {
+  let show = false;
+  try {
+    show = getSetting("attackNotes") === true;
+  } catch {
+    return;
+  }
+  if (!show) return;
+  const bits: string[] = [];
+  if (bonusPct > 0) bits.push(`+${bonusPct}%`);
+  if (bonusFlat > 0) bits.push(`+${bonusFlat}`);
+  const bonusMark =
+    bits.length > 0 ? ` ${tf("MONSTER_ANATOMY.Routed.Bonus", { mark: bits.join(" ") })}` : "";
+  await ChatMessage.create({
+    speaker: ChatMessage.getSpeaker({ actor }),
+    content:
+      `<div class="monster-anatomy-chat ma-routed"><p>${esc(
+        tf("MONSTER_ANATOMY.Routed.Text", {
+          amount: String(applied),
+          part: partName,
+          actor: actor.name,
+          global: String(globalApplied),
+        }),
+      )}${esc(bonusMark)}</p></div>`,
+  });
+}
+
+async function sendSeverChat(actor: Actor, part: MonsterPart, info: BreakInfo): Promise<void> {  const attackerLine = info.attacker
     ? `<p class="ma-chat-attacker">${esc(
         tf("MONSTER_ANATOMY.Chat.SeverBy", {
           attacker: info.attacker,

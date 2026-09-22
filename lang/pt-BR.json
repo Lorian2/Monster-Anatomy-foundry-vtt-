@@ -6,6 +6,12 @@
       "AddPart": "Adicionar parte",
       "OpenTracker": "Abrir tracker de combate",
       "OpenSummary": "Abrir resultado da batalha",
+      "ApplyTemplate": "Aplicar modelo de anatomia",
+      "SaveTemplate": "Salvar anatomia como modelo",
+      "DeleteTemplate": "Excluir modelo selecionado",
+      "HideAc": "Esconder CA das partes (secreta)",
+      "ShowAc": "Revelar CA das partes",
+      "MapLayout": "Layout do mapa corporal",
       "Empty": "Nenhuma parte anatômica ainda. Adicione a primeira.",
       "AcLabel": "Classe de Armadura da parte",
       "HpLabel": "Pontos de vida da parte",
@@ -27,6 +33,12 @@
       "HpMax": "HP máximo",
       "Breakable": "Quebrável",
       "Severable": "Cortável",
+      "BonusMode": "Bônus de foco (rompida)",
+      "BonusValue": "Valor do bônus",
+      "BonusInherit": "Config global",
+      "BonusOff": "Desligado",
+      "BonusPercent": "Percentual (%)",
+      "BonusFlat": "Fixo",
       "SeverHp": "HP de corte",
       "SeverTypes": "Tipos de dano cortante",
       "Hitzones": "Multiplicadores de dano (hitzones)",
@@ -80,6 +92,10 @@
       "ConditionName": "{status} ({part})",
       "SeveredName": "🗡️ {part} cortada"
     },
+    "Routed": {
+      "Text": "➡️ {amount} → {part} ({actor}) · global −{global}",
+      "Bonus": "({mark} parte rompida)"
+    },
     "Reward": {
       "Break": "Ao quebrar",
       "Sever": "Ao cortar",
@@ -108,6 +124,15 @@
       "Title": "Escolher parte do alvo",
       "Prompt": "Onde o ataque atinge {actor}?",
       "Normal": "Ataque normal (sem parte)",
+      "MapHint": "Clique numa região do corpo e depois na parte.",
+      "ZoneHint": "Agora clique na parte.",
+      "ZoneEmpty": "Nenhuma parte aqui — escolha outra região.",
+      "OtherParts": "Outras partes",
+      "ZoneHead": "Cabeça",
+      "ZoneTorso": "Corpo",
+      "ZoneLeft": "Esquerda",
+      "ZoneRight": "Direita",
+      "ZoneTail": "Cauda",
       "SentToGM": "Dano na parte enviado ao Mestre ({part}).",
       "NoGM": "Sem Mestre online para aplicar dano na parte."
     },
@@ -115,6 +140,18 @@
       "Hit": "⚔️ {attacker} → {part} ({actor}): {total} vs CA {ac} — ACERTO",
       "Miss": "⚔️ {attacker} → {part} ({actor}): {total} vs CA {ac} — ERROU",
       "CritSuffix": "(crítico!)"
+    },
+    "Template": {
+      "BuiltinTag": "(preset)",
+      "Dragonoid": "Draconídeo",
+      "Humanoid": "Humanoide",
+      "NameTitle": "Salvar modelo",
+      "NamePrompt": "Nome do modelo:",
+      "Empty": "Sem partes para salvar como modelo.",
+      "Saved": "Modelo salvo: {name}",
+      "Deleted": "Modelo excluído.",
+      "Protected": "Presets embutidos não podem ser excluídos.",
+      "Applied": "{count} partes aplicadas."
     },
     "Settings": {
       "ShowHeaderButton": {
@@ -139,6 +176,10 @@
       "DamagePercent": {
         "Name": "Percentual de dano global",
         "Hint": "Usado só no modelo Percentual: % do dano da parte aplicado ao global."
+      },
+      "BrokenBonus": {
+        "Name": "Bônus vs partes rompidas (%)",
+        "Hint": "Dano extra ao atingir parte já quebrada/cortada (0 = desligado)."
       },
       "ShowAnnouncement": {
         "Name": "Anúncios na tela",
@@ -206,6 +247,10 @@
       "ScreenShake": {
         "Name": "Tremor de tela",
         "Hint": "Treme o canvas do jogo ao quebrar/cortar."
+      },
+      "TemplatesJson": {
+        "Name": "Modelos de anatomia (interno)",
+        "Hint": "Modelos de anatomia do mundo, gerenciados no painel de anatomia."
       }
     },
     "Errors": {

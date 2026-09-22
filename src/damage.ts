@@ -11,6 +11,8 @@ import { getParts, updatePart } from "./anatomy-store.js";
 import { HOOKS } from "./constants.js";
 import { callHook, getSetting } from "./fvtt.js";
 import {
+  bonusOf,
+  linkageActive,
   multiplierFor,
   severActive,
   type DamageModel,
@@ -44,6 +46,12 @@ export interface DamageResult {
   severed: boolean;
   /** Dano aplicado ao HP global (0 no modelo independente). */
   globalApplied: number;
+  /** Dano aplicado ao HP da parte (após hitzones). */
+  applied: number;
+  /** % de bônus aplicado (parte já rompida). */
+  bonus: number;
+  /** Bônus fixo aplicado (parte já rompida). */
+  bonusFlat: number;
 }
 
 /** Aplica dano (componente único, opcionalmente tipado). */
@@ -80,6 +88,24 @@ export async function damagePartDetailed(
   breakTotal = Math.floor(breakTotal);
 
   const prevState = part.state;
+
+  // Foco em parte rompida: bônus por parte (modo) ou global (herdar).
+  const cfg = bonusOf(part);
+  let bonus = 0;
+  let bonusFlat = 0;
+  if (linkageActive(prevState)) {
+    if (cfg.mode === "percent") bonus = Math.max(0, Math.min(200, cfg.value));
+    else if (cfg.mode === "flat") bonusFlat = Math.max(0, Math.floor(cfg.value));
+    else if (cfg.mode !== "off") {
+      bonus = Math.max(0, Math.min(200, Number(getSetting("brokenBonus") ?? 0)));
+    }
+  }
+  if (bonus > 0 || bonusFlat > 0) {
+    const mult = 1 + bonus / 100;
+    breakTotal = Math.floor(breakTotal * mult) + bonusFlat;
+    severTotal = Math.floor(severTotal * mult) + bonusFlat;
+  }
+
   const value = Math.max(0, part.hp.value - breakTotal);
   let state = prevState;
   if (value <= 0 && part.breakable) state = "broken";
@@ -115,7 +141,7 @@ export async function damagePartDetailed(
       callHook(HOOKS.PART_SEVER, actor, updated, severTotal, opts.attacker ?? null);
     }
   }
-  return { part: updated, broke, severed, globalApplied };
+  return { part: updated, broke, severed, globalApplied, applied: breakTotal, bonus, bonusFlat };
 }
 
 /** Cura HP da parte (sem fluxo de quebra; restaura estado e corte ao curar tudo). */

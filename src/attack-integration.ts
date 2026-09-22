@@ -5,7 +5,8 @@
  * A resolução normal do sistema (bônus, vantagem, crítico, dados) é preservada.
  */
 import { damagePartDetailed, type DamageComponent } from "./damage.js";
-import { getParts } from "./anatomy-store.js";
+import { sendRoutedNote } from "./presentation.js";
+import { getParts, isAcSecret } from "./anatomy-store.js";
 import { disablerPart, disabledItemIds } from "./break-actions.js";
 import { emitApply, emitPresent, canApplyLocally, gmOnline } from "./sockets.js";
 import { MODULE_ID } from "./constants.js";
@@ -103,13 +104,15 @@ async function onAttackRolled(args: unknown[]): Promise<void> {
   if (getSetting("attackNotes")) {
     const key = hit ? "MONSTER_ANATOMY.Attack.Hit" : "MONSTER_ANATOMY.Attack.Miss";
     const suffix = crit && hit ? ` ${t("MONSTER_ANATOMY.Attack.CritSuffix")}` : "";
+    // CA secreta: máscara para todos (o Mestre vê o valor real no painel).
+    const acShown = isAcSecret(actor) ? "??" : String(part.ac);
     const content =
       `<div class="monster-anatomy-chat ma-attack"><p>${tf(key, {
         attacker,
         part: part.name,
         actor: actor.name,
         total: String(total),
-        ac: String(part.ac),
+        ac: acShown,
       })}${suffix}</p></div>`;
     const speaker = attackerActor
       ? ChatMessage.getSpeaker({ actor: attackerActor })
@@ -138,6 +141,7 @@ async function onDamageRolled(args: unknown[]): Promise<void> {
       attacker: hit.attacker,
       attackerUuid: hit.attackerUuid,
     });
+    await sendRoutedNote(actor, partName, result.applied, result.globalApplied, result.bonus, result.bonusFlat);
     if (result.broke) emitPresent(actor.uuid, hit.partId, "break");
     if (result.severed) emitPresent(actor.uuid, hit.partId, "sever");
   } else if (gmOnline()) {

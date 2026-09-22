@@ -63,18 +63,26 @@ await game.modules.get("monster-anatomy").api.healPart(actor, "COLE_O_ID", 10);
 ```
 
 Modelo de dano parte × global (Configurações do módulo): independente, compartilhado
-(padrão) ou percentual.
+(padrão) ou percentual. **Bônus vs rompidas** (padrão 50%): atingir parte já
+quebrada/cortada multiplica o dano (ruptura, corte e global junto) — foca o
+ponto fraco para terminar o monstro. A nota de dano marca `(+50% parte rompida)`.
+Cada parte pode sobrescrever no editor (**Bônus de foco**: global, desligado,
+percentual ou fixo).
 
 ## Combate: mirar, atacar, romper
 
 Fluxo (dnd5e):
 
-1. **Mire** o token do monstro (alvo) → o seletor pergunta qual parte atacar
-   (ou ataque normal). A mira vale até trocar de alvo.
+1. **Mire** o token do monstro (alvo) → abre o **mapa corporal**: clique na
+   região e depois na parte (ou ataque normal). O desenho acompanha a anatomia
+   (draconídeo/humanoide, trocável no painel); partes fora do mapa aparecem em
+   lista. A mira vale até trocar de alvo.
 2. **Role o ataque** normalmente na ficha → o módulo avalia contra a **CA da parte**
    e publica ACERTO/ERROU no chat (crítico no 20 natural sempre acerta).
 3. **Role o dano** normalmente → o módulo aplica sozinho na parte (e no global,
-   conforme o modelo) e dispara o Part Break ao zerar.
+   conforme o modelo), publica a nota do roteamento (`➡️ X → parte · global −Y`)
+   e dispara o Part Break ao zerar. Não clique no botão de dano padrão do card
+   para esse ataque (duplicaria o global) — a nota confirma o que já foi aplicado.
 
 Multiplayer: o atacante sem permissão no monstro envia o dano ao GM via socket;
 o GM aplica e todos veem o anúncio juntos. Sem GM online, o jogador é avisado.
@@ -82,7 +90,6 @@ o GM aplica e todos veem o anúncio juntos. Sem GM online, o jogador é avisado.
 > Para ataques em área/testes sem rolagem de ataque, use as macros de dano manual.
 
 ## Ao quebrar: vinculações (0.2)
-
 No editor da parte, seção **Ao quebrar**:
 
 - **Desabilitar item/ataque** — ex.: Cauda → Tail Swipe. Enquanto quebrada, usar o
@@ -95,6 +102,15 @@ No editor da parte, seção **Ao quebrar**:
 
 Reparar = curar até o máximo (ou editar o estado para fora de quebrado):
 efeitos/condição saem sozinhos, atributo volta, item reabilita.
+
+## Modelos de anatomia e CA secreta
+
+- **Modelos** (painel, linha de presets): **Draconídeo** e **Humanoide** embutidos
+  + customs salvos da anatomia atual (só GM salva/exclui; presets protegidos).
+  Aplicar anexa partes novas (itens vinculados resolvidos por nome no destino).
+  API: `api.getTemplates()` / `api.applyTemplate(actor, id)`.
+- **CA secreta** (olho no painel, só GM): jogadores veem `??` no painel, mapa,
+  tracker e notas de ataque; o Mestre vê tudo. Ideal para chefes.
 
 ## Hitzones e severing (0.3)
 
@@ -215,7 +231,11 @@ MIT — ver `LICENSE`. Fontes display em `assets/fonts` sob SIL OFL 1.1 (ver `OF
 3. `npm run build` e confira `dist/` (manifest + scripts + styles + templates + lang)
 4. Comprima o **conteúdo** de `dist/` em `monster-anatomy.zip`
    (`Compress-Archive -Path dist/* -DestinationPath monster-anatomy.zip -Force`)
-5. No GitHub: tag `vX.Y.Z` + anexe `monster-anatomy.zip` e o `module.json` do `dist/`
+5. **Arquive a versão anterior**: copie o zip vigente para
+   `releases/v<anterior>/monster-anatomy.zip` e escreva
+   `releases/v<anterior>/NOTAS.md` com o resumo do que ela trouxe e a
+   comparação com a versão antes dela (convenção do projeto — ver `releases/`)
+6. No GitHub: tag `vX.Y.Z` + anexe `monster-anatomy.zip` e o `module.json` do `dist/`
    (o campo `manifest` aponta para `.../releases/latest/download/module.json` e
    `download` para `.../releases/download/vX.Y.Z/monster-anatomy.zip`)
-6. Opcional: submeta em foundryvtt.com/packages para instalação em 1 clique
+7. Opcional: submeta em foundryvtt.com/packages para instalação em 1 clique

@@ -1,0 +1,69 @@
+<div class="ma-targetmap">
+  <p class="ma-editing-for">{{actorName}}</p>
+  {{#if (eq layout "humanoid")}}
+  <svg class="ma-map" viewBox="0 0 220 280" role="img" aria-label="{{actorName}}">
+    <g class="ma-zone {{lookup zoneClassMap "left"}}{{#if (lookup zoneEmpty "left")}} is-empty{{/if}}" data-zone="left">
+      <rect x="50" y="62" width="24" height="82" rx="11" />
+      <rect x="82" y="152" width="24" height="96" rx="11" />
+      <text x="62" y="112">{{lookup zoneLabelMap "left"}}</text>
+    </g>
+    <g class="ma-zone {{lookup zoneClassMap "right"}}{{#if (lookup zoneEmpty "right")}} is-empty{{/if}}" data-zone="right">
+      <rect x="146" y="62" width="24" height="82" rx="11" />
+      <rect x="114" y="152" width="24" height="96" rx="11" />
+      <text x="158" y="112">{{lookup zoneLabelMap "right"}}</text>
+    </g>
+    <g class="ma-zone {{lookup zoneClassMap "tail"}}{{#if (lookup zoneEmpty "tail")}} is-empty{{/if}}" data-zone="tail">
+      <path d="M98,250 L122,250 L115,272 L110,278 L105,272 Z" />
+      <text x="110" y="266">{{lookup zoneLabelMap "tail"}}</text>
+    </g>
+    <g class="ma-zone {{lookup zoneClassMap "torso"}}{{#if (lookup zoneEmpty "torso")}} is-empty{{/if}}" data-zone="torso">
+      <rect x="82" y="58" width="56" height="92" rx="12" />
+      <text x="110" y="108">{{lookup zoneLabelMap "torso"}}</text>
+    </g>
+    <g class="ma-zone {{lookup zoneClassMap "head"}}{{#if (lookup zoneEmpty "head")}} is-empty{{/if}}" data-zone="head">
+      <circle cx="110" cy="30" r="22" />
+      <text x="110" y="34">{{lookup zoneLabelMap "head"}}</text>
+    </g>
+  </svg>
+  {{else}}
+  <svg class="ma-map" viewBox="0 0 220 280" role="img" aria-label="{{actorName}}">
+    <g class="ma-zone {{lookup zoneClassMap "left"}}{{#if (lookup zoneEmpty "left")}} is-empty{{/if}}" data-zone="left">
+      <path d="M72,92 C34,70 14,112 22,162 C42,150 62,152 74,172 Z" />
+      <text x="42" y="128">{{lookup zoneLabelMap "left"}}</text>
+    </g>
+    <g class="ma-zone {{lookup zoneClassMap "right"}}{{#if (lookup zoneEmpty "right")}} is-empty{{/if}}" data-zone="right">
+      <path d="M148,92 C186,70 206,112 198,162 C178,150 158,152 146,172 Z" />
+      <text x="178" y="128">{{lookup zoneLabelMap "right"}}</text>
+    </g>
+    <g class="ma-zone {{lookup zoneClassMap "tail"}}{{#if (lookup zoneEmpty "tail")}} is-empty{{/if}}" data-zone="tail">
+      <path d="M96,186 L124,186 L118,260 L110,270 L102,260 Z" />
+      <text x="110" y="240">{{lookup zoneLabelMap "tail"}}</text>
+    </g>
+    <g class="ma-zone {{lookup zoneClassMap "torso"}}{{#if (lookup zoneEmpty "torso")}} is-empty{{/if}}" data-zone="torso">
+      <ellipse cx="110" cy="130" rx="42" ry="62" />
+      <text x="110" y="134">{{lookup zoneLabelMap "torso"}}</text>
+    </g>
+    <g class="ma-zone {{lookup zoneClassMap "head"}}{{#if (lookup zoneEmpty "head")}} is-empty{{/if}}" data-zone="head">
+      <circle cx="110" cy="34" r="24" />
+      <text x="110" y="38">{{lookup zoneLabelMap "head"}}</text>
+    </g>
+  </svg>
+  {{/if}}
+  <p class="ma-zonehint" data-zonehint>{{localize "MONSTER_ANATOMY.Target.MapHint"}}</p>
+  <div class="ma-zoneparts" data-zoneparts></div>
+  {{#if others.length}}
+  <div class="ma-field">
+    <span class="ma-label">{{localize "MONSTER_ANATOMY.Target.OtherParts"}}</span>
+    <div class="ma-zoneparts">
+      {{#each others}}
+      <button type="button" data-pick-part="{{id}}">{{display}}</button>
+      {{/each}}
+    </div>
+  </div>
+  {{/if}}
+  <footer class="ma-form-footer">
+    <button type="button" data-normal>
+      <span>{{localize "MONSTER_ANATOMY.Target.Normal"}}</span>
+    </button>
+  </footer>
+</div>

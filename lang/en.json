@@ -6,6 +6,12 @@
       "AddPart": "Add part",
       "OpenTracker": "Open combat tracker",
       "OpenSummary": "Open battle results",
+      "ApplyTemplate": "Apply anatomy template",
+      "SaveTemplate": "Save anatomy as template",
+      "DeleteTemplate": "Delete selected template",
+      "HideAc": "Hide part AC (secret)",
+      "ShowAc": "Reveal part AC",
+      "MapLayout": "Body map layout",
       "Empty": "No anatomical parts yet. Add the first one.",
       "AcLabel": "Part Armor Class",
       "HpLabel": "Part hit points",
@@ -27,6 +33,12 @@
       "HpMax": "Max HP",
       "Breakable": "Breakable",
       "Severable": "Severable",
+      "BonusMode": "Focus bonus (broken)",
+      "BonusValue": "Bonus value",
+      "BonusInherit": "Global setting",
+      "BonusOff": "Off",
+      "BonusPercent": "Percent (%)",
+      "BonusFlat": "Flat",
       "SeverHp": "Sever HP",
       "SeverTypes": "Cutting damage types",
       "Hitzones": "Damage multipliers (hitzones)",
@@ -79,6 +91,10 @@
       "ConditionName": "{status} ({part})",
       "SeveredName": "🗡️ {part} severed"
     },
+    "Routed": {
+      "Text": "➡️ {amount} → {part} ({actor}) · global −{global}",
+      "Bonus": "({mark} broken part)"
+    },
     "Reward": {
       "Break": "On break",
       "Sever": "On sever",
@@ -107,6 +123,15 @@
       "Title": "Choose target part",
       "Prompt": "Where does the attack land on {actor}?",
       "Normal": "Normal attack (no part)",
+      "MapHint": "Click a body region, then the part.",
+      "ZoneHint": "Now click the part.",
+      "ZoneEmpty": "No parts here — pick another region.",
+      "OtherParts": "Other parts",
+      "ZoneHead": "Head",
+      "ZoneTorso": "Body",
+      "ZoneLeft": "Left",
+      "ZoneRight": "Right",
+      "ZoneTail": "Tail",
       "SentToGM": "Part damage sent to the GM ({part}).",
       "NoGM": "No GM online to apply part damage."
     },
@@ -114,6 +139,18 @@
       "Hit": "⚔️ {attacker} → {part} ({actor}): {total} vs AC {ac} — HIT",
       "Miss": "⚔️ {attacker} → {part} ({actor}): {total} vs AC {ac} — MISS",
       "CritSuffix": "(critical!)"
+    },
+    "Template": {
+      "BuiltinTag": "(preset)",
+      "Dragonoid": "Dragonoid",
+      "Humanoid": "Humanoid",
+      "NameTitle": "Save template",
+      "NamePrompt": "Template name:",
+      "Empty": "No parts to save as template.",
+      "Saved": "Template saved: {name}",
+      "Deleted": "Template deleted.",
+      "Protected": "Built-in templates cannot be deleted.",
+      "Applied": "{count} parts applied."
     },
     "Settings": {
       "ShowHeaderButton": {
@@ -138,6 +175,10 @@
       "DamagePercent": {
         "Name": "Global damage percent",
         "Hint": "Used only by the Percent model: % of part damage applied globally."
+      },
+      "BrokenBonus": {
+        "Name": "Bonus vs broken parts (%)",
+        "Hint": "Extra damage when hitting an already broken/severed part (0 = off)."
       },
       "ShowAnnouncement": {
         "Name": "Screen announcements",
@@ -205,6 +246,10 @@
       "ScreenShake": {
         "Name": "Screen shake",
         "Hint": "Shake the game canvas on break/sever."
+      },
+      "TemplatesJson": {
+        "Name": "Anatomy templates (internal)",
+        "Hint": "World anatomy templates managed from the anatomy panel."
       }
     },
     "Errors": {

@@ -22,6 +22,22 @@
   </div>
 
   <div class="ma-row">
+    <div class="ma-field">
+      <label for="ma-bonusmode">{{localize "MONSTER_ANATOMY.Editor.BonusMode"}}</label>
+      <select id="ma-bonusmode" name="bonusMode">
+        <option value="inherit" {{#if (eq part.bonus.mode "inherit")}}selected{{/if}}>{{localize "MONSTER_ANATOMY.Editor.BonusInherit"}}</option>
+        <option value="off" {{#if (eq part.bonus.mode "off")}}selected{{/if}}>{{localize "MONSTER_ANATOMY.Editor.BonusOff"}}</option>
+        <option value="percent" {{#if (eq part.bonus.mode "percent")}}selected{{/if}}>{{localize "MONSTER_ANATOMY.Editor.BonusPercent"}}</option>
+        <option value="flat" {{#if (eq part.bonus.mode "flat")}}selected{{/if}}>{{localize "MONSTER_ANATOMY.Editor.BonusFlat"}}</option>
+      </select>
+    </div>
+    <div class="ma-field">
+      <label for="ma-bonusvalue">{{localize "MONSTER_ANATOMY.Editor.BonusValue"}}</label>
+      <input id="ma-bonusvalue" name="bonusValue" type="number" min="0" step="1" value="{{part.bonus.value}}" />
+    </div>
+  </div>
+
+  <div class="ma-row">
     <label class="ma-check">
       <input name="breakable" type="checkbox" {{checked part.breakable}} />
       {{localize "MONSTER_ANATOMY.Editor.Breakable"}}
