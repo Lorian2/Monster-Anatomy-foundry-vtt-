@@ -71,9 +71,19 @@ export function burstParticles(sever: boolean): void {
   ctx.scale(dpr, dpr);
   const cx = window.innerWidth / 2;
   const cy = window.innerHeight / 2 - window.innerHeight * 0.06;
-  const palette = sever
-    ? ["#9adcff", "#e8f7ff", "#4da6d8", "#0e4d64", "#ffffff"]
-    : ["#ff3b3b", "#ffb454", "#fff3d6", "#7a1a00", "#1a1a1a"];
+  let celestial = false;
+  try {
+    celestial = String(getSetting("announceTheme") ?? "celestial") === "celestial";
+  } catch {
+    /* ignora */
+  }
+  const palette = celestial
+    ? sever
+      ? ["#00f0ff", "#e8fdff", "#4dd0e0", "#00606a", "#ffffff"]
+      : ["#f4d068", "#fffdf5", "#ffe9a3", "#b88a1e", "#ff2a54"]
+    : sever
+      ? ["#9adcff", "#e8f7ff", "#4da6d8", "#0e4d64", "#ffffff"]
+      : ["#ff3b3b", "#ffb454", "#fff3d6", "#7a1a00", "#1a1a1a"];
   const shards: Shard[] = [];
   const count = 90;
   for (let n = 0; n < count; n++) {

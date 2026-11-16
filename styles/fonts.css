@@ -23,3 +23,44 @@
   font-display: swap;
   src: url("../assets/fonts/Bungee-latin.woff2") format("woff2");
 }
+
+/* Identidade celestial (Cinzel + Rajdhani, SIL OFL 1.1 — ver OFL-*.txt). */
+@font-face {
+  font-family: "MA Cinzel";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("../assets/fonts/cinzel-latin-400.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "MA Cinzel";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("../assets/fonts/cinzel-latin-700.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "MA Cinzel Decorative";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("../assets/fonts/cinzel-decorative-latin-700.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "MA Rajdhani";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("../assets/fonts/rajdhani-latin-500.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "MA Rajdhani";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("../assets/fonts/rajdhani-latin-700.woff2") format("woff2");
+}

@@ -4,7 +4,7 @@ Sistema de anatomia, partes destrutíveis e feedback visual para **Foundry VTT v
 Foco inicial: **D&D 5e**. Inspirado em *Monster Hunter* (partes/hitzones/part break)
 com direção visual de impacto (Persona/JRPG).
 
-> Status: **1.3.0** — release pública (Foundry v14 + dnd5e). Ver `CHANGELOG.md`.
+> Status: **1.4.0** — release pública (Foundry v14 + dnd5e). Ver `CHANGELOG.md`.
 
 ## Requisitos
 

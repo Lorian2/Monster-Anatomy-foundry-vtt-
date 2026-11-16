@@ -2,6 +2,20 @@
 
 Todas as mudanças notáveis deste módulo. Formato inspirado no Keep a Changelog.
 
+## [1.4.0] — 2026-11-16
+
+### Identidade celestial
+- Visual unificado com os módulos da campanha: vazio e ouro (Aethelgard/Apoteose), tipografia
+  Cinzel + Rajdhani e cortes angulares/letterbox do TurnosP (fontes embutidas, SIL OFL)
+- Janelas (painel, seletor, tracker, editor, resumo), plaquinha de mira e cartões de chat redesenhados
+- Barras de vida segmentadas, selos em paralelogramo e cores por estado (ouro/âmbar/carmesim/ciano)
+- Novo tema de anúncio **Celestial** (padrão): faixa de vazio com filetes, letterbox, kicker em
+  Cinzel Decorative; ouro na quebra, ciano no corte, carmesim nas fases; partículas e flash combinando.
+  Os demais temas continuam disponíveis nas configurações (quem já escolheu um mantém a escolha)
+
+### Correções
+- Barra de vida dos cartões do seletor de parte colapsava (altura 0) e ficava invisível
+
 ## [1.3.0] — 2026-11-16
 
 ### Fluxo do jogador (mais simples)

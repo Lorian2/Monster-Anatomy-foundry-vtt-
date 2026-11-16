@@ -1366,6 +1366,404 @@
     border-radius: 6px;
     object-fit: cover;
   }
+
+  /* ======================================================================
+     Identidade celestial (1.4): vazio + ouro (Aethelgard/Apoteose) com os
+     cortes angulares e o contraste do TurnosP.
+     ====================================================================== */
+  .monster-anatomy {
+    --ma-void: #0b0d17;
+    --ma-abyss: #05060a;
+    --ma-gold: #f4d068;
+    --ma-gold-dim: rgb(244 208 104 / 35%);
+    --ma-gold-faint: rgb(244 208 104 / 14%);
+    --ma-white: #fffdf5;
+    --ma-cyan: #00f0ff;
+    --ma-crimson: #ff2a54;
+    --ma-mute: #a9a7c0;
+    --ma-serif: "MA Cinzel", "Cinzel", "Times New Roman", serif;
+    --ma-display: "MA Cinzel Decorative", "MA Cinzel", serif;
+    --ma-sans: "MA Rajdhani", "Rajdhani", "Segoe UI", sans-serif;
+    --ma-ok: #f4d068;
+    --ma-warn: #ff9f43;
+    --ma-bad: #ff2a54;
+    --ma-cool: #00f0ff;
+    --ma-card: linear-gradient(100deg, rgb(24 28 52 / 92%), rgb(11 13 23 / 92%));
+    --ma-track: #05060a;
+    --ma-cut: 12px;
+    --ma-radius: 0;
+    color-scheme: dark;
+  }
+
+  /* Janelas */
+  .monster-anatomy.application {
+    border: 1px solid var(--ma-gold-dim);
+    box-shadow: 0 0 30px -10px rgb(244 208 104 / 35%), 0 12px 40px rgb(0 0 0 / 65%);
+  }
+  .monster-anatomy.application .window-header {
+    background:
+      linear-gradient(90deg, transparent, rgb(244 208 104 / 9%) 50%, transparent),
+      linear-gradient(180deg, #1b1f3a, #0b0d17);
+    border-bottom: 1px solid var(--ma-gold-dim);
+    color: var(--ma-white);
+  }
+  .monster-anatomy.application .window-title {
+    font-family: var(--ma-serif);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ma-gold);
+    text-shadow: 0 0 12px rgb(244 208 104 / 40%);
+  }
+  .monster-anatomy.application .window-header .window-icon,
+  .monster-anatomy.application .window-header .header-control { color: var(--ma-gold); }
+  .monster-anatomy.application .window-content {
+    color: var(--ma-white);
+    font-family: var(--ma-sans);
+    font-size: 15px;
+    background:
+      radial-gradient(120% 60% at 0% 0%, rgb(60 80 160 / 22%), transparent 60%),
+      radial-gradient(90% 50% at 100% 100%, rgb(244 208 104 / 7%), transparent 60%),
+      var(--ma-void);
+  }
+
+  /* Cabeçalho do painel */
+  .monster-anatomy .ma-header {
+    border-bottom: 0;
+    padding-bottom: 0.7rem;
+    background: linear-gradient(90deg, var(--ma-gold-dim), transparent 70%) bottom / 100% 1px no-repeat;
+  }
+  .monster-anatomy .ma-actor-img {
+    border: 1px solid var(--ma-gold);
+    clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 0 100%);
+  }
+  .monster-anatomy .ma-actor-name {
+    font-family: var(--ma-serif);
+    font-weight: 700;
+    font-size: 17px;
+    letter-spacing: 0.03em;
+    color: var(--ma-white);
+    text-shadow: 0 0 14px rgb(244 208 104 / 28%);
+  }
+  .monster-anatomy .ma-phase {
+    font-family: var(--ma-sans);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    border: 0;
+    border-radius: 0;
+    color: #fff;
+    background: linear-gradient(100deg, var(--ma-crimson), #8d0f2c);
+    clip-path: polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%);
+    padding: 0.12rem 0.9rem;
+  }
+
+  /* Botões */
+  .monster-anatomy .ma-add {
+    font-family: var(--ma-sans);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border: 0;
+    color: var(--ma-abyss);
+    background: linear-gradient(180deg, #ffe48a, #d4a63c);
+    clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
+  }
+  .monster-anatomy .ma-add:hover { filter: brightness(1.12); }
+  .monster-anatomy .ma-icon-btn,
+  .monster-anatomy .ma-templates button,
+  .monster-anatomy .ma-part-actions button {
+    border: 1px solid var(--ma-gold-dim);
+    border-radius: 0;
+    background: rgb(244 208 104 / 6%);
+    color: var(--ma-gold);
+  }
+  .monster-anatomy .ma-icon-btn:hover,
+  .monster-anatomy .ma-templates button:hover,
+  .monster-anatomy .ma-part-actions button:hover {
+    background: rgb(244 208 104 / 16%);
+    border-color: var(--ma-gold);
+    color: var(--ma-white);
+  }
+  .monster-anatomy .ma-tools {
+    border: 1px solid var(--ma-gold-faint);
+    border-radius: 0;
+    background: rgb(5 6 10 / 45%);
+  }
+  .monster-anatomy .ma-tools > summary {
+    font-family: var(--ma-sans);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ma-gold);
+  }
+
+  /* Cartões: canto cortado + filete lateral por estado */
+  .monster-anatomy .ma-part,
+  .monster-anatomy .ma-partcard,
+  .monster-anatomy .ma-tracker-row {
+    border: 1px solid var(--ma-gold-faint);
+    border-left: 3px solid var(--ma-ok);
+    border-radius: 0;
+    background: var(--ma-card);
+    clip-path: polygon(0 0, calc(100% - var(--ma-cut)) 0, 100% var(--ma-cut), 100% 100%, 0 100%);
+  }
+  .monster-anatomy .ma-state-damaged { border-left-color: var(--ma-warn); }
+  .monster-anatomy .ma-state-broken,
+  .monster-anatomy .ma-state-destroyed { border-left-color: var(--ma-bad); }
+  .monster-anatomy .ma-state-severed { border-left-color: var(--ma-cool); }
+  .monster-anatomy .ma-partcard {
+    transition: background 0.15s, border-color 0.15s, transform 0.12s;
+  }
+  .monster-anatomy .ma-partcard:hover,
+  .monster-anatomy .ma-partcard:focus-visible {
+    transform: translateX(4px);
+    box-shadow: none;
+    background: linear-gradient(100deg, rgb(60 70 130 / 70%), rgb(20 24 44 / 95%));
+    border-color: var(--ma-gold);
+    border-left-width: 5px;
+  }
+  .monster-anatomy .ma-part-thumb,
+  .monster-anatomy .ma-partcard-thumb {
+    border-radius: 0;
+    background: var(--ma-abyss);
+    border: 1px solid var(--ma-gold-faint);
+    color: var(--ma-gold-dim);
+    clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 0 100%);
+  }
+  .monster-anatomy .ma-part-name,
+  .monster-anatomy .ma-partcard-name {
+    font-family: var(--ma-serif);
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    color: var(--ma-white);
+  }
+  .monster-anatomy .ma-ac,
+  .monster-anatomy .ma-hptext {
+    font-family: var(--ma-sans);
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: var(--ma-mute);
+  }
+  .monster-anatomy .ma-ac .fa-shield-halved { color: var(--ma-gold); }
+
+  /* Selos paralelogramo */
+  .monster-anatomy .ma-badge {
+    font-family: var(--ma-sans);
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    border: 0;
+    border-radius: 0;
+    padding: 0.08rem 0.75rem;
+    color: var(--ma-ok);
+    background: color-mix(in srgb, var(--ma-ok) 20%, var(--ma-abyss));
+    clip-path: polygon(6px 0, 100% 0, calc(100% - 6px) 100%, 0 100%);
+  }
+  .monster-anatomy .ma-state-damaged .ma-badge { color: var(--ma-warn); background: color-mix(in srgb, var(--ma-warn) 22%, var(--ma-abyss)); border: 0; }
+  .monster-anatomy .ma-state-broken .ma-badge,
+  .monster-anatomy .ma-state-destroyed .ma-badge { color: var(--ma-bad); background: color-mix(in srgb, var(--ma-bad) 24%, var(--ma-abyss)); border: 0; }
+  .monster-anatomy .ma-state-severed .ma-badge { color: var(--ma-cool); background: color-mix(in srgb, var(--ma-cool) 20%, var(--ma-abyss)); border: 0; }
+
+  /* Barras segmentadas */
+  .monster-anatomy .ma-hpbar {
+    position: relative;
+    height: 9px;
+    border-radius: 0;
+    background: var(--ma-abyss);
+    border: 1px solid var(--ma-gold-faint);
+    box-shadow: none;
+    clip-path: polygon(4px 0, 100% 0, calc(100% - 4px) 100%, 0 100%);
+  }
+  .monster-anatomy .ma-hpbar::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: repeating-linear-gradient(90deg, transparent 0 calc(10% - 1px), rgb(5 6 10 / 70%) calc(10% - 1px) 10%);
+  }
+  .monster-anatomy .ma-hpfill {
+    border-radius: 0;
+    background: linear-gradient(180deg, #fff0b3, var(--ma-ok) 55%, #c79a2e);
+    box-shadow: 0 0 8px rgb(244 208 104 / 45%);
+  }
+  .monster-anatomy .ma-state-damaged .ma-hpfill {
+    background: linear-gradient(180deg, #ffd29b, var(--ma-warn) 55%, #c76a12);
+    box-shadow: 0 0 8px rgb(255 159 67 / 45%);
+  }
+  .monster-anatomy .ma-state-broken .ma-hpfill,
+  .monster-anatomy .ma-state-destroyed .ma-hpfill {
+    background: linear-gradient(180deg, #ff8fa6, var(--ma-bad) 55%, #9c0f30);
+    box-shadow: 0 0 8px rgb(255 42 84 / 50%);
+  }
+  .monster-anatomy .ma-severbar .ma-hpfill,
+  .monster-anatomy .ma-state-severed .ma-hpfill {
+    background: linear-gradient(180deg, #b8fbff, var(--ma-cool) 55%, #00909a);
+    box-shadow: 0 0 8px rgb(0 240 255 / 45%);
+  }
+  /* flex:1 herdado colapsa a altura em coluna: o seletor precisa de altura fixa */
+  .monster-anatomy .ma-partcard .ma-hpbar { flex: none; width: 100%; height: 8px; }
+
+  /* Linha de ações do Mestre */
+  .monster-anatomy .ma-part-actions { border-top: 1px solid var(--ma-gold-faint); }
+  .monster-anatomy .ma-amount,
+  .monster-anatomy .ma-qarow input,
+  .monster-anatomy .ma-template-select {
+    border-radius: 0;
+    background: var(--ma-abyss);
+    color: var(--ma-white);
+    border: 1px solid var(--ma-gold-faint);
+  }
+  .monster-anatomy .ma-linked { color: var(--ma-mute); font-family: var(--ma-sans); }
+  .monster-anatomy .ma-linked.is-disabled { color: var(--ma-bad); }
+  .monster-anatomy .ma-empty { color: var(--ma-mute); font-family: var(--ma-serif); }
+
+  /* Seletor */
+  .monster-anatomy .ma-target-prompt {
+    font-family: var(--ma-serif);
+    letter-spacing: 0.04em;
+    color: var(--ma-mute);
+  }
+  .monster-anatomy .ma-target-prompt strong { color: var(--ma-gold); }
+  .monster-anatomy .ma-normal-attack {
+    border: 1px solid var(--ma-gold-faint);
+    border-radius: 0;
+    font-family: var(--ma-sans);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ma-mute);
+    clip-path: polygon(10px 0, 100% 0, calc(100% - 10px) 100%, 0 100%);
+  }
+  .monster-anatomy .ma-normal-attack:hover { color: var(--ma-white); border-color: var(--ma-gold); }
+  .monster-anatomy .ma-quickadd { border-top: 1px solid var(--ma-gold-faint); }
+  .monster-anatomy .ma-quickadd > summary { font-family: var(--ma-sans); letter-spacing: 0.1em; text-transform: uppercase; color: var(--ma-gold); }
+
+  /* Plaquinha de mira */
+  .ma-aim-chip {
+    border: 0;
+    border-radius: 0;
+    padding: 0.4rem 1.3rem;
+    font-family: var(--ma-sans);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ma-white);
+    background:
+      linear-gradient(90deg, var(--ma-crimson) 0 4px, transparent 4px),
+      linear-gradient(100deg, #1b1f3a, #0b0d17);
+    clip-path: polygon(10px 0, 100% 0, calc(100% - 10px) 100%, 0 100%);
+    filter: drop-shadow(0 0 8px rgb(244 208 104 / 40%));
+    box-shadow: none;
+  }
+  .ma-aim-chip .fa-crosshairs { color: var(--ma-crimson); }
+  .ma-aim-chip:hover { background: linear-gradient(100deg, #2a2f57, #0b0d17); }
+
+  /* Chat */
+  .monster-anatomy-chat {
+    padding: 0.45rem 0.7rem;
+    color: var(--ma-white, #fffdf5);
+    font-family: "MA Rajdhani", "Segoe UI", sans-serif;
+    font-size: 15px;
+    background: linear-gradient(100deg, rgb(24 28 52 / 95%), rgb(5 6 10 / 92%));
+    border: 1px solid rgb(244 208 104 / 14%);
+    border-left: 3px solid #f4d068;
+    clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 0 100%);
+  }
+  .monster-anatomy-chat.ma-break h3 {
+    margin: 0 0 0.2rem;
+    border: 0;
+    font-family: "MA Cinzel Decorative", "MA Cinzel", serif;
+    font-style: normal;
+    font-size: 19px;
+    letter-spacing: 0.1em;
+    color: #f4d068;
+    text-shadow: 0 0 12px rgb(244 208 104 / 45%);
+  }
+  .monster-anatomy-chat.ma-break.ma-sever { border-left-color: #00f0ff; }
+  .monster-anatomy-chat.ma-break.ma-sever h3 { color: #00f0ff; text-shadow: 0 0 12px rgb(0 240 255 / 45%); }
+  .monster-anatomy-chat.ma-attack { border-left-color: #ff2a54; }
+  .monster-anatomy-chat.ma-attack p { font-weight: 700; letter-spacing: 0.02em; }
+  .monster-anatomy-chat.ma-routed { border-left-color: rgb(244 208 104 / 45%); }
+  .monster-anatomy-chat.ma-routed p { color: #a9a7c0; }
+  .monster-anatomy-chat.ma-loot h3 { color: #f4d068; font-family: "MA Cinzel", serif; font-size: 16px; letter-spacing: 0.08em; border: 0; margin: 0 0 0.2rem; }
+  .monster-anatomy-chat.ma-regen { border-left-color: #00f0ff; }
+  .monster-anatomy-chat p { margin: 0.15rem 0; }
+
+  /* Anúncio: tema Celestial (padrão) — faixa de vazio, filetes de ouro, letterbox */
+  .monster-anatomy-announce.theme-celestial {
+    --ma-tone: #f4d068;
+    --ma-tone-glow: rgb(244 208 104 / 80%);
+    --ma-tone-deep: #6e4f0c;
+    background: none;
+    overflow: hidden;
+  }
+  .monster-anatomy-announce.theme-celestial.is-sever {
+    --ma-tone: #00f0ff;
+    --ma-tone-glow: rgb(0 240 255 / 75%);
+    --ma-tone-deep: #00535a;
+  }
+  .monster-anatomy-announce.theme-celestial.is-phase {
+    --ma-tone: #ff2a54;
+    --ma-tone-glow: rgb(255 42 84 / 75%);
+    --ma-tone-deep: #6b0b22;
+  }
+  .monster-anatomy-announce.theme-celestial::before,
+  .monster-anatomy-announce.theme-celestial::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 9vh;
+    background: #05060a;
+    z-index: 0;
+  }
+  .monster-anatomy-announce.theme-celestial::before { top: 0; border-bottom: 1px solid var(--ma-tone); }
+  .monster-anatomy-announce.theme-celestial::after { bottom: 0; border-top: 1px solid var(--ma-tone); }
+  .monster-anatomy-announce.theme-celestial > * { position: relative; z-index: 2; }
+  .monster-anatomy-announce.theme-celestial .ma-announce-band {
+    position: absolute;
+    z-index: 1;
+    left: -10%;
+    width: 120%;
+    top: 50%;
+    height: 34vh;
+    transform: translateY(-50%) skewY(-4deg);
+    background: linear-gradient(90deg, transparent, rgb(5 6 10 / 92%) 16%, rgb(11 13 23 / 94%) 50%, rgb(5 6 10 / 92%) 84%, transparent);
+    border-top: 1px solid var(--ma-tone);
+    border-bottom: 1px solid var(--ma-tone);
+    box-shadow: 0 0 40px -6px var(--ma-tone-glow);
+  }
+  .monster-anatomy-announce.theme-celestial .ma-announce-kicker {
+    font-family: "MA Cinzel Decorative", "MA Cinzel", serif;
+    font-weight: 700;
+    font-style: normal;
+    font-size: clamp(2.6rem, 8vw, 5rem);
+    letter-spacing: 0.14em;
+    color: #fffdf5;
+    transform: none;
+    text-shadow: 0 2px 0 var(--ma-tone-deep), 0 0 22px var(--ma-tone-glow), 0 0 60px var(--ma-tone-glow);
+  }
+  .monster-anatomy-announce.theme-celestial .ma-announce-part {
+    font-family: "MA Rajdhani", sans-serif;
+    font-weight: 700;
+    font-size: clamp(1.3rem, 3.4vw, 2.1rem);
+    letter-spacing: 0.4em;
+    color: var(--ma-tone);
+    transform: none;
+    text-shadow: 0 0 14px var(--ma-tone-glow);
+  }
+  .monster-anatomy-announce.theme-celestial .ma-announce-actor {
+    font-family: "MA Cinzel", serif;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    font-size: 0.95rem;
+    color: #c9b6e4;
+  }
+  .monster-anatomy-announce.theme-celestial.is-reduced { background: none; }
+  .monster-anatomy-flash.theme-celestial {
+    background: radial-gradient(ellipse at center, rgb(244 208 104 / 24%) 0%, rgb(244 208 104 / 8%) 60%, transparent 100%);
+  }
+  .monster-anatomy-flash.theme-celestial.is-sever {
+    background: radial-gradient(ellipse at center, rgb(0 240 255 / 22%) 0%, rgb(0 240 255 / 8%) 60%, transparent 100%);
+  }
+  .monster-anatomy-announce .ma-announce-band { display: none; }
+  .monster-anatomy-announce.theme-celestial .ma-announce-band { display: block; }
 }
 
 @media (prefers-reduced-motion: reduce) {

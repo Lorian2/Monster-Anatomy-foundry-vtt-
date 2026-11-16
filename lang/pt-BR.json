@@ -234,6 +234,7 @@
       "AnnounceTheme": {
         "Name": "Tema do anúncio",
         "Hint": "Estilo visual do anúncio BREAK!/SEVERED! na tela.",
+        "Celestial": "Celestial (ouro e vazio, padrão)",
         "Persona": "Persona (gráfico, rápido)",
         "MonsterHunter": "Monster Hunter (rústico)",
         "Jrpg": "JRPG (elegante)",

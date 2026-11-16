@@ -154,6 +154,7 @@ export function registerSettings(): void {
     config: true,
     type: String,
     choices: {
+      celestial: "MONSTER_ANATOMY.Settings.AnnounceTheme.Celestial",
       persona: "MONSTER_ANATOMY.Settings.AnnounceTheme.Persona",
       monsterhunter: "MONSTER_ANATOMY.Settings.AnnounceTheme.MonsterHunter",
       jrpg: "MONSTER_ANATOMY.Settings.AnnounceTheme.Jrpg",
@@ -162,7 +163,7 @@ export function registerSettings(): void {
       arcade: "MONSTER_ANATOMY.Settings.AnnounceTheme.Arcade",
       carved: "MONSTER_ANATOMY.Settings.AnnounceTheme.Carved",
     },
-    default: "persona",
+    default: "celestial",
   });
 
   game.settings!.register(MODULE_ID, "customKickerBreak", {

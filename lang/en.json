@@ -234,6 +234,7 @@
       "AnnounceTheme": {
         "Name": "Announcement theme",
         "Hint": "Visual style of the BREAK!/SEVERED! screen announcement.",
+        "Celestial": "Celestial (gold and void, default)",
         "Persona": "Persona (graphic, fast)",
         "MonsterHunter": "Monster Hunter (rugged)",
         "Jrpg": "JRPG (elegant)",

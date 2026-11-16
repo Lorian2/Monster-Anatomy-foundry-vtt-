@@ -96,6 +96,7 @@ function reducedMotion(): boolean {
 
 /** Tema de anúncio (cliente) com fallback seguro. */
 function announceTheme():
+  | "celestial"
   | "persona"
   | "monsterhunter"
   | "jrpg"
@@ -103,15 +104,16 @@ function announceTheme():
   | "impact"
   | "arcade"
   | "carved" {
-  const v = String(getSetting("announceTheme") ?? "persona");
-  return v === "monsterhunter" ||
+  const v = String(getSetting("announceTheme") ?? "celestial");
+  return v === "celestial" ||
+    v === "monsterhunter" ||
     v === "jrpg" ||
     v === "minimal" ||
     v === "impact" ||
     v === "arcade" ||
     v === "carved"
     ? v
-    : "persona";
+    : "celestial";
 }
 
 /** Kicker: texto custom do Mestre vence o padrão do tema. */
@@ -143,6 +145,7 @@ function showAnnouncement(
   }
   const kicker = (kickerOverride ?? "") !== "" ? (kickerOverride as string) : kickerText(sever);
   root.innerHTML =
+    `<div class="ma-announce-band"></div>` +
     `<div class="ma-announce-kicker">${esc(kicker)}</div>` +
     `<div class="ma-announce-part">${esc(part.name)}</div>` +
     `<div class="ma-announce-actor">${esc(actor.name)}</div>`;
@@ -164,7 +167,7 @@ function screenFlash(sever: boolean): void {
     return;
   }
   const el = document.createElement("div");
-  el.className = "monster-anatomy-flash" + (sever ? " is-sever" : "");
+  el.className = `monster-anatomy-flash theme-${announceTheme()}` + (sever ? " is-sever" : "");
   document.body.appendChild(el);
   requestAnimationFrame(() => el.classList.add("is-showing"));
   window.setTimeout(() => el.classList.remove("is-showing"), 120);
