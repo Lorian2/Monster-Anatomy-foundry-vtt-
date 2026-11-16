@@ -20,6 +20,8 @@ declare global {
         loot?: LootEntry[];
         hideAc?: boolean;
         mapLayout?: string;
+        mapImage?: string;
+        phase?: string;
       };
     };
     ActiveEffect: {

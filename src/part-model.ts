@@ -15,6 +15,9 @@ export interface PartHp {
   max: number;
 }
 
+/** Regiões do mapa corporal. */
+export type BodyZone = "head" | "torso" | "left" | "right" | "tail";
+
 export interface MonsterPart {
   id: string;
   name: string;
@@ -24,6 +27,10 @@ export interface MonsterPart {
   severable: boolean;
   state: PartState;
   notes: string;
+  /** Imagem da parte (caminho; vazio = sem thumb). */
+  img?: string;
+  /** Região explícita no mapa (null = automático por nome). */
+  zone?: BodyZone | null;
   /** Ações automáticas ao quebrar (0.2). Ausente em partes legadas → defaults. */
   onBreak?: BreakLinkage;  /** Multiplicadores por tipo de dano, esparsos (ausente = 1.0). */
   hitzone?: Record<string, number>;
@@ -35,6 +42,10 @@ export interface MonsterPart {
   rewards?: PartReward[];
   /** Bônus ao atingir já rompida (sobrescreve o global conforme o modo). */
   bonus?: PartBonus;
+  /** Regeneração por turno do monstro em combate (0 = desligado). */
+  regen?: number;
+  /** Fase deflagrada ao romper ("" = nenhuma; ex. "Fase 2"). */
+  phaseName?: string;
 }
 
 /**
@@ -187,11 +198,15 @@ export interface TemplatePart {
   hpMax: number;
   breakable: boolean;
   severable: boolean;
+  img?: string;
+  regen?: number;
+  phaseName?: string;
   hitzone: Record<string, number>;
   severMax: number;
   severTypes: string[];
   onBreak: BreakLinkage;
   rewards: PartReward[];
+  bonus?: PartBonus;
 }
 
 export interface AnatomyTemplate {
@@ -201,6 +216,8 @@ export interface AnatomyTemplate {
   builtin?: boolean;
   /** Layout do mapa corporal ("dragonoid" padrão). */
   map?: string;
+  /** Arte custom do mapa (caminho; vazio = silhueta padrão). */
+  mapImage?: string;
   parts: TemplatePart[];
 }
 
@@ -209,22 +226,28 @@ export function templateFromParts(
   name: string,
   parts: MonsterPart[],
   map?: string,
+  mapImage?: string,
 ): AnatomyTemplate {
   return {
     id: foundry.utils.randomID(),
     name,
     ...(map ? { map } : {}),
+    ...(mapImage ? { mapImage } : {}),
     parts: parts.map((p) => ({
       name: p.name,
+      img: p.img ?? "",
       ac: p.ac,
       hpMax: p.hp.max,
       breakable: p.breakable,
       severable: p.severable,
+      regen: Math.max(0, Math.floor(p.regen ?? 0)),
+      phaseName: typeof p.phaseName === "string" ? p.phaseName : "",
       hitzone: { ...(p.hitzone ?? {}) },
       severMax: p.sever?.max ?? p.hp.max,
       severTypes: [...(p.severTypes ?? ["slashing"])],
       onBreak: linkageOf(p),
       rewards: rewardsOf(p).map((r) => ({ ...r })),
+      bonus: bonusOf(p),
     })),
   };
 }
@@ -237,6 +260,9 @@ export function partsFromTemplate(t: AnatomyTemplate, actor: Actor): MonsterPart
       ac: Math.max(0, Math.floor(tp.ac)),
       hp: max,
     });
+    part.img = typeof tp.img === "string" ? tp.img : "";
+    part.regen = Math.max(0, Math.floor(tp.regen || 0));
+    part.phaseName = typeof tp.phaseName === "string" ? tp.phaseName : "";
     part.breakable = tp.breakable !== false;
     part.severable = tp.severable === true;
     part.hitzone = { ...(tp.hitzone ?? {}) };
@@ -245,6 +271,7 @@ export function partsFromTemplate(t: AnatomyTemplate, actor: Actor): MonsterPart
     part.severTypes = [...(tp.severTypes ?? ["slashing"])];
     part.onBreak = { ...EMPTY_LINKAGE, ...(tp.onBreak ?? {}) };
     part.rewards = (tp.rewards ?? []).map((r) => ({ ...r }));
+    part.bonus = { ...EMPTY_BONUS, ...(tp.bonus ?? {}) };
     // Item vinculado por NOME (portável entre atores); id direto como fallback.
     const wantName = part.onBreak.disableItemName.trim();
     const byName = wantName
@@ -324,6 +351,10 @@ export function createDefaultPart(
     severable: false,
     state: "intact",
     notes: "",
+    img: "",
+    zone: null,
+    regen: 0,
+    phaseName: "",
     onBreak: { ...EMPTY_LINKAGE },
     hitzone: {},
     sever: { value: max, max },

@@ -12,12 +12,16 @@
       "HideAc": "Esconder CA das partes (secreta)",
       "ShowAc": "Revelar CA das partes",
       "MapLayout": "Layout do mapa corporal",
+      "SetMapImage": "Definir imagem custom do corpo",
+      "ClearMapImage": "Remover imagem custom do corpo",
       "Empty": "Nenhuma parte anatômica ainda. Adicione a primeira.",
       "AcLabel": "Classe de Armadura da parte",
       "HpLabel": "Pontos de vida da parte",
       "Edit": "Editar parte",
+      "Duplicate": "Duplicar parte",
       "Delete": "Excluir parte",
       "IdLabel": "ID da parte (para macros)",
+      "CopySuffix": " (cópia)",
       "StateMismatch": "Estado manual difere do estado derivado do HP",
       "Disabled": "desabilitado",
       "Amount": "Valor",
@@ -28,6 +32,13 @@
     "Editor": {
       "Title": "Editar parte",
       "Name": "Nome",
+      "Image": "Imagem",
+      "Browse": "Procurar arquivos",
+      "Zone": "Região no mapa",
+      "SectionIdentity": "Identidade",
+      "SectionCombat": "Combate",
+      "Regen": "Regen / rodada",
+      "PhaseName": "Fase ao quebrar (ex. Fase 2)",
       "Ac": "CA",
       "HpValue": "HP atual",
       "HpMax": "HP máximo",
@@ -85,7 +96,8 @@
       "BreakText": "A {part} de {actor} foi quebrada! ({amount} de dano)",
       "BreakBy": "{attacker} quebrou a {part} de {actor}!",
       "SeverText": "A {part} de {actor} foi cortada! ({amount} de dano cortante)",
-      "SeverBy": "{attacker} cortou a {part} de {actor}!"
+      "SeverBy": "{attacker} cortou a {part} de {actor}!",
+      "RegenText": "🌿 {actor} regenera: {bits}"
     },
     "Effect": {
       "BrokenName": "💥 {part} quebrada",
@@ -95,6 +107,9 @@
     "Routed": {
       "Text": "➡️ {amount} → {part} ({actor}) · global −{global}",
       "Bonus": "({mark} parte rompida)"
+    },
+    "Regen": {
+      "Text": "🌿 {actor} regenera: {bits}"
     },
     "Reward": {
       "Break": "Ao quebrar",
@@ -124,6 +139,9 @@
       "Title": "Escolher parte do alvo",
       "Prompt": "Onde o ataque atinge {actor}?",
       "Normal": "Ataque normal (sem parte)",
+      "QuickAdd": "Adicionar parte rápido",
+      "Zone": "Região no mapa",
+      "ZoneAuto": "Auto (pelo nome)",
       "MapHint": "Clique numa região do corpo e depois na parte.",
       "ZoneHint": "Agora clique na parte.",
       "ZoneEmpty": "Nenhuma parte aqui — escolha outra região.",

@@ -12,12 +12,16 @@
       "HideAc": "Hide part AC (secret)",
       "ShowAc": "Reveal part AC",
       "MapLayout": "Body map layout",
+      "SetMapImage": "Set custom body map image",
+      "ClearMapImage": "Remove custom body map image",
       "Empty": "No anatomical parts yet. Add the first one.",
       "AcLabel": "Part Armor Class",
       "HpLabel": "Part hit points",
       "Edit": "Edit part",
+      "Duplicate": "Duplicate part",
       "Delete": "Delete part",
       "IdLabel": "Part ID (for macros)",
+      "CopySuffix": " (copy)",
       "StateMismatch": "Manual state differs from the HP-derived state",
       "Disabled": "disabled",
       "Amount": "Amount",
@@ -28,6 +32,13 @@
     "Editor": {
       "Title": "Edit Part",
       "Name": "Name",
+      "Image": "Image",
+      "Browse": "Browse files",
+      "Zone": "Map zone",
+      "SectionIdentity": "Identity",
+      "SectionCombat": "Combat",
+      "Regen": "Regen / round",
+      "PhaseName": "Phase on break (e.g. Phase 2)",
       "Ac": "AC",
       "HpValue": "Current HP",
       "HpMax": "Max HP",
@@ -84,7 +95,8 @@
       "BreakText": "The {part} of {actor} breaks! ({amount} damage)",
       "BreakBy": "{attacker} broke the {part} of {actor}!",
       "SeverText": "The {part} of {actor} is severed! ({amount} cutting damage)",
-      "SeverBy": "{attacker} severed the {part} of {actor}!"
+      "SeverBy": "{attacker} severed the {part} of {actor}!",
+      "RegenText": "🌿 {actor} regenerates: {bits}"
     },
     "Effect": {
       "BrokenName": "💥 {part} broken",
@@ -94,6 +106,9 @@
     "Routed": {
       "Text": "➡️ {amount} → {part} ({actor}) · global −{global}",
       "Bonus": "({mark} broken part)"
+    },
+    "Regen": {
+      "Text": "🌿 {actor} regenerates: {bits}"
     },
     "Reward": {
       "Break": "On break",
@@ -123,6 +138,9 @@
       "Title": "Choose target part",
       "Prompt": "Where does the attack land on {actor}?",
       "Normal": "Normal attack (no part)",
+      "QuickAdd": "Quick add part",
+      "Zone": "Map zone",
+      "ZoneAuto": "Auto (by name)",
       "MapHint": "Click a body region, then the part.",
       "ZoneHint": "Now click the part.",
       "ZoneEmpty": "No parts here — pick another region.",

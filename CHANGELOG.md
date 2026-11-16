@@ -2,6 +2,29 @@
 
 Todas as mudanças notáveis deste módulo. Formato inspirado no Keep a Changelog.
 
+## [1.2.1] — 2026-11-16
+
+### Correções
+- Regeneração: passa a usar `combatTurnChange` (início do turno do monstro, inclusive na
+  virada de rodada); antes disparava no fim do turno e pulava a virada. Voltar turno não regenera
+- Multi-GM: dano via socket e regeneração só no GM ativo (Mestre + Assistente online
+  aplicavam em dobro)
+- Parte cortada que chega a 0 HP permanece cortada (não vira "quebrada" nem repete recompensas)
+
+## [1.2.0] — 2026-09-22
+
+### Imagens por parte
+- Campo de imagem no editor (FilePicker + preview); thumbnails no painel,
+  tracker e seletor; imagem viaja junto nos modelos
+
+### Adição rápida na mira
+- Rodapé do seletor (Mestre): nome + imagem opcional + `+` cria a parte na hora
+
+### Seletor consolidado em lista direta
+- O mapa corporal SVG foi revertido para lista direta (imagem + texto por parte):
+  mesma função, robustez de `<button>` nativo. Dados de zona/layout/mapa custom
+  preservados nos flags, sem UI por enquanto
+
 ## [1.1.0] — 2026-09-22
 
 ### Modelos de anatomia

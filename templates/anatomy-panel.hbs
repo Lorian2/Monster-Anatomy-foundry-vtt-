@@ -2,6 +2,7 @@
 <div class="ma-header">
   <img class="ma-actor-img" src="{{actorImg}}" alt="{{actorName}}" />
   <h2 class="ma-actor-name">{{actorName}}</h2>
+  {{#if phase}}<span class="ma-phase" title="{{phase}}">🔥 {{phase}}</span>{{/if}}
   {{#if isGM}}
   <button type="button" class="ma-tracker-open{{#if hideAc}} is-on{{/if}}" data-action="toggle-hide-ac" title="{{#if hideAc}}{{localize "MONSTER_ANATOMY.Panel.ShowAc"}}{{else}}{{localize "MONSTER_ANATOMY.Panel.HideAc"}}{{/if}}">
     <i class="fa-solid {{#if hideAc}}fa-eye-slash{{else}}fa-eye{{/if}}"></i>
@@ -38,10 +39,6 @@
     <i class="fa-solid fa-trash-can"></i>
   </button>
   {{/if}}
-  <select class="ma-map-select" title="{{localize "MONSTER_ANATOMY.Panel.MapLayout"}}">
-    <option value="dragonoid" {{#if (eq mapLayout "dragonoid")}}selected{{/if}}>{{localize "MONSTER_ANATOMY.Template.Dragonoid"}}</option>
-    <option value="humanoid" {{#if (eq mapLayout "humanoid")}}selected{{/if}}>{{localize "MONSTER_ANATOMY.Template.Humanoid"}}</option>
-  </select>
 </div>
 {{/if}}
 
@@ -52,6 +49,7 @@
   {{#each parts}}
   <li class="ma-part ma-state-{{state}}" data-part-id="{{id}}">
     <div class="ma-part-top">
+      {{#if img}}<img class="ma-part-img" src="{{img}}" alt="" />{{/if}}
       <span class="ma-part-name">{{name}}</span>
       <span class="ma-badge" title="{{stateLabel}}">
         {{stateLabel}}{{#if hpMismatch}} <i class="fa-solid fa-triangle-exclamation" title="{{localize "MONSTER_ANATOMY.Panel.StateMismatch"}}"></i>{{/if}}
@@ -89,6 +87,9 @@
     <div class="ma-part-actions">
       <button type="button" data-action="edit-part" data-part-id="{{id}}" title="{{localize "MONSTER_ANATOMY.Panel.Edit"}}">
         <i class="fa-solid fa-pen"></i>
+      </button>
+      <button type="button" data-action="duplicate-part" data-part-id="{{id}}" title="{{localize "MONSTER_ANATOMY.Panel.Duplicate"}}">
+        <i class="fa-solid fa-copy"></i>
       </button>
       <button type="button" data-action="delete-part" data-part-id="{{id}}" title="{{localize "MONSTER_ANATOMY.Panel.Delete"}}">
         <i class="fa-solid fa-trash"></i>

@@ -10,14 +10,14 @@ import {
   canEdit,
   deletePart,
   deleteTemplate,
-  getMapLayout,
+  duplicatePart,
   getParts,
+  getPhase,
   getTemplates,
   isAcSecret,
   isGm,
   saveTemplate,
   setHideAc,
-  setMapLayout,
   templateDisplayName,
 } from "../anatomy-store.js";
 import { damagePart, healPart } from "../damage.js";
@@ -81,6 +81,7 @@ export class AnatomyPanel extends HandlebarsApplicationMixin(ApplicationV2) {  s
       "add-part": AnatomyPanel.onAddPart,
       "edit-part": AnatomyPanel.onEditPart,
       "delete-part": AnatomyPanel.onDeletePart,
+      "duplicate-part": AnatomyPanel.onDuplicatePart,
       "open-tracker": AnatomyPanel.onOpenTracker,
       "open-summary": AnatomyPanel.onOpenSummary,
       "damage-part": AnatomyPanel.onDamagePart,
@@ -124,7 +125,7 @@ export class AnatomyPanel extends HandlebarsApplicationMixin(ApplicationV2) {  s
       canEdit: canEdit(actor),
       isGM: gm,
       hideAc: secret,
-      mapLayout: getMapLayout(actor),
+      phase: getPhase(actor),
       templates: getTemplates().map((v) => ({ id: v.id, name: templateDisplayName(v) })),
       parts,
       empty: parts.length === 0,
@@ -136,13 +137,6 @@ export class AnatomyPanel extends HandlebarsApplicationMixin(ApplicationV2) {  s
     options: DeepPartial<AnatomyPanel.RenderOptions>,
   ): Promise<void> {
     await super._onRender(context, options);
-    const mapSelect = this.element.querySelector<HTMLSelectElement>("select.ma-map-select");
-    if (mapSelect) {
-      mapSelect.onchange = () => {
-        if (!canEdit(this.actor)) return;
-        void setMapLayout(this.actor, mapSelect.value);
-      };
-    }
     if (this.#updateHook === null) {
       this.#updateHook = Hooks.on("updateActor", (doc) => {
         if (doc.uuid === this.actor.uuid) void this.render();
@@ -169,8 +163,16 @@ export class AnatomyPanel extends HandlebarsApplicationMixin(ApplicationV2) {  s
     await PartEditor.openFor(panel.actor, undefined, () => void panel.render());
   }
 
-  static async onEditPart(this: unknown, _event: PointerEvent, target: HTMLElement): Promise<void> {
+  static async onDuplicatePart(this: unknown, _event: PointerEvent, target: HTMLElement): Promise<void> {
     const panel = this as AnatomyPanel;
+    if (!canEdit(panel.actor)) return;
+    const partId = target.dataset.partId;
+    if (!partId) return;
+    await duplicatePart(panel.actor, partId);
+    // persistParts → updateActor → re-render automático.
+  }
+
+  static async onEditPart(this: unknown, _event: PointerEvent, target: HTMLElement): Promise<void> {    const panel = this as AnatomyPanel;
     if (!canEdit(panel.actor)) return;
     const partId = target.dataset.partId;
     if (!partId) return;
@@ -249,7 +251,7 @@ export class AnatomyPanel extends HandlebarsApplicationMixin(ApplicationV2) {  s
     }
     const name = await promptTemplateName(panel.actor.name);
     if (!name) return;
-    await saveTemplate(name, parts, getMapLayout(panel.actor));
+    await saveTemplate(name, parts);
     ui.notifications?.info(tf("MONSTER_ANATOMY.Template.Saved", { name }));
     void panel.render();
   }
@@ -312,7 +314,7 @@ export namespace AnatomyPanel {
     canEdit: boolean;
     isGM: boolean;
     hideAc: boolean;
-    mapLayout: string;
+    phase: string;
     templates: Array<{ id: string; name: string }>;
     parts: RowViewModel[];
     empty: boolean;

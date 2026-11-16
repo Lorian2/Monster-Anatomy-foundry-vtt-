@@ -7,7 +7,7 @@
  * define o multiplicador (hitzone) no HP de ruptura; dano cortante
  * (tipos de `severTypes`) acumula em RAW no pool de corte em paralelo.
  */
-import { getParts, updatePart } from "./anatomy-store.js";
+import { getParts, setPhase, updatePart } from "./anatomy-store.js";
 import { HOOKS } from "./constants.js";
 import { callHook, getSetting } from "./fvtt.js";
 import {
@@ -18,7 +18,7 @@ import {
   type DamageModel,
   type MonsterPart,
 } from "./part-model.js";
-import { presentPartBreak, presentPartSever } from "./presentation.js";
+import { presentPartBreak, presentPartSever, showPhaseAnnouncement } from "./presentation.js";
 import { grantRewards } from "./rewards.js";
 
 /** Caminho do HP global no dnd5e (abstrair por sistema na etapa de integração). */
@@ -52,6 +52,8 @@ export interface DamageResult {
   bonus: number;
   /** Bônus fixo aplicado (parte já rompida). */
   bonusFlat: number;
+  /** Fase deflagrada ("" = nenhuma). */
+  phased: string;
 }
 
 /** Aplica dano (componente único, opcionalmente tipado). */
@@ -108,7 +110,8 @@ export async function damagePartDetailed(
 
   const value = Math.max(0, part.hp.value - breakTotal);
   let state = prevState;
-  if (value <= 0 && part.breakable) state = "broken";
+  // Parte já cortada não volta a "broken" (evita nova ruptura e recompensas em dobro).
+  if (value <= 0 && part.breakable) state = prevState === "severed" ? "severed" : "broken";
   else if (value < part.hp.max && prevState === "intact") state = "damaged";
 
   await updatePart(actor, partId, { hp: { ...part.hp, value }, state });
@@ -118,10 +121,18 @@ export async function damagePartDetailed(
   callHook(HOOKS.PART_DAMAGE, actor, updated, breakTotal, opts.attacker ?? null);
 
   const broke = state === "broken" && prevState !== "broken";
+  let phased = "";
   if (broke) {
     await presentPartBreak(actor, updated, { amount: breakTotal, attacker: opts.attacker });
     await grantRewards(actor, updated, "break", { attackerUuid: opts.attackerUuid });
     callHook(HOOKS.PART_BREAK, actor, updated, breakTotal, opts.attacker ?? null);
+    const phaseName = (updated.phaseName ?? "").trim();
+    if (phaseName !== "") {
+      phased = phaseName;
+      await setPhase(actor, phaseName);
+      showPhaseAnnouncement(actor, updated, phaseName);
+      callHook(HOOKS.PART_PHASE, actor, updated, phaseName);
+    }
   }
 
   // Corte: pool independente, mesmo que já quebrada (e vice-versa).
@@ -141,7 +152,7 @@ export async function damagePartDetailed(
       callHook(HOOKS.PART_SEVER, actor, updated, severTotal, opts.attacker ?? null);
     }
   }
-  return { part: updated, broke, severed, globalApplied, applied: breakTotal, bonus, bonusFlat };
+  return { part: updated, broke, severed, globalApplied, applied: breakTotal, bonus, bonusFlat, phased };
 }
 
 /** Cura HP da parte (sem fluxo de quebra; restaura estado e corte ao curar tudo). */

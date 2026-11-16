@@ -6,6 +6,7 @@
   <ul class="ma-tracker-parts">
     {{#each parts}}
     <li class="ma-tracker-row ma-state-{{state}}">
+      {{#if img}}<img class="ma-tracker-img" src="{{img}}" alt="" />{{/if}}
       <span class="ma-tracker-name">{{name}}</span>
       <div class="ma-hpbar" role="progressbar" aria-valuenow="{{hp.value}}" aria-valuemin="0" aria-valuemax="{{hp.max}}" title="{{hp.value}} / {{hp.max}} — {{stateLabel}}">
         <div class="ma-hpfill" style="width: {{hpPct}}%;"></div>

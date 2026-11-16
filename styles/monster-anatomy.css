@@ -32,6 +32,39 @@
     border: none;
   }
 
+  .monster-anatomy .ma-phase {
+    font-size: var(--font-size-13);
+    font-weight: bold;
+    white-space: nowrap;
+    padding: 0.15rem 0.55rem;
+    border-radius: 999px;
+    border: 1px solid #a33d00;
+    background: linear-gradient(to bottom, #5a2400, #2a1000);
+    color: #ffb454;
+  }
+
+  /* Identidade PHASE: brasa ascendente (§62) */
+  .monster-anatomy-announce.is-phase .ma-announce-kicker {
+    text-shadow:
+      4px 4px 0 #3a1500,
+      -2px -2px 0 #111,
+      0 0 30px rgb(255 120 0 / 70%);
+  }
+
+  .monster-anatomy-announce.is-phase .ma-announce-part {
+    color: #ff8c42;
+  }
+
+  .monster-anatomy-announce.is-phase {
+    background: linear-gradient(
+      to top,
+      transparent 40%,
+      rgb(180 70 0 / 30%) 55%,
+      rgb(120 30 0 / 42%) 70%,
+      transparent 85%
+    );
+  }
+
   .monster-anatomy .ma-add,
   .monster-anatomy .ma-save {
     display: inline-flex;
@@ -89,6 +122,50 @@
   .monster-anatomy .ma-part-name {
     font-weight: bold;
     font-size: var(--font-size-16);
+  }
+
+  .monster-anatomy .ma-part-img {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    border-radius: var(--border-radius);
+    border: 1px solid var(--color-border);
+  }
+
+  .monster-anatomy .ma-tracker-img {
+    width: 28px;
+    height: 28px;
+    object-fit: cover;
+    border-radius: var(--border-radius);
+    border: 1px solid var(--color-border);
+    flex: 0 0 auto;
+  }
+
+  .monster-anatomy .ma-imgpreview {
+    width: 44px;
+    height: 44px;
+    object-fit: cover;
+    border-radius: var(--border-radius);
+    border: 1px solid var(--color-border);
+    flex: 0 0 auto;
+  }
+
+  .monster-anatomy .ma-imgrow {
+    align-items: end;
+  }
+
+  .monster-anatomy .ma-imgrow input {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .monster-anatomy .ma-pick-img {
+    width: 22px;
+    height: 22px;
+    object-fit: cover;
+    border-radius: 4px;
+    vertical-align: -5px;
+    margin-right: 0.3rem;
   }
 
   .monster-anatomy .ma-badge {
@@ -751,67 +828,12 @@
     color: var(--color-warm-2);
   }
 
-  /* -- Mira visual: mapa corporal ----------------------------------------- */  .monster-anatomy-target .window-content {
+  /* -- Seletor de parte (lista com imagem + texto) --------------------------- */
+  .monster-anatomy-target .window-content {
     color: var(--color-text-primary);
     background: var(--color-bg-primary);
     font-family: var(--font-primary);
     padding: 0.6rem;
-  }
-
-  .monster-anatomy .ma-map {
-    display: block;
-    width: 100%;
-    max-height: 46vh;
-  }
-
-  .monster-anatomy .ma-zone :is(circle, ellipse, path, rect) {
-    fill: rgb(255 70 50 / 22%);
-    stroke: var(--color-warm-2);
-    stroke-width: 1.5;
-    cursor: pointer;
-    transition: fill 0.12s ease;
-  }
-
-  .monster-anatomy .ma-zone:hover :is(circle, ellipse, path, rect),
-  .monster-anatomy .ma-zone.is-active :is(circle, ellipse, path, rect) {
-    fill: rgb(255 70 50 / 48%);
-  }
-
-  .monster-anatomy .ma-zone.is-active :is(circle, ellipse, path, rect) {
-    stroke: #ffd23f;
-    stroke-width: 2.5;
-  }
-
-  .monster-anatomy .ma-zone.is-damaged :is(circle, ellipse, path, rect) {
-    stroke: #ffb454;
-  }
-
-  .monster-anatomy .ma-zone.is-broken :is(circle, ellipse, path, rect) {
-    fill: rgb(120 10 10 / 55%);
-    stroke: #ff3b3b;
-    stroke-dasharray: 4 3;
-  }
-
-  .monster-anatomy .ma-zone.is-empty {
-    opacity: 0.3;
-  }
-
-  .monster-anatomy .ma-zone.is-empty :is(circle, ellipse, path, rect) {
-    cursor: default;
-  }
-
-  .monster-anatomy .ma-map text {
-    fill: var(--color-text-primary);
-    font-size: 11px;
-    font-weight: bold;
-    text-anchor: middle;
-    pointer-events: none;
-  }
-
-  .monster-anatomy .ma-zonehint {
-    margin: 0.4rem 0 0.2rem;
-    font-size: var(--font-size-13);
-    color: var(--color-text-secondary);
   }
 
   .monster-anatomy .ma-zoneparts {
@@ -824,6 +846,71 @@
   .monster-anatomy .ma-zoneparts button,
   .monster-anatomy-target footer button {
     width: 100%;
+  }
+
+  .monster-anatomy .ma-qarow {
+    align-items: end;
+  }
+
+  .monster-anatomy .ma-qarow input[data-qa="name"] {
+    flex: 1.2;
+    min-width: 0;
+  }
+
+  .monster-anatomy .ma-qarow input[data-qa="img"] {
+    flex: 1;
+    min-width: 0;
+  }
+
+  /* -- Editor organizado em seções ----------------------------------------- */
+  .monster-anatomy-editor .ma-section,
+  .monster-anatomy-editor details.ma-section {
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius);
+    padding: 0.55rem 0.65rem 0.65rem;
+    margin: 0 0 0.6rem;
+    background: var(--color-bg-secondary);
+  }
+
+  .monster-anatomy-editor .ma-section > legend {
+    font-weight: bold;
+    padding: 0 0.4rem;
+  }
+
+  .monster-anatomy-editor details.ma-section > summary {
+    font-weight: bold;
+    cursor: pointer;
+    list-style-position: inside;
+  }
+
+  .monster-anatomy-editor details.ma-section .ma-hzgrid {
+    margin-top: 0.5rem;
+  }
+
+  .monster-anatomy-editor .ma-form-footer {
+    position: sticky;
+    bottom: 0;
+    background: var(--color-bg-primary);
+    padding: 0.5rem 0 0.1rem;
+    border-top: 1px solid var(--color-border);
+  }
+
+  /* Acento lateral por estado nas linhas do painel */
+  .monster-anatomy .ma-part {
+    border-left: 3px solid var(--color-border);
+  }
+
+  .monster-anatomy .ma-state-damaged {
+    border-left-color: var(--color-warm-1);
+  }
+
+  .monster-anatomy .ma-state-broken,
+  .monster-anatomy .ma-state-destroyed {
+    border-left-color: var(--color-warm-3);
+  }
+
+  .monster-anatomy .ma-state-severed {
+    border-left-color: var(--color-cool-1);
   }
 
   /* -- Tracker de combate ------------------------------------------------ */

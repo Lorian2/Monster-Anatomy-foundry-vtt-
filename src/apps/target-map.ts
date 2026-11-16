@@ -1,69 +1,14 @@
 /**
- * Mira visual (doc de design, §8): diagrama corporal clicável por região,
- * com fallback em lista para partes fora do mapa. Fluxo em dois toques
- * (região → parte), sempre previsível; dispensar = ataque normal.
+ * Seletor de parte (doc de design, §7): lista com imagem + texto por parte
+ * (nome, CA, HP, estado), quick-add e ataque normal. Fluxo em um toque;
+ * dispensar = ataque normal.
  */
 import type { DeepPartial } from "fvtt-types/utils";
-import { getMapLayout, getParts, isAcSecret, isGm } from "../anatomy-store.js";
-import { PART_STATE_CHOICES, type MonsterPart } from "../part-model.js";
-import { t } from "../fvtt.js";
+import { addPart, canEdit, getParts, isAcSecret, isGm } from "../anatomy-store.js";
+import { getSetting, t } from "../fvtt.js";
+import { PART_STATE_CHOICES, createDefaultPart, type MonsterPart } from "../part-model.js";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
-
-export type ZoneKey = "head" | "torso" | "left" | "right" | "tail";
-
-function norm(name: string): string {
-  return name
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[̀-ͯ]/g, "");
-}
-
-function has(source: string, words: string[]): boolean {
-  return words.some((w) => source.includes(w));
-}
-
-export interface ZoneMapping {
-  zones: Record<ZoneKey, MonsterPart[]>;
-  unmapped: MonsterPart[];
-}
-
-/** Mapeia partes às regiões por palavras-chave (pt/en). Sem lado = ambos. */
-export function mapPartsToZones(parts: MonsterPart[]): ZoneMapping {
-  const zones: Record<ZoneKey, MonsterPart[]> = { head: [], torso: [], left: [], right: [], tail: [] };
-  const unmapped: MonsterPart[] = [];
-  for (const p of parts) {
-    const n = norm(p.name);
-    const hit = new Set<ZoneKey>();
-    if (has(n, ["cauda", "tail", "rabo"])) hit.add("tail");
-    if (
-      has(n, [
-        "cabeca", "head", "cranio", "skull", "olho", "eye", "focinho",
-        "boca", "mouth", "maw", "pescoco", "neck", "dente", "tooth", "fang", "presa",
-      ])
-    ) {
-      hit.add("head");
-    }
-    const left = has(n, ["esquerda", "left", "esq"]);
-    const right = has(n, ["direita", "right", "dir"]);
-    if (left) hit.add("left");
-    if (right) hit.add("right");
-    if (has(n, ["corpo", "torso", "body", "peito", "chest", "barriga", "belly", "tronco", "trunk", "costa", "back", "nucleo", "core"])) {
-      hit.add("torso");
-    }
-    if (
-      has(n, ["asa", "wing", "garra", "claw", "pata", "paw", "perna", "leg", "braco", "arm", "chifre", "horn"])
-    ) {
-      if (!left && !right) {
-        hit.add("left");
-        hit.add("right");
-      }
-    }
-    if (hit.size === 0) unmapped.push(p);
-    else for (const z of hit) zones[z].push(p);
-  }
-  return { zones, unmapped };
-}
 
 function esc(value: string): string {
   return value
@@ -73,19 +18,18 @@ function esc(value: string): string {
     .replaceAll('"', "&quot;");
 }
 
-/** Severidade da zona: 0 íntegra, 1 danificada, 2 rompida/cortada/destruída. */
-function zoneSeverity(parts: MonsterPart[]): 0 | 1 | 2 {
-  let level: 0 | 1 | 2 = 0;
-  for (const p of parts) {
-    if (p.state === "broken" || p.state === "severed" || p.state === "destroyed") return 2;
-    if (p.state === "damaged") level = 1;
-  }
-  return level;
+interface PartRow {
+  id: string;
+  img: string;
+  display: string;
 }
 
-function zoneClass(parts: MonsterPart[]): string {
-  const s = zoneSeverity(parts);
-  return s === 2 ? "is-broken" : s === 1 ? "is-damaged" : "";
+function toRow(p: MonsterPart, maskAc: boolean): PartRow {
+  return {
+    id: p.id,
+    img: p.img ?? "",
+    display: `${p.name} — CA ${maskAc ? "??" : String(p.ac)} — ${p.hp.value}/${p.hp.max} • ${t(PART_STATE_CHOICES[p.state])}`,
+  };
 }
 
 export class TargetMapDialog extends HandlebarsApplicationMixin(ApplicationV2) {
@@ -98,7 +42,7 @@ export class TargetMapDialog extends HandlebarsApplicationMixin(ApplicationV2) {
       icon: "fa-solid fa-crosshairs",
       resizable: false,
     },
-    position: { width: 300, height: "auto" as const },
+    position: { width: 340, height: "auto" as const },
     actions: {},
   };
 
@@ -116,7 +60,7 @@ export class TargetMapDialog extends HandlebarsApplicationMixin(ApplicationV2) {
     this.#resolve = resolve;
   }
 
-  /** Abre o mapa e resolve com o id da parte (null = normal/dispensado). */
+  /** Abre o seletor e resolve com o id da parte (null = normal/dispensado). */
   static pick(actor: Actor): Promise<string | null> {
     return new Promise((resolve) => {
       const app = new TargetMapDialog({ actor } as TargetMapDialog.Configuration, resolve);
@@ -133,42 +77,12 @@ export class TargetMapDialog extends HandlebarsApplicationMixin(ApplicationV2) {
   ): Promise<TargetMapDialog.RenderContext> {
     const base = await super._prepareContext(options);
     const actor = this.actor;
-    const parts = getParts(actor);
-    const { zones, unmapped } = mapPartsToZones(parts);
-    const zoneLabelMap: Record<ZoneKey, string> = {
-      head: t("MONSTER_ANATOMY.Target.ZoneHead"),
-      torso: t("MONSTER_ANATOMY.Target.ZoneTorso"),
-      left: t("MONSTER_ANATOMY.Target.ZoneLeft"),
-      right: t("MONSTER_ANATOMY.Target.ZoneRight"),
-      tail: t("MONSTER_ANATOMY.Target.ZoneTail"),
-    };
-    const zoneEmpty: Record<ZoneKey, boolean> = {
-      head: zones.head.length === 0,
-      torso: zones.torso.length === 0,
-      left: zones.left.length === 0,
-      right: zones.right.length === 0,
-      tail: zones.tail.length === 0,
-    };
-    const zoneClassMap: Record<ZoneKey, string> = {
-      head: zoneClass(zones.head),
-      torso: zoneClass(zones.torso),
-      left: zoneClass(zones.left),
-      right: zoneClass(zones.right),
-      tail: zoneClass(zones.tail),
-    };
     const maskAc = isAcSecret(actor) && !isGm();
-    const acText = (ac: number): string => (maskAc ? "??" : String(ac));
     return {
       ...base,
       actorName: actor.name,
-      layout: getMapLayout(actor),
-      zoneLabelMap,
-      zoneEmpty,
-      zoneClassMap,
-      others: unmapped.map((p) => ({
-        id: p.id,
-        display: `${p.name} — CA ${acText(p.ac)} — ${p.hp.value}/${p.hp.max} • ${t(PART_STATE_CHOICES[p.state])}`,
-      })),
+      canAdd: canEdit(actor),
+      parts: getParts(actor).map((p) => toRow(p, maskAc)),
     };
   }
 
@@ -177,12 +91,6 @@ export class TargetMapDialog extends HandlebarsApplicationMixin(ApplicationV2) {
     options: DeepPartial<TargetMapDialog.RenderOptions>,
   ): Promise<void> {
     await super._onRender(context, options);
-    const actor = this.actor;
-    const maskAc = isAcSecret(actor) && !isGm();
-    const acText = (ac: number): string => (maskAc ? "??" : String(ac));
-    const { zones } = mapPartsToZones(getParts(actor));
-    const list = this.element.querySelector("[data-zoneparts]");
-    const hint = this.element.querySelector("[data-zonehint]");
     const pick = (id: string | null): void => {
       if (!this.#resolve) return;
       const r = this.#resolve;
@@ -190,43 +98,69 @@ export class TargetMapDialog extends HandlebarsApplicationMixin(ApplicationV2) {
       r(id);
       void this.close();
     };
-    this.element.querySelectorAll<SVGElement>("[data-zone]").forEach((zone) => {
-      zone.addEventListener("click", () => {
-        const key = (zone as SVGElement & { dataset: DOMStringMap }).dataset.zone as ZoneKey;
-        this.element
-          .querySelectorAll("[data-zone]")
-          .forEach((z) => z.classList.toggle("is-active", z === zone));
-        const members = zones[key] ?? [];
-        if (!list) return;
-        if (members.length === 0) {
-          list.innerHTML = `<p class="ma-empty">${esc(t("MONSTER_ANATOMY.Target.ZoneEmpty"))}</p>`;
-        } else {
-          list.innerHTML = members
-            .map(
-              (p) =>
-                `<button type="button" data-part-id="${esc(p.id)}">` +
-                `${esc(p.name)} — CA ${esc(acText(p.ac))} — ${p.hp.value}/${p.hp.max} • ${esc(t(PART_STATE_CHOICES[p.state]))}` +
-                `</button>`,
-            )
-            .join("");
-        }
-        if (hint) hint.textContent = t("MONSTER_ANATOMY.Target.ZoneHint");
-      });
-    });
-    list?.addEventListener("click", (event) => {
+    this.element.querySelector("[data-parts]")?.addEventListener("click", (event) => {
       const btn = (event.target as HTMLElement).closest("[data-part-id]") as HTMLElement | null;
       const id = btn?.dataset.partId;
       if (id) pick(id);
     });
-    this.element.querySelectorAll("[data-pick-part]").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        const id = (btn as HTMLElement).dataset.pickPart;
-        if (id) pick(id);
-      });
-    });
     this.element
       .querySelector("[data-normal]")
       ?.addEventListener("click", () => pick(null));
+    this.#wireQuickAdd();
+  }
+
+  /** Quick-add: cria parte na hora (nome + imagem opcional) e atualiza a lista. */
+  #wireQuickAdd(): void {
+    const nameInput = this.element.querySelector<HTMLInputElement>('[data-qa="name"]');
+    const imgInput = this.element.querySelector<HTMLInputElement>('[data-qa="img"]');
+    const preview = this.element.querySelector<HTMLImageElement>('[data-qa="preview"]');
+    if (!nameInput || !imgInput) return;
+    const syncPreview = (): void => {
+      if (!preview) return;
+      const src = imgInput.value.trim();
+      preview.hidden = src === "";
+      if (src !== "") preview.src = src;
+    };
+    imgInput.addEventListener("input", syncPreview);
+    preview?.addEventListener("error", () => {
+      if (preview) preview.hidden = true;
+    });
+    this.element.querySelector("[data-qa-browse]")?.addEventListener("click", () => {
+      const picker = new foundry.applications.apps.FilePicker({
+        type: "image",
+        current: imgInput.value,
+        callback: (path: string) => {
+          imgInput.value = path;
+          syncPreview();
+        },
+      });
+      void picker.render(true);
+    });
+    this.element.querySelector("[data-qa-add]")?.addEventListener("click", () => {
+      void this.#quickAdd();
+    });
+  }
+
+  async #quickAdd(): Promise<void> {
+    const actor = this.actor;
+    if (!canEdit(actor)) return;
+    const nameInput = this.element.querySelector<HTMLInputElement>('[data-qa="name"]');
+    const imgInput = this.element.querySelector<HTMLInputElement>('[data-qa="img"]');
+    if (!nameInput || !imgInput) return;
+    const existing = getParts(actor).length;
+    const name = nameInput.value.trim() || `${t("MONSTER_ANATOMY.Part.New")} ${existing + 1}`;
+    const ac = Number(getSetting("defaultAc") ?? 10);
+    const hp = Number(getSetting("defaultHp") ?? 20);
+    const part = createDefaultPart(name, {
+      ac: Number.isFinite(ac) ? ac : 10,
+      hp: Number.isFinite(hp) ? hp : 20,
+    });
+    const img = imgInput.value.trim();
+    if (img !== "") part.img = img;
+    await addPart(actor, part);
+    nameInput.value = "";
+    imgInput.value = "";
+    await this.render();
   }
 
   override async close(
@@ -246,11 +180,8 @@ export namespace TargetMapDialog {
     extends foundry.applications.api.HandlebarsApplicationMixin.RenderContext,
       foundry.applications.api.ApplicationV2.RenderContext {
     actorName: string;
-    layout: string;
-    zoneLabelMap: Record<ZoneKey, string>;
-    zoneEmpty: Record<ZoneKey, boolean>;
-    zoneClassMap: Record<ZoneKey, string>;
-    others: Array<{ id: string; display: string }>;
+    canAdd: boolean;
+    parts: PartRow[];
   }
 
   export interface Configuration

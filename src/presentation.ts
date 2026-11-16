@@ -75,6 +75,16 @@ export function showSeverAnnouncement(actor: Actor, part: MonsterPart): void {
   screenShake();
 }
 
+/** Anúncio de fase (kicker = nome da fase). */
+export function showPhaseAnnouncement(actor: Actor, part: MonsterPart, phaseName: string): void {
+  const secs = Math.max(0.5, Math.min(10, Number(getSetting("announceDuration") ?? 2.5)));
+  showAnnouncement(actor, part, secs, false, phaseName, "is-phase");
+  screenFlash(false);
+  shakeTokens(actor);
+  burstParticles(false);
+  screenShake();
+}
+
 function reducedMotion(): boolean {
   try {
     if (getSetting("reducedMotion") === true) return true;
@@ -112,22 +122,26 @@ function kickerText(sever: boolean): string {
   if (custom !== "") return custom;
   return t(sever ? "MONSTER_ANATOMY.Announce.Severed" : "MONSTER_ANATOMY.Announce.Break");
 }
-/** Anúncio central efêmero (estilo Persona/JRPG — §21 break, §24 sever). */
+/** Anúncio central efêmero (estilo Persona/JRPG — §21 break, §24 sever, §62 fases). */
 function showAnnouncement(
   actor: Actor,
   part: MonsterPart,
   durationSec: number,
   sever: boolean,
+  kickerOverride?: string,
+  extraClass?: string,
 ): void {
   document.querySelectorAll(".monster-anatomy-announce").forEach((el) => el.remove());
   const root = document.createElement("div");
   root.className =
-    `monster-anatomy-announce theme-${announceTheme()}` + (sever ? " is-sever" : "");
+    `monster-anatomy-announce theme-${announceTheme()}` +
+    (sever ? " is-sever" : "") +
+    (extraClass ? ` ${extraClass}` : "");
   root.style.setProperty("--ma-duration", `${durationSec}s`);
   if (reducedMotion()) {
     root.classList.add("is-reduced");
   }
-  const kicker = kickerText(sever);
+  const kicker = (kickerOverride ?? "") !== "" ? (kickerOverride as string) : kickerText(sever);
   root.innerHTML =
     `<div class="ma-announce-kicker">${esc(kicker)}</div>` +
     `<div class="ma-announce-part">${esc(part.name)}</div>` +

@@ -6,6 +6,7 @@ import { MODULE_ID } from "./constants.js";
 import {
   applyTemplate as applyTpl,
   canEdit,
+  duplicatePart as duplicateP,
   getParts,
   getTemplates as getTpls,
 } from "./anatomy-store.js";
@@ -63,6 +64,8 @@ export interface MonsterAnatomyAPI {
   getTemplates(): AnatomyTemplate[];
   /** Aplica modelo ao ator (anexa partes). Retorna nº de partes criadas. */
   applyTemplate(actor: Actor, templateId: string): Promise<number>;
+  /** Duplica uma parte (novo id, sufixo no nome). */
+  duplicatePart(actor: Actor, partId: string): Promise<MonsterPart>;
 }
 
 export function buildApi(): MonsterAnatomyAPI {
@@ -117,6 +120,9 @@ export function buildApi(): MonsterAnatomyAPI {
     },
     applyTemplate(actor: Actor, templateId: string): Promise<number> {
       return applyTpl(actor, templateId);
+    },
+    duplicatePart(actor: Actor, partId: string): Promise<MonsterPart> {
+      return duplicateP(actor, partId);
     },
   };
 }

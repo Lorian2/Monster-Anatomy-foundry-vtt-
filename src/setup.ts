@@ -11,12 +11,14 @@
 import { MODULE_ID } from "./constants.js";
 import { getModuleApi, getSetting } from "./fvtt.js";
 import { registerAttackIntegration } from "./attack-integration.js";
+import { registerRegen } from "./regen.js";
 import { registerTargeting } from "./targeting.js";
 
 /** Registros do ciclo `init` que dependem só do módulo. */
 export function registerCombatIntegration(): void {
   registerTargeting();
   registerAttackIntegration();
+  registerRegen();
 }
 
 export function registerSettings(): void {

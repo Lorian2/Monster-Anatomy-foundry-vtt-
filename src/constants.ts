@@ -16,4 +16,6 @@ export const HOOKS = {
   PART_BREAK: "monsterAnatomy.partBreak",
   /** Disparado na transição para cortado (uma vez por transição). */
   PART_SEVER: "monsterAnatomy.partSever",
+  /** Disparado ao entrar em fase (nome da fase). */
+  PART_PHASE: "monsterAnatomy.phaseChange",
 } as const;

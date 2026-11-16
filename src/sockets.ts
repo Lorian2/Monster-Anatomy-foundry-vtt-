@@ -7,10 +7,15 @@
  * - { t: "apply", ... }   → só o GM atende (mecânica + chat + efeito + overlay local)
  * - { t: "present", ... } → todos EXCETO quem aplicou mostram só o overlay
  */
-import { getParts } from "./anatomy-store.js";
+import { getParts, getPhase } from "./anatomy-store.js";
 import { MODULE_ID } from "./constants.js";
 import { damagePartDetailed, type DamageComponent } from "./damage.js";
-import { showBreakAnnouncement, showSeverAnnouncement, sendRoutedNote } from "./presentation.js";
+import {
+  showBreakAnnouncement,
+  showSeverAnnouncement,
+  showPhaseAnnouncement,
+  sendRoutedNote,
+} from "./presentation.js";
 
 interface ApplyMsg {
   t: "apply";
@@ -26,7 +31,7 @@ interface PresentMsg {
   t: "present";
   actorUuid: string;
   partId: string;
-  kind?: "break" | "sever";
+  kind?: "break" | "sever" | "phase";
   by?: string;
 }
 
@@ -79,7 +84,8 @@ async function onSocketMessage(msg: unknown): Promise<void> {
   if (!msg || typeof msg !== "object") return;
   const m = msg as WireMsg;
   if (m.t === "apply") {
-    if (!game.user?.isGM) return;
+    // Só o GM ATIVO atende (com Mestre + Assistente online, evita aplicar em dobro).
+    if (!game.user?.isActiveGM) return;
     const actor = (await fromUuid(
       str(m.actorUuid) as Parameters<typeof fromUuid>[0],
     )) as unknown as Actor | null;
@@ -102,6 +108,7 @@ async function onSocketMessage(msg: unknown): Promise<void> {
     );
     if (result.broke) emitPresent(str(m.actorUuid), str(m.partId), "break");
     if (result.severed) emitPresent(str(m.actorUuid), str(m.partId), "sever");
+    if (result.phased !== "") emitPresent(str(m.actorUuid), str(m.partId), "phase");
   } else if (m.t === "present") {
     if (typeof m.by === "string" && m.by === game.user?.id) return; // quem aplicou já apresentou
     const actor = (await fromUuid(
@@ -111,6 +118,7 @@ async function onSocketMessage(msg: unknown): Promise<void> {
     const part = getParts(actor).find((p) => p.id === str(m.partId));
     if (!part) return;
     if (m.kind === "sever") showSeverAnnouncement(actor, part);
+    else if (m.kind === "phase") showPhaseAnnouncement(actor, part, getPhase(actor) || "?");
     else showBreakAnnouncement(actor, part);
   }
 }
@@ -137,7 +145,7 @@ export function emitApply(
 export function emitPresent(
   actorUuid: string,
   partId: string,
-  kind: "break" | "sever" = "break",
+  kind: "break" | "sever" | "phase" = "break",
 ): void {
   const msg: PresentMsg = { t: "present", actorUuid, partId, kind, by: game.user?.id };
   emit(msg);

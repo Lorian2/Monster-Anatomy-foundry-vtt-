@@ -144,6 +144,7 @@ async function onDamageRolled(args: unknown[]): Promise<void> {
     await sendRoutedNote(actor, partName, result.applied, result.globalApplied, result.bonus, result.bonusFlat);
     if (result.broke) emitPresent(actor.uuid, hit.partId, "break");
     if (result.severed) emitPresent(actor.uuid, hit.partId, "sever");
+    if (result.phased !== "") emitPresent(actor.uuid, hit.partId, "phase");
   } else if (gmOnline()) {
     emitApply(actor.uuid, hit.partId, components, hit.attacker, hit.attackerUuid);
     ui.notifications?.info(tf("MONSTER_ANATOMY.Target.SentToGM", { part: partName }));

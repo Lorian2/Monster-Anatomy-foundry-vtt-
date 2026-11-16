@@ -1,11 +1,10 @@
-Modulo feito por vibecoding
 # Monster Anatomy
 
 Sistema de anatomia, partes destrutíveis e feedback visual para **Foundry VTT v13+**.
 Foco inicial: **D&D 5e**. Inspirado em *Monster Hunter* (partes/hitzones/part break)
 com direção visual de impacto (Persona/JRPG).
 
-> Status: **1.1.0** — release pública (Foundry v14 + dnd5e). Ver `CHANGELOG.md`.
+> Status: **1.2.1** — release pública (Foundry v14 + dnd5e). Ver `CHANGELOG.md`.
 
 ## Requisitos
 
@@ -74,10 +73,10 @@ percentual ou fixo).
 
 Fluxo (dnd5e):
 
-1. **Mire** o token do monstro (alvo) → abre o **mapa corporal**: clique na
-   região e depois na parte (ou ataque normal). O desenho acompanha a anatomia
-   (draconídeo/humanoide, trocável no painel); partes fora do mapa aparecem em
-   lista. A mira vale até trocar de alvo.
+1. **Mire** o token do monstro (alvo) → abre o **seletor de partes**: lista com
+   imagem + nome + CA + HP + estado por parte (ou ataque normal).
+   **Adição rápida** (Mestre, no rodapé): nome + imagem opcional (browse) + `+`
+   cria a parte na hora e atualiza a lista. A mira vale até trocar de alvo.
 2. **Role o ataque** normalmente na ficha → o módulo avalia contra a **CA da parte**
    e publica ACERTO/ERROU no chat (crítico no 20 natural sempre acerta).
 3. **Role o dano** normalmente → o módulo aplica sozinho na parte (e no global,
@@ -90,8 +89,7 @@ o GM aplica e todos veem o anúncio juntos. Sem GM online, o jogador é avisado.
 
 > Para ataques em área/testes sem rolagem de ataque, use as macros de dano manual.
 
-## Ao quebrar: vinculações (0.2)
-No editor da parte, seção **Ao quebrar**:
+## Ao quebrar: vinculações (0.2)No editor da parte, seção **Ao quebrar**:
 
 - **Desabilitar item/ataque** — ex.: Cauda → Tail Swipe. Enquanto quebrada, usar o
   item é bloqueado com aviso; a linha da parte mostra 🔗 + desabilitado.
@@ -104,6 +102,17 @@ No editor da parte, seção **Ao quebrar**:
 Reparar = curar até o máximo (ou editar o estado para fora de quebrado):
 efeitos/condição saem sozinhos, atributo volta, item reabilita.
 
+## Boss mechanics: regeneração e fases (§61)
+
+- **Regeneração** (campo por parte): no início do turno do monstro em combate,
+  a parte recupera N HP (só GM aplica, uma vez para a mesa; nota no chat).
+  Encher tudo repara (troll que regera o membro).
+- **Fases** (campo `Fase ao quebrar`, ex. "Fase 2"): ao romper, o monstro entra
+  na fase (badge 🔥 no painel), com anúncio próprio + hook `phaseChange`.
+  Música, aparência e novos ataques via macro de ruptura (`api.on("phaseChange",
+  ...)` → troque playlist, token e itens). Fases não desacontecem; curar não
+  limpa a fase atual.
+
 ## Modelos de anatomia e CA secreta
 
 - **Modelos** (painel, linha de presets): **Draconídeo** e **Humanoide** embutidos
@@ -112,6 +121,8 @@ efeitos/condição saem sozinhos, atributo volta, item reabilita.
   API: `api.getTemplates()` / `api.applyTemplate(actor, id)`.
 - **CA secreta** (olho no painel, só GM): jogadores veem `??` no painel, mapa,
   tracker e notas de ataque; o Mestre vê tudo. Ideal para chefes.
+- **Imagens por parte**: campo com FilePicker + preview no editor; thumbnails no
+  painel, tracker e botões do mapa. Vão junto nos modelos.
 
 ## Hitzones e severing (0.3)
 
@@ -199,7 +210,7 @@ monster-anatomy/
 
 ```js
 const api = game.modules.get("monster-anatomy").api;
-api.version;                 // "0.1.0"
+api.version;                 // ex.: "1.2.1"
 api.getParts(actor);         // MonsterPart[] (cada parte tem `id` único)
 api.canEdit(actor);          // boolean (GM ou dono)
 await api.openAnatomy(actor); // abre o painel

@@ -1,74 +1,108 @@
 <form class="monster-anatomy-form" autocomplete="off">
   <p class="ma-editing-for">{{actorName}}</p>
 
-  <div class="ma-field">
-    <label for="ma-name">{{localize "MONSTER_ANATOMY.Editor.Name"}}</label>
-    <input id="ma-name" name="name" type="text" value="{{part.name}}" required maxlength="120" />
-  </div>
+  <fieldset class="ma-section">
+    <legend><i class="fa-solid fa-fingerprint"></i> {{localize "MONSTER_ANATOMY.Editor.SectionIdentity"}}</legend>
 
-  <div class="ma-row">
     <div class="ma-field">
-      <label for="ma-ac">{{localize "MONSTER_ANATOMY.Editor.Ac"}}</label>
-      <input id="ma-ac" name="ac" type="number" min="0" step="1" value="{{part.ac}}" />
+      <label for="ma-name">{{localize "MONSTER_ANATOMY.Editor.Name"}}</label>
+      <input id="ma-name" name="name" type="text" value="{{part.name}}" required maxlength="120" />
     </div>
-    <div class="ma-field">
-      <label for="ma-hpvalue">{{localize "MONSTER_ANATOMY.Editor.HpValue"}}</label>
-      <input id="ma-hpvalue" name="hpValue" type="number" min="0" step="1" value="{{part.hp.value}}" />
-    </div>
-    <div class="ma-field">
-      <label for="ma-hpmax">{{localize "MONSTER_ANATOMY.Editor.HpMax"}}</label>
-      <input id="ma-hpmax" name="hpMax" type="number" min="1" step="1" value="{{part.hp.max}}" />
-    </div>
-  </div>
 
-  <div class="ma-row">
     <div class="ma-field">
-      <label for="ma-bonusmode">{{localize "MONSTER_ANATOMY.Editor.BonusMode"}}</label>
-      <select id="ma-bonusmode" name="bonusMode">
-        <option value="inherit" {{#if (eq part.bonus.mode "inherit")}}selected{{/if}}>{{localize "MONSTER_ANATOMY.Editor.BonusInherit"}}</option>
-        <option value="off" {{#if (eq part.bonus.mode "off")}}selected{{/if}}>{{localize "MONSTER_ANATOMY.Editor.BonusOff"}}</option>
-        <option value="percent" {{#if (eq part.bonus.mode "percent")}}selected{{/if}}>{{localize "MONSTER_ANATOMY.Editor.BonusPercent"}}</option>
-        <option value="flat" {{#if (eq part.bonus.mode "flat")}}selected{{/if}}>{{localize "MONSTER_ANATOMY.Editor.BonusFlat"}}</option>
-      </select>
+      <label for="ma-img">{{localize "MONSTER_ANATOMY.Editor.Image"}}</label>
+      <div class="ma-row ma-imgrow">
+        <img class="ma-imgpreview" src="{{part.img}}" alt=""{{#unless part.img}} hidden{{/unless}} />
+        <input id="ma-img" name="img" type="text" value="{{part.img}}" placeholder="icons/svg/paw.svg" />
+        <button type="button" data-action="browse-image" title="{{localize "MONSTER_ANATOMY.Editor.Browse"}}">
+          <i class="fa-solid fa-folder-open"></i>
+        </button>
+      </div>
     </div>
+
     <div class="ma-field">
-      <label for="ma-bonusvalue">{{localize "MONSTER_ANATOMY.Editor.BonusValue"}}</label>
-      <input id="ma-bonusvalue" name="bonusValue" type="number" min="0" step="1" value="{{part.bonus.value}}" />
+      <label for="ma-notes">{{localize "MONSTER_ANATOMY.Editor.Notes"}}</label>
+      <textarea id="ma-notes" name="notes" rows="2">{{part.notes}}</textarea>
     </div>
-  </div>
+  </fieldset>
 
-  <div class="ma-row">
-    <label class="ma-check">
-      <input name="breakable" type="checkbox" {{checked part.breakable}} />
-      {{localize "MONSTER_ANATOMY.Editor.Breakable"}}
-    </label>
-    <label class="ma-check">
-      <input name="severable" type="checkbox" {{checked part.severable}} />
-      {{localize "MONSTER_ANATOMY.Editor.Severable"}}
-    </label>
-  </div>
+  <fieldset class="ma-section">
+    <legend><i class="fa-solid fa-swords"></i> {{localize "MONSTER_ANATOMY.Editor.SectionCombat"}}</legend>
 
-  <div class="ma-row">
-    <div class="ma-field">
-      <label for="ma-severmax">{{localize "MONSTER_ANATOMY.Editor.SeverHp"}}</label>
-      <input id="ma-severmax" name="severMax" type="number" min="1" step="1" value="{{sever.max}}" />
+    <div class="ma-row">
+      <div class="ma-field">
+        <label for="ma-ac">{{localize "MONSTER_ANATOMY.Editor.Ac"}}</label>
+        <input id="ma-ac" name="ac" type="number" min="0" step="1" value="{{part.ac}}" />
+      </div>
+      <div class="ma-field">
+        <label for="ma-hpvalue">{{localize "MONSTER_ANATOMY.Editor.HpValue"}}</label>
+        <input id="ma-hpvalue" name="hpValue" type="number" min="0" step="1" value="{{part.hp.value}}" />
+      </div>
+      <div class="ma-field">
+        <label for="ma-hpmax">{{localize "MONSTER_ANATOMY.Editor.HpMax"}}</label>
+        <input id="ma-hpmax" name="hpMax" type="number" min="1" step="1" value="{{part.hp.max}}" />
+      </div>
+      <div class="ma-field">
+        <label for="ma-regen">{{localize "MONSTER_ANATOMY.Editor.Regen"}}</label>
+        <input id="ma-regen" name="regen" type="number" min="0" step="1" value="{{part.regen}}" />
+      </div>
     </div>
-  </div>
 
-  <div class="ma-field">
-    <span class="ma-label">{{localize "MONSTER_ANATOMY.Editor.SeverTypes"}}</span>
-    <div class="ma-checks">
-      {{#each physicalTypes}}
+    <div class="ma-row">
+      <div class="ma-field">
+        <label for="ma-bonusmode">{{localize "MONSTER_ANATOMY.Editor.BonusMode"}}</label>
+        <select id="ma-bonusmode" name="bonusMode">
+          <option value="inherit" {{#if (eq part.bonus.mode "inherit")}}selected{{/if}}>{{localize "MONSTER_ANATOMY.Editor.BonusInherit"}}</option>
+          <option value="off" {{#if (eq part.bonus.mode "off")}}selected{{/if}}>{{localize "MONSTER_ANATOMY.Editor.BonusOff"}}</option>
+          <option value="percent" {{#if (eq part.bonus.mode "percent")}}selected{{/if}}>{{localize "MONSTER_ANATOMY.Editor.BonusPercent"}}</option>
+          <option value="flat" {{#if (eq part.bonus.mode "flat")}}selected{{/if}}>{{localize "MONSTER_ANATOMY.Editor.BonusFlat"}}</option>
+        </select>
+      </div>
+      <div class="ma-field">
+        <label for="ma-bonusvalue">{{localize "MONSTER_ANATOMY.Editor.BonusValue"}}</label>
+        <input id="ma-bonusvalue" name="bonusValue" type="number" min="0" step="1" value="{{part.bonus.value}}" />
+      </div>
+      <div class="ma-field">
+        <label for="ma-state">{{localize "MONSTER_ANATOMY.Editor.State"}}</label>
+        <select id="ma-state" name="state">
+          {{selectOptions states selected=part.state valueAttr="value" labelAttr="label" localize=false}}
+        </select>
+      </div>
+    </div>
+
+    <div class="ma-row">
       <label class="ma-check">
-        <input name="severType" type="checkbox" value="{{key}}" {{checked checked}} />
-        {{label}}
+        <input name="breakable" type="checkbox" {{checked part.breakable}} />
+        {{localize "MONSTER_ANATOMY.Editor.Breakable"}}
       </label>
-      {{/each}}
+      <label class="ma-check">
+        <input name="severable" type="checkbox" {{checked part.severable}} />
+        {{localize "MONSTER_ANATOMY.Editor.Severable"}}
+      </label>
     </div>
-  </div>
 
-  <div class="ma-field">
-    <span class="ma-label">{{localize "MONSTER_ANATOMY.Editor.Hitzones"}}</span>
+    <div class="ma-row">
+      <div class="ma-field">
+        <label for="ma-severmax">{{localize "MONSTER_ANATOMY.Editor.SeverHp"}}</label>
+        <input id="ma-severmax" name="severMax" type="number" min="1" step="1" value="{{sever.max}}" />
+      </div>
+    </div>
+
+    <div class="ma-field">
+      <span class="ma-label">{{localize "MONSTER_ANATOMY.Editor.SeverTypes"}}</span>
+      <div class="ma-checks">
+        {{#each physicalTypes}}
+        <label class="ma-check">
+          <input name="severType" type="checkbox" value="{{key}}" {{checked checked}} />
+          {{label}}
+        </label>
+        {{/each}}
+      </div>
+    </div>
+  </fieldset>
+
+  <details class="ma-section">
+    <summary><i class="fa-solid fa-table-cells"></i> {{localize "MONSTER_ANATOMY.Editor.Hitzones"}}</summary>
     <div class="ma-hzgrid">
       {{#each hitzones}}
       <label class="ma-hz" title="{{label}}">
@@ -77,22 +111,15 @@
       </label>
       {{/each}}
     </div>
-  </div>
-
-  <div class="ma-field">
-    <label for="ma-state">{{localize "MONSTER_ANATOMY.Editor.State"}}</label>
-    <select id="ma-state" name="state">
-      {{selectOptions states selected=part.state valueAttr="value" labelAttr="label" localize=false}}
-    </select>
-  </div>
-
-  <div class="ma-field">
-    <label for="ma-notes">{{localize "MONSTER_ANATOMY.Editor.Notes"}}</label>
-    <textarea id="ma-notes" name="notes" rows="3">{{part.notes}}</textarea>
-  </div>
+  </details>
 
   <fieldset class="ma-break">
     <legend>{{localize "MONSTER_ANATOMY.Editor.BreakSection"}}</legend>
+
+    <div class="ma-field">
+      <label for="ma-phase">{{localize "MONSTER_ANATOMY.Editor.PhaseName"}}</label>
+      <input id="ma-phase" name="phaseName" type="text" value="{{part.phaseName}}" maxlength="80" placeholder="Fase 2" />
+    </div>
 
     <div class="ma-field">
       <label for="ma-disable">{{localize "MONSTER_ANATOMY.Editor.DisableItem"}}</label>
@@ -143,8 +170,8 @@
     </div>
   </fieldset>
 
-  <div class="ma-field">
-    <span class="ma-label">{{localize "MONSTER_ANATOMY.Editor.Rewards"}}</span>
+  <fieldset class="ma-section">
+    <legend><i class="fa-solid fa-gift"></i> {{localize "MONSTER_ANATOMY.Editor.Rewards"}}</legend>
     <div class="ma-rewards" data-rewards>
       {{#each rewards}}
       <div class="ma-reward" data-reward data-reward-id="{{id}}">
@@ -168,7 +195,7 @@
       <i class="fa-solid fa-plus"></i>
       <span>{{localize "MONSTER_ANATOMY.Editor.RewardAdd"}}</span>
     </button>
-  </div>
+  </fieldset>
 
   <footer class="ma-form-footer">
     <button type="submit" class="ma-save">

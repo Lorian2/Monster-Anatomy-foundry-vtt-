@@ -38,6 +38,7 @@ export class PartEditor extends HandlebarsApplicationMixin(ApplicationV2) {
     actions: {
       "add-reward": PartEditor.onAddReward,
       "remove-reward": PartEditor.onRemoveReward,
+      "browse-image": PartEditor.onBrowseImage,
     },
   };
 
@@ -78,6 +79,9 @@ export class PartEditor extends HandlebarsApplicationMixin(ApplicationV2) {
     const base = await super._prepareContext(options);
     const part = this.editing;
     const actor = this.editorOptions.actor;
+    const types = damageTypeList();
+    const labelOf = (key: string): string =>
+      types.find((d) => d.key === key)?.label ?? key;
     return {
       ...base,
       part,
@@ -93,10 +97,10 @@ export class PartEditor extends HandlebarsApplicationMixin(ApplicationV2) {
       damageTypes: damageTypeList(),
       physicalTypes: PHYSICAL_DAMAGE_TYPES.map((key) => ({
         key,
-        label: damageTypeLabel(key),
+        label: labelOf(key),
         checked: (part.severTypes ?? ["slashing"]).includes(key),
       })),
-      hitzones: damageTypeList().map((d) => ({
+      hitzones: types.map((d) => ({
         key: d.key,
         label: d.label,
         value: part.hitzone?.[d.key] ?? 1,
@@ -120,6 +124,30 @@ export class PartEditor extends HandlebarsApplicationMixin(ApplicationV2) {
     this.element
       .querySelector("form.monster-anatomy-form")
       ?.addEventListener("submit", (event) => void this.#onSubmit(event));
+    const imgInput = this.element.querySelector<HTMLInputElement>("#ma-img");
+    const preview = this.element.querySelector<HTMLImageElement>(".ma-imgpreview");
+    imgInput?.addEventListener("input", () => syncPreview(imgInput, preview));
+    preview?.addEventListener("error", () => {
+      if (preview) preview.hidden = true;
+    });
+  }
+
+  static onBrowseImage(this: unknown, _event: PointerEvent, _target: HTMLElement): void {
+    const editor = this as PartEditor;
+    const imgInput = editor.element.querySelector<HTMLInputElement>("#ma-img");
+    const preview = editor.element.querySelector<HTMLImageElement>(".ma-imgpreview");
+    const picker = new foundry.applications.apps.FilePicker({
+      type: "image",
+      current: imgInput?.value ?? "",
+      callback: (path: string) => {
+        if (imgInput) {
+          imgInput.value = path;
+          imgInput.dispatchEvent(new Event("input", { bubbles: true }));
+        }
+        syncPreview(imgInput, preview);
+      },
+    });
+    void picker.render(true);
   }
 
   static onAddReward(this: unknown, _event: PointerEvent, target: HTMLElement): void {
@@ -161,6 +189,13 @@ export class PartEditor extends HandlebarsApplicationMixin(ApplicationV2) {
     const previous = partId ? getParts(actor).find((p) => p.id === partId) : undefined;
 
     const max = Math.max(1, Math.floor(num("hpMax", previous?.hp.max ?? 10)));
+    const regen = Math.max(0, Math.floor(num("regen", previous?.regen ?? 0)));
+    const phaseName = str("phaseName");
+    const zoneRaw = str("zone");
+    const zone =
+      zoneRaw === "head" || zoneRaw === "torso" || zoneRaw === "left" || zoneRaw === "right" || zoneRaw === "tail"
+        ? zoneRaw
+        : (previous?.zone ?? null);
     const durRaw = str("effectDuration");
     const disableItemId = str("disableItemId");
     const link: BreakLinkage = {
@@ -218,6 +253,8 @@ export class PartEditor extends HandlebarsApplicationMixin(ApplicationV2) {
     const candidate: MonsterPart = {
       id: previous?.id ?? "",
       name: str("name"),
+      img: str("img"),
+      zone,
       ac: Math.max(0, Math.floor(num("ac", previous?.ac ?? 10))),
       hp: {
         max,
@@ -227,6 +264,8 @@ export class PartEditor extends HandlebarsApplicationMixin(ApplicationV2) {
       severable: data.get("severable") === "on",
       state: (str("state") || previous?.state || "intact") as PartState,
       notes: str("notes"),
+      regen,
+      phaseName,
       onBreak: link,
       hitzone,
       sever: { value: Math.min(severMax, prevSeverValue), max: severMax },
@@ -287,12 +326,32 @@ export namespace PartEditor {
       foundry.applications.api.ApplicationV2.RenderOptions {}
 }
 
+/** Espelha o caminho no preview (esconde se vazio). */
+function syncPreview(
+  input: HTMLInputElement | null | undefined,
+  preview: HTMLImageElement | null | undefined,
+): void {
+  if (!preview) return;
+  const src = input?.value?.trim() ?? "";
+  preview.hidden = src === "";
+  if (src !== "") preview.src = src;
+}
+
 /** Lista de tipos de dano do sistema (dnd5e) com fallback estático. */
 function damageTypeList(): Array<{ key: string; label: string }> {
-  const cfg = (CONFIG as unknown as { DND5E?: { damageTypes?: Record<string, string> } })
+  const cfg = (CONFIG as unknown as { DND5E?: { damageTypes?: Record<string, unknown> } })
     ?.DND5E?.damageTypes;
   if (cfg && typeof cfg === "object") {
-    return Object.entries(cfg).map(([key, label]) => ({ key, label: damageTypeLabel(label) }));
+    return Object.entries(cfg).map(([key, entry]) => ({
+      key,
+      label: damageTypeLabel(
+        typeof entry === "string"
+          ? entry
+          : typeof (entry as { label?: unknown })?.label === "string"
+            ? ((entry as { label?: string }).label as string)
+            : key,
+      ),
+    }));
   }
   return [...FALLBACK_DAMAGE_TYPES].map((key) => ({ key, label: key }));
 }

@@ -4,7 +4,7 @@
  * sem subtipo custom de documento no MVP, compatibilidade total com dnd5e.
  */
 import { FLAG_PARTS, FLAG_SCOPE, HOOKS, MODULE_ID } from "./constants.js";
-import { clonePart, linkageActive, templateFromParts, partsFromTemplate, BUILTIN_TEMPLATES, type AnatomyTemplate, type MonsterPart } from "./part-model.js";
+import { clonePart, generatePartId, linkageActive, templateFromParts, partsFromTemplate, BUILTIN_TEMPLATES, type AnatomyTemplate, type MonsterPart } from "./part-model.js";
 import { applyBreakActions, cleanupBreakLinkage } from "./break-actions.js";
 import { callHook, getSetting, t } from "./fvtt.js";
 
@@ -89,6 +89,21 @@ export async function deletePart(actor: Actor, partId: string): Promise<void> {
   await persistParts(actor, parts);
 }
 
+/** Duplica uma parte (novo id, mesmo conteúdo, sufixo no nome). */
+export async function duplicatePart(actor: Actor, partId: string): Promise<MonsterPart> {
+  const parts = getParts(actor);
+  const source = parts.find((p) => p.id === partId);
+  if (!source) throw new Error(`monster-anatomy: parte não encontrada (${partId})`);
+  const copy: MonsterPart = {
+    ...clonePart(source),
+    id: generatePartId(),
+    name: `${source.name}${t("MONSTER_ANATOMY.Panel.CopySuffix")}`,
+  };
+  parts.push(copy);
+  await persistParts(actor, parts);
+  return copy;
+}
+
 export function canEdit(actor: Actor): boolean {
   // Só GM ou dono do Actor edita; demais usuários têm leitura.
   return game.user?.isGM === true || actor.isOwner;
@@ -133,8 +148,9 @@ export async function saveTemplate(
   name: string,
   parts: MonsterPart[],
   map?: string,
+  mapImage?: string,
 ): Promise<AnatomyTemplate> {
-  const tpl = templateFromParts(name, parts, map);
+  const tpl = templateFromParts(name, parts, map, mapImage);
   await writeCustomTemplates([...readCustomTemplates(), tpl]);
   return tpl;
 }
@@ -155,6 +171,9 @@ export async function applyTemplate(actor: Actor, templateId: string): Promise<n
   const fresh = partsFromTemplate(tpl, actor);
   await persistParts(actor, [...getParts(actor), ...fresh]);
   if (tpl.map) await actor.setFlag(MODULE_ID, "mapLayout", tpl.map);
+  if (typeof tpl.mapImage === "string" && tpl.mapImage !== "") {
+    await actor.setFlag(MODULE_ID, "mapImage", tpl.mapImage);
+  }
   return fresh.length;
 }
 
@@ -170,6 +189,34 @@ export function getMapLayout(actor: Actor): string {
 
 export async function setMapLayout(actor: Actor, layout: string): Promise<void> {
   await actor.setFlag(MODULE_ID, "mapLayout", layout === "humanoid" ? "humanoid" : "dragonoid");
+}
+
+/** Arte custom do mapa corporal ("" = silhueta padrão). */
+export function getMapImage(actor: Actor): string {
+  try {
+    const v = actor.getFlag(MODULE_ID, "mapImage") as unknown;
+    return typeof v === "string" ? v : "";
+  } catch {
+    return "";
+  }
+}
+
+export async function setMapImage(actor: Actor, path: string): Promise<void> {
+  await actor.setFlag(MODULE_ID, "mapImage", path);
+}
+
+/** Fase atual do monstro ("" = nenhuma). */
+export function getPhase(actor: Actor): string {
+  try {
+    const v = actor.getFlag(MODULE_ID, "phase") as unknown;
+    return typeof v === "string" ? v : "";
+  } catch {
+    return "";
+  }
+}
+
+export async function setPhase(actor: Actor, phase: string): Promise<void> {
+  await actor.setFlag(MODULE_ID, "phase", phase);
 }
 
 /** CA das partes escondida de não-GM neste ator? */
