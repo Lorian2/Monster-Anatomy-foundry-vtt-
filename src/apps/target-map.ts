@@ -21,14 +21,27 @@ function esc(value: string): string {
 interface PartRow {
   id: string;
   img: string;
-  display: string;
+  name: string;
+  state: string;
+  stateLabel: string;
+  acDisplay: string;
+  hpValue: number;
+  hpMax: number;
+  hpPct: number;
 }
 
 function toRow(p: MonsterPart, maskAc: boolean): PartRow {
+  const pct = p.hp.max > 0 ? (p.hp.value / p.hp.max) * 100 : 0;
   return {
     id: p.id,
     img: p.img ?? "",
-    display: `${p.name} — CA ${maskAc ? "??" : String(p.ac)} — ${p.hp.value}/${p.hp.max} • ${t(PART_STATE_CHOICES[p.state])}`,
+    name: p.name,
+    state: p.state,
+    stateLabel: t(PART_STATE_CHOICES[p.state]),
+    acDisplay: maskAc ? "??" : String(p.ac),
+    hpValue: p.hp.value,
+    hpMax: p.hp.max,
+    hpPct: Math.max(0, Math.min(100, Math.round(pct))),
   };
 }
 
@@ -63,6 +76,8 @@ export class TargetMapDialog extends HandlebarsApplicationMixin(ApplicationV2) {
   /** Abre o seletor e resolve com o id da parte (null = normal/dispensado). */
   static pick(actor: Actor): Promise<string | null> {
     return new Promise((resolve) => {
+      // Só um seletor por vez: o anterior (se aberto) conta como "ataque normal".
+      void foundry.applications.instances.get("monster-anatomy-target-map")?.close();
       const app = new TargetMapDialog({ actor } as TargetMapDialog.Configuration, resolve);
       void app.render(true);
     });

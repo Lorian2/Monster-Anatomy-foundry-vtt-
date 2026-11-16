@@ -47,7 +47,14 @@ export class PartEditor extends HandlebarsApplicationMixin(ApplicationV2) {
   };
 
   static async openFor(actor: Actor, partId?: string, onSaved?: () => void): Promise<void> {
-    const app = new PartEditor({ actor, partId, onSaved } as PartEditor.Configuration);
+    const id = `monster-anatomy-editor-${actor.uuid.replaceAll(".", "-")}-${partId ?? "new"}`;
+    const open = foundry.applications.instances.get(id);
+    if (open) {
+      await open.render({ force: true });
+      open.bringToFront();
+      return;
+    }
+    const app = new PartEditor({ id, actor, partId, onSaved } as PartEditor.Configuration);
     await app.render(true);
   }
 

@@ -27,7 +27,8 @@
       "Amount": "Valor",
       "Damage": "Aplicar dano",
       "Heal": "Aplicar cura",
-      "SeverLabel": "Reserva de corte (dano cortante)"
+      "SeverLabel": "Reserva de corte (dano cortante)",
+      "GmTools": "Modelos e ferramentas"
     },
     "Editor": {
       "Title": "Editar parte",
@@ -152,7 +153,10 @@
       "ZoneRight": "Direita",
       "ZoneTail": "Cauda",
       "SentToGM": "Dano na parte enviado ao Mestre ({part}).",
-      "NoGM": "Sem Mestre online para aplicar dano na parte."
+      "NoGM": "Sem Mestre online para aplicar dano na parte.",
+      "Hint": "Onde você vai atacar?",
+      "Aiming": "Mirando: {part}",
+      "AimClear": "Limpar mira (ataque normal)"
     },
     "Attack": {
       "Hit": "⚔️ {attacker} → {part} ({actor}): {total} vs CA {ac} — ACERTO",

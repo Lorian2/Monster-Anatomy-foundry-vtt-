@@ -1,13 +1,30 @@
 <div class="ma-targetmap">
-  <p class="ma-editing-for">{{actorName}}</p>
-  <div class="ma-zoneparts" data-parts>
+  <p class="ma-target-prompt">{{localize "MONSTER_ANATOMY.Target.Hint"}} <strong>{{actorName}}</strong></p>
+  <div class="ma-partgrid" data-parts>
     {{#each parts}}
-    <button type="button" data-part-id="{{id}}">{{#if img}}<img class="ma-pick-img" src="{{img}}" alt="" />{{/if}}<span>{{display}}</span></button>
+    <button type="button" class="ma-partcard ma-state-{{state}}" data-part-id="{{id}}">
+      <span class="ma-partcard-thumb">
+        {{#if img}}<img src="{{img}}" alt="" />{{else}}<i class="fa-solid fa-crosshairs"></i>{{/if}}
+      </span>
+      <span class="ma-partcard-body">
+        <span class="ma-partcard-name">{{name}}</span>
+        <span class="ma-hpbar" role="progressbar" aria-valuenow="{{hpValue}}" aria-valuemin="0" aria-valuemax="{{hpMax}}">
+          <span class="ma-hpfill" style="width: {{hpPct}}%;"></span>
+        </span>
+        <span class="ma-partcard-meta">
+          <span class="ma-badge">{{stateLabel}}</span>
+          <span class="ma-ac" title="{{localize "MONSTER_ANATOMY.Panel.AcLabel"}}"><i class="fa-solid fa-shield-halved"></i> {{acDisplay}}</span>
+        </span>
+      </span>
+    </button>
     {{/each}}
   </div>
+  <button type="button" class="ma-normal-attack" data-normal>
+    <i class="fa-solid fa-hand-fist"></i> {{localize "MONSTER_ANATOMY.Target.Normal"}}
+  </button>
   {{#if canAdd}}
-  <div class="ma-field">
-    <span class="ma-label">{{localize "MONSTER_ANATOMY.Target.QuickAdd"}}</span>
+  <details class="ma-quickadd">
+    <summary>{{localize "MONSTER_ANATOMY.Target.QuickAdd"}}</summary>
     <div class="ma-row ma-qarow">
       <img class="ma-imgpreview" data-qa="preview" src="" alt="" hidden />
       <input data-qa="name" type="text" maxlength="80" placeholder="{{localize "MONSTER_ANATOMY.Editor.Name"}}" />
@@ -19,11 +36,6 @@
         <i class="fa-solid fa-plus"></i>
       </button>
     </div>
-  </div>
+  </details>
   {{/if}}
-  <footer class="ma-form-footer">
-    <button type="button" data-normal>
-      <span>{{localize "MONSTER_ANATOMY.Target.Normal"}}</span>
-    </button>
-  </footer>
 </div>

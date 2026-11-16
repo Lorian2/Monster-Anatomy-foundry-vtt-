@@ -8,7 +8,7 @@
  * Nada bloqueia a rolagem no meio: a escolha acontece ANTES de rolar.
  */
 import { getParts } from "./anatomy-store.js";
-import { getSetting, tokenUuid } from "./fvtt.js";
+import { getSetting, t, tf, tokenUuid } from "./fvtt.js";
 import { TargetMapDialog } from "./apps/target-map.js";
 
 export interface TargetSelection {
@@ -25,6 +25,30 @@ export function getSelection(): TargetSelection | null {
 
 export function clearSelection(): void {
   selection = null;
+  updateAimChip();
+}
+
+/** Plaquinha "Mirando: parte ✕" sempre visível enquanto há parte escolhida. */
+function updateAimChip(): void {
+  document.getElementById("monster-anatomy-aim")?.remove();
+  if (!selection) return;
+  const actor = fromUuidSync(selection.actorUuid as Parameters<typeof fromUuidSync>[0]) as unknown;
+  const part = actor instanceof Actor ? getParts(actor).find((p) => p.id === selection?.partId) : undefined;
+  if (!part) return;
+  const chip = document.createElement("button");
+  chip.type = "button";
+  chip.id = "monster-anatomy-aim";
+  chip.className = "monster-anatomy ma-aim-chip";
+  chip.title = t("MONSTER_ANATOMY.Target.AimClear");
+  const icon = document.createElement("i");
+  icon.className = "fa-solid fa-crosshairs";
+  const label = document.createElement("span");
+  label.textContent = tf("MONSTER_ANATOMY.Target.Aiming", { part: part.name });
+  const close = document.createElement("i");
+  close.className = "fa-solid fa-xmark";
+  chip.append(icon, label, close);
+  chip.addEventListener("click", () => clearSelection());
+  document.body.append(chip);
 }
 
 /** Abre o seletor para o alvo atual (alvo único com partes). */
@@ -74,6 +98,7 @@ export async function promptTargetSelection(source?: unknown): Promise<void> {
     actorUuid: actor.uuid,
     partId: part.id,
   };
+  updateAimChip();
 }
 
 export function registerTargeting(): void {

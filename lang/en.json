@@ -27,7 +27,8 @@
       "Amount": "Amount",
       "Damage": "Apply damage",
       "Heal": "Apply healing",
-      "SeverLabel": "Sever pool (cutting damage)"
+      "SeverLabel": "Sever pool (cutting damage)",
+      "GmTools": "Templates and tools"
     },
     "Editor": {
       "Title": "Edit Part",
@@ -63,7 +64,8 @@
       "EffectIcon": "Effect icon",
       "EffectDuration": "Duration (rounds, empty = until repaired)",
       "Condition": "Apply condition",
-      "SetAttrPath": "Attribute path",      "SetAttrValue": "New value",
+      "SetAttrPath": "Attribute path",
+      "SetAttrValue": "New value",
       "MacroUuid": "Run macro (uuid)",
       "Rewards": "Rewards (tables or items)",
       "RewardEvent": "Event",
@@ -151,7 +153,10 @@
       "ZoneRight": "Right",
       "ZoneTail": "Tail",
       "SentToGM": "Part damage sent to the GM ({part}).",
-      "NoGM": "No GM online to apply part damage."
+      "NoGM": "No GM online to apply part damage.",
+      "Hint": "Where do you strike?",
+      "Aiming": "Aiming: {part}",
+      "AimClear": "Clear aim (normal attack)"
     },
     "Attack": {
       "Hit": "⚔️ {attacker} → {part} ({actor}): {total} vs AC {ac} — HIT",

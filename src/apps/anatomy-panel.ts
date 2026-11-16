@@ -101,7 +101,15 @@ export class AnatomyPanel extends HandlebarsApplicationMixin(ApplicationV2) {  s
 
   /** Abre o painel para um Actor. */
   static async openFor(actor: Actor): Promise<void> {
-    const app = new AnatomyPanel({ actor } as AnatomyPanel.Configuration);
+    // Um painel por ator (ids fixos faziam duas janelas brigarem pelo mesmo elemento).
+    const id = `monster-anatomy-panel-${actor.uuid.replaceAll(".", "-")}`;
+    const open = foundry.applications.instances.get(id);
+    if (open) {
+      await open.render({ force: true });
+      open.bringToFront();
+      return;
+    }
+    const app = new AnatomyPanel({ id, actor } as AnatomyPanel.Configuration);
     await app.render(true);
   }
 

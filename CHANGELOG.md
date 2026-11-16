@@ -2,6 +2,24 @@
 
 Todas as mudanças notáveis deste módulo. Formato inspirado no Keep a Changelog.
 
+## [1.3.0] — 2026-11-16
+
+### Fluxo do jogador (mais simples)
+- Seletor de parte redesenhado: cartões grandes com imagem, barra de vida, estado e CA;
+  "Ataque normal" como botão separado; adição rápida (Mestre) recolhida
+- Plaquinha **"Mirando: parte ✕"** sempre visível enquanto há parte escolhida (clique limpa)
+- Painel: ID e marcações técnicas saem da vista (ID só no tooltip, para o Mestre); ferramentas
+  de modelos e CA secreta recolhidas em "Modelos e ferramentas"
+
+### Visual
+- Novos cartões de parte, barras de vida com cor por estado (intacta/danificada/quebrada/cortada),
+  selos de estado, tracker e seletor no mesmo estilo; ações do Mestre discretas até passar o mouse
+
+### Correções
+- Janelas de monstros diferentes usavam o mesmo id e brigavam entre si (painel, tracker,
+  resumo, editor); agora há uma janela por ator e abrir de novo só a traz para frente
+- Abrir um novo seletor de parte fecha o anterior
+
 ## [1.2.1] — 2026-11-16
 
 ### Correções

@@ -44,7 +44,14 @@ export class LootSummary extends HandlebarsApplicationMixin(ApplicationV2) {
   #updateHook: number | null = null;
 
   static async openFor(actor: Actor): Promise<void> {
-    const app = new LootSummary({ actor } as LootSummary.Configuration);
+    const id = `monster-anatomy-summary-${actor.uuid.replaceAll(".", "-")}`;
+    const open = foundry.applications.instances.get(id);
+    if (open) {
+      await open.render({ force: true });
+      open.bringToFront();
+      return;
+    }
+    const app = new LootSummary({ id, actor } as LootSummary.Configuration);
     await app.render(true);
   }
 

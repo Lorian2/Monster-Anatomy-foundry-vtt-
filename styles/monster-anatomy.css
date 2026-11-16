@@ -978,6 +978,394 @@
     margin: 0.15rem 0;
     color: var(--color-text-secondary);
   }
+
+  /* ======================================================================
+     Refresh visual (1.3): cartões, barras de vida e fluxo do jogador
+     ====================================================================== */
+  .monster-anatomy {
+    --ma-radius: 8px;
+    --ma-ok: #3f9b5a;
+    --ma-warn: #d9a21b;
+    --ma-bad: #c4402f;
+    --ma-cool: #4f8fc7;
+    --ma-card: color-mix(in srgb, var(--color-bg-primary) 88%, var(--color-text-primary) 12%);
+    --ma-track: color-mix(in srgb, var(--color-bg-primary) 70%, #000 30%);
+  }
+
+  /* Cabeçalho */
+  .monster-anatomy .ma-header {
+    gap: 0.7rem;
+    padding-bottom: 0.6rem;
+    margin-bottom: 0.6rem;
+    border-bottom: 1px solid var(--color-border);
+  }
+  .monster-anatomy .ma-actor-img {
+    width: 52px;
+    height: 52px;
+    border-radius: var(--ma-radius);
+  }
+  .monster-anatomy .ma-header-text {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    align-items: flex-start;
+  }
+  .monster-anatomy .ma-actor-name {
+    flex: none;
+    max-width: 100%;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    line-height: 1.15;
+  }
+  .monster-anatomy .ma-header-actions {
+    display: flex;
+    gap: 0.3rem;
+    align-items: center;
+  }
+  .monster-anatomy .ma-icon-btn,
+  .monster-anatomy .ma-add {
+    height: 2rem;
+    border-radius: var(--ma-radius);
+  }
+  .monster-anatomy .ma-icon-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    padding: 0;
+    border: 1px solid var(--color-border);
+    background: var(--ma-card);
+    color: var(--color-text-primary);
+    cursor: pointer;
+  }
+  .monster-anatomy .ma-icon-btn:hover,
+  .monster-anatomy .ma-add:hover {
+    border-color: var(--color-warm-2);
+  }
+
+  /* Ferramentas do Mestre recolhidas */
+  .monster-anatomy .ma-tools {
+    margin-bottom: 0.6rem;
+    border: 1px dashed var(--color-border);
+    border-radius: var(--ma-radius);
+    padding: 0.3rem 0.55rem;
+  }
+  .monster-anatomy .ma-tools > summary {
+    cursor: pointer;
+    font-size: var(--font-size-12);
+    color: var(--color-text-secondary);
+    list-style: none;
+  }
+  .monster-anatomy .ma-tools[open] > summary {
+    margin-bottom: 0.4rem;
+  }
+  .monster-anatomy .ma-tools .ma-templates {
+    margin-bottom: 0.1rem;
+  }
+  .monster-anatomy .ma-templates button.is-on {
+    border-color: var(--color-warm-2);
+    color: var(--color-warm-2);
+  }
+
+  /* Lista e cartões de parte */
+  .monster-anatomy .ma-parts {
+    max-height: 60vh;
+    gap: 0.55rem;
+  }
+  .monster-anatomy .ma-part {
+    padding: 0.6rem 0.7rem;
+    border: 1px solid var(--color-border);
+    border-left: 4px solid var(--ma-ok);
+    border-radius: var(--ma-radius);
+    background: var(--ma-card);
+  }
+  .monster-anatomy .ma-state-damaged { border-left-color: var(--ma-warn); }
+  .monster-anatomy .ma-state-broken,
+  .monster-anatomy .ma-state-destroyed { border-left-color: var(--ma-bad); }
+  .monster-anatomy .ma-state-severed { border-left-color: var(--ma-cool); }
+
+  .monster-anatomy .ma-part-top {
+    display: flex;
+    gap: 0.65rem;
+    align-items: flex-start;
+  }
+  .monster-anatomy .ma-part-thumb,
+  .monster-anatomy .ma-partcard-thumb {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: var(--ma-radius);
+    background: var(--ma-track);
+    color: var(--color-text-secondary);
+    overflow: hidden;
+  }
+  .monster-anatomy .ma-part-thumb img,
+  .monster-anatomy .ma-partcard-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border: none;
+  }
+  .monster-anatomy .ma-part-main {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+  .monster-anatomy .ma-part-line {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+  }
+  .monster-anatomy .ma-part-name {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-weight: 700;
+    font-size: var(--font-size-15, 15px);
+  }
+  .monster-anatomy .ma-ac {
+    flex: none;
+    display: inline-flex;
+    gap: 0.25rem;
+    align-items: center;
+    font-size: var(--font-size-12);
+    font-weight: 600;
+    color: var(--color-text-secondary);
+  }
+  .monster-anatomy .ma-badge {
+    flex: none;
+    padding: 0.05rem 0.5rem;
+    border-radius: 999px;
+    font-size: var(--font-size-11, 11px);
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    background: color-mix(in srgb, var(--ma-ok) 22%, transparent);
+    color: var(--ma-ok);
+    border: 1px solid color-mix(in srgb, var(--ma-ok) 50%, transparent);
+  }
+  .monster-anatomy .ma-state-damaged .ma-badge {
+    background: color-mix(in srgb, var(--ma-warn) 22%, transparent);
+    color: var(--ma-warn);
+    border-color: color-mix(in srgb, var(--ma-warn) 50%, transparent);
+  }
+  .monster-anatomy .ma-state-broken .ma-badge,
+  .monster-anatomy .ma-state-destroyed .ma-badge {
+    background: color-mix(in srgb, var(--ma-bad) 24%, transparent);
+    color: var(--ma-bad);
+    border-color: color-mix(in srgb, var(--ma-bad) 55%, transparent);
+  }
+  .monster-anatomy .ma-state-severed .ma-badge {
+    background: color-mix(in srgb, var(--ma-cool) 24%, transparent);
+    color: var(--ma-cool);
+    border-color: color-mix(in srgb, var(--ma-cool) 55%, transparent);
+  }
+
+  /* Barras de vida */
+  .monster-anatomy .ma-hpbar {
+    display: block;
+    height: 10px;
+    border-radius: 999px;
+    background: var(--ma-track);
+    overflow: hidden;
+    box-shadow: inset 0 1px 2px rgb(0 0 0 / 45%);
+  }
+  .monster-anatomy .ma-hpfill {
+    display: block;
+    height: 100%;
+    border-radius: 999px;
+    background: linear-gradient(to bottom, color-mix(in srgb, var(--ma-ok) 80%, #fff 20%), var(--ma-ok));
+    transition: width 0.35s ease;
+  }
+  .monster-anatomy .ma-state-damaged .ma-hpfill {
+    background: linear-gradient(to bottom, color-mix(in srgb, var(--ma-warn) 80%, #fff 20%), var(--ma-warn));
+  }
+  .monster-anatomy .ma-state-broken .ma-hpfill,
+  .monster-anatomy .ma-state-destroyed .ma-hpfill {
+    background: linear-gradient(to bottom, color-mix(in srgb, var(--ma-bad) 80%, #fff 20%), var(--ma-bad));
+  }
+  .monster-anatomy .ma-severbar .ma-hpfill,
+  .monster-anatomy .ma-state-severed .ma-hpfill {
+    background: linear-gradient(to bottom, color-mix(in srgb, var(--ma-cool) 80%, #fff 20%), var(--ma-cool));
+  }
+  .monster-anatomy .ma-part-stats {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .monster-anatomy .ma-part-stats .ma-hpbar { flex: 1; }
+  .monster-anatomy .ma-part-stats .ma-hptext {
+    flex: none;
+    min-width: 5.2em;
+    text-align: right;
+    font-size: var(--font-size-12);
+    font-variant-numeric: tabular-nums;
+  }
+  .monster-anatomy .ma-sever .ma-hpbar { height: 6px; }
+
+  /* Ações do Mestre: discretas, ficam nítidas ao passar o mouse */
+  .monster-anatomy .ma-part-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+    padding-top: 0.45rem;
+    border-top: 1px dashed var(--color-border);
+  }
+  .monster-anatomy .ma-part-tools {
+    display: flex;
+    gap: 0.25rem;
+    opacity: 0.55;
+    transition: opacity 0.15s;
+  }
+  .monster-anatomy .ma-part:hover .ma-part-tools,
+  .monster-anatomy .ma-part:focus-within .ma-part-tools { opacity: 1; }
+  .monster-anatomy .ma-part-actions button {
+    border-radius: var(--ma-radius);
+    min-width: 1.9rem;
+    height: 1.9rem;
+  }
+  .monster-anatomy .ma-quick { display: inline-flex; gap: 0.25rem; align-items: center; }
+  .monster-anatomy .ma-amount { width: 4.2rem; height: 1.9rem; text-align: center; }
+
+  /* Seletor de parte (o que o jogador vê ao mirar) */
+  .monster-anatomy-target .ma-targetmap {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+  .monster-anatomy .ma-target-prompt {
+    margin: 0;
+    color: var(--color-text-secondary);
+  }
+  .monster-anatomy .ma-target-prompt strong { color: var(--color-text-primary); }
+  .monster-anatomy .ma-partgrid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.45rem;
+    max-height: 50vh;
+    overflow-y: auto;
+    padding: 0.1rem;
+  }
+  .monster-anatomy .ma-partcard {
+    display: flex;
+    gap: 0.65rem;
+    align-items: center;
+    width: 100%;
+    height: auto;
+    padding: 0.5rem 0.6rem;
+    text-align: left;
+    border: 1px solid var(--color-border);
+    border-left: 4px solid var(--ma-ok);
+    border-radius: var(--ma-radius);
+    background: var(--ma-card);
+    color: var(--color-text-primary);
+    cursor: pointer;
+    transition: transform 0.12s, border-color 0.12s, box-shadow 0.12s;
+  }
+  .monster-anatomy .ma-partcard:hover,
+  .monster-anatomy .ma-partcard:focus-visible {
+    transform: translateX(3px);
+    border-color: var(--color-warm-2);
+    box-shadow: 0 0 0 1px var(--color-warm-2);
+  }
+  .monster-anatomy .ma-partcard.ma-state-damaged { border-left-color: var(--ma-warn); }
+  .monster-anatomy .ma-partcard.ma-state-broken,
+  .monster-anatomy .ma-partcard.ma-state-destroyed { border-left-color: var(--ma-bad); }
+  .monster-anatomy .ma-partcard.ma-state-severed { border-left-color: var(--ma-cool); }
+  .monster-anatomy .ma-partcard-body {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+  .monster-anatomy .ma-partcard-name {
+    font-weight: 700;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .monster-anatomy .ma-partcard-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .monster-anatomy .ma-normal-attack {
+    display: inline-flex;
+    gap: 0.4rem;
+    align-items: center;
+    justify-content: center;
+    height: 2.1rem;
+    border-radius: var(--ma-radius);
+    border: 1px solid var(--color-border);
+    background: transparent;
+    color: var(--color-text-secondary);
+    cursor: pointer;
+  }
+  .monster-anatomy .ma-normal-attack:hover { color: var(--color-text-primary); border-color: var(--color-text-secondary); }
+  .monster-anatomy .ma-quickadd {
+    border-top: 1px solid var(--color-border);
+    padding-top: 0.4rem;
+  }
+  .monster-anatomy .ma-quickadd > summary {
+    cursor: pointer;
+    font-size: var(--font-size-12);
+    color: var(--color-text-secondary);
+    margin-bottom: 0.4rem;
+  }
+
+  /* Plaquinha "Mirando: parte" */
+  .ma-aim-chip {
+    position: fixed;
+    left: 50%;
+    bottom: 5.5rem;
+    transform: translateX(-50%);
+    z-index: 60;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    width: auto;
+    height: auto;
+    padding: 0.35rem 0.85rem;
+    border-radius: 999px;
+    border: 1px solid #c4402f;
+    background: linear-gradient(to bottom, #4a1710, #25090a);
+    color: #ffd9cf;
+    font-weight: 700;
+    box-shadow: 0 4px 14px rgb(0 0 0 / 55%);
+    cursor: pointer;
+  }
+  .ma-aim-chip:hover { border-color: #ff7a5c; }
+  .ma-aim-chip .fa-xmark { opacity: 0.6; }
+
+  /* Tracker */
+  .monster-anatomy .ma-tracker-row {
+    gap: 0.5rem;
+    padding: 0.3rem 0.45rem;
+    border-radius: var(--ma-radius);
+    background: var(--ma-card);
+    border-left: 3px solid var(--ma-ok);
+  }
+  .monster-anatomy .ma-tracker-row.ma-state-damaged { border-left-color: var(--ma-warn); }
+  .monster-anatomy .ma-tracker-row.ma-state-broken,
+  .monster-anatomy .ma-tracker-row.ma-state-destroyed { border-left-color: var(--ma-bad); }
+  .monster-anatomy .ma-tracker-row.ma-state-severed { border-left-color: var(--ma-cool); }
+  .monster-anatomy .ma-tracker-img {
+    width: 24px;
+    height: 24px;
+    border-radius: 6px;
+    object-fit: cover;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

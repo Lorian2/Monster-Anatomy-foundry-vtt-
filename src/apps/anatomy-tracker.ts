@@ -36,7 +36,14 @@ export class AnatomyTracker extends HandlebarsApplicationMixin(ApplicationV2) {
   #updateHook: number | null = null;
 
   static async openFor(actor: Actor): Promise<void> {
-    const app = new AnatomyTracker({ actor } as AnatomyTracker.Configuration);
+    const id = `monster-anatomy-tracker-${actor.uuid.replaceAll(".", "-")}`;
+    const open = foundry.applications.instances.get(id);
+    if (open) {
+      await open.render({ force: true });
+      open.bringToFront();
+      return;
+    }
+    const app = new AnatomyTracker({ id, actor } as AnatomyTracker.Configuration);
     await app.render(true);
   }
 
