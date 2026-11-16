@@ -1,5 +1,10 @@
 <div class="ma-targetmap">
-  <p class="ma-target-prompt">{{localize "MONSTER_ANATOMY.Target.Hint"}} <strong>{{actorName}}</strong></p>
+  <div class="ma-target-head">
+    <p class="ma-target-prompt">{{localize "MONSTER_ANATOMY.Target.Hint"}} <strong>{{actorName}}</strong></p>
+    <button type="button" class="ma-icon-btn" data-tracker title="{{localize "MONSTER_ANATOMY.Target.OpenTracker"}}">
+      <i class="fa-solid fa-heart-pulse"></i>
+    </button>
+  </div>
   <div class="ma-partgrid" data-parts>
     {{#each parts}}
     <button type="button" class="ma-partcard ma-state-{{state}}" data-part-id="{{id}}">

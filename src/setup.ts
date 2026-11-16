@@ -147,6 +147,15 @@ export function registerSettings(): void {
     default: true,
   });
 
+  game.settings!.register(MODULE_ID, "blockDuplicateDamage", {
+    name: "MONSTER_ANATOMY.Settings.BlockDuplicate.Name",
+    hint: "MONSTER_ANATOMY.Settings.BlockDuplicate.Hint",
+    scope: "world",
+    config: true,
+    type: Boolean,
+    default: true,
+  });
+
   game.settings!.register(MODULE_ID, "announceTheme", {
     name: "MONSTER_ANATOMY.Settings.AnnounceTheme.Name",
     hint: "MONSTER_ANATOMY.Settings.AnnounceTheme.Hint",

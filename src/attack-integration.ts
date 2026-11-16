@@ -8,7 +8,8 @@ import { damagePartDetailed, type DamageComponent } from "./damage.js";
 import { sendRoutedNote } from "./presentation.js";
 import { getParts, isAcSecret } from "./anatomy-store.js";
 import { disablerPart, disabledItemIds } from "./break-actions.js";
-import { emitApply, emitPresent, canApplyLocally, gmOnline } from "./sockets.js";
+import { emitApply, emitPresent, canApplyLocally, gmOnline, announceClaim } from "./sockets.js";
+import { isClaimed, sigOf } from "./claims.js";
 import { MODULE_ID } from "./constants.js";
 import { getSetting, onHook, t, tf, tokenUuid } from "./fvtt.js";
 import { clearSelection, getSelection } from "./targeting.js";
@@ -29,10 +30,39 @@ export function registerAttackIntegration(): void {
   onHook("dnd5e.rollAttackV2", (...args: unknown[]) => void onAttackRolled(args));
   onHook("dnd5e.rollDamageV2", (...args: unknown[]) => void onDamageRolled(args));
   onHook("dnd5e.preUseActivity", (...args: unknown[]) => blockDisabledItem(args));
+  onHook("dnd5e.preApplyDamage", (...args: unknown[]) => blockDuplicateDamage(args));
   // Novo alvo = novo fluxo: descarta acerto pendente de outro contexto.
   Hooks.on("targetToken", (user, _token, _targeted) => {
     if (user.id === game.user?.id) pendingHit = null;
   });
+}
+
+/**
+ * Dano que o módulo já aplicou (parte + HP global) não pode ser aplicado de novo pelo
+ * botão do card do dnd5e. Retornar false cancela a aplicação (`dnd5e.preApplyDamage`).
+ */
+function blockDuplicateDamage(args: unknown[]): boolean | void {
+  try {
+    if (getSetting("blockDuplicateDamage") !== true) return;
+  } catch {
+    return;
+  }
+  const [actor, amount, , options] = args as [
+    unknown,
+    unknown,
+    unknown,
+    { originatingMessage?: unknown; origin?: unknown } | undefined,
+  ];
+  if (!(actor instanceof Actor) || !(Number(amount) > 0)) return;
+  const msg = (options?.originatingMessage ?? options?.origin) as
+    | { id?: unknown; rolls?: unknown }
+    | undefined;
+  if (!msg || !Array.isArray(msg.rolls)) return;
+  const sig = sigOf(msg.rolls.map((r) => Number((r as { total?: unknown })?.total)));
+  const id = typeof msg.id === "string" ? msg.id : undefined;
+  if (!isClaimed(actor.uuid, sig, id)) return;
+  ui.notifications?.info(tf("MONSTER_ANATOMY.Target.DuplicateBlocked", { actor: actor.name }));
+  return false;
 }
 
 /**
@@ -141,6 +171,7 @@ async function onDamageRolled(args: unknown[]): Promise<void> {
       attacker: hit.attacker,
       attackerUuid: hit.attackerUuid,
     });
+    if (result.globalApplied > 0) announceClaim(actor.uuid, sigOf(components.map((c) => c.amount)));
     await sendRoutedNote(actor, partName, result.applied, result.globalApplied, result.bonus, result.bonusFlat);
     if (result.broke) emitPresent(actor.uuid, hit.partId, "break");
     if (result.severed) emitPresent(actor.uuid, hit.partId, "sever");

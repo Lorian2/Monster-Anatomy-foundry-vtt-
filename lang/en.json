@@ -161,7 +161,9 @@
       "NoGM": "No GM online to apply part damage.",
       "Hint": "Where do you strike?",
       "Aiming": "Aiming: {part}",
-      "AimClear": "Clear aim (normal attack)"
+      "AimClear": "Clear aim (normal attack)",
+      "OpenTracker": "View the monster's part status",
+      "DuplicateBlocked": "The damage to {actor} was already applied by Monster Anatomy. Applying it from the card was ignored to avoid counting it twice."
     },
     "Attack": {
       "Hit": "⚔️ {attacker} → {part} ({actor}): {total} vs AC {ac} — HIT",
@@ -283,6 +285,10 @@
       "TemplatesJson": {
         "Name": "Anatomy templates (internal)",
         "Hint": "World anatomy templates managed from the anatomy panel."
+      },
+      "BlockDuplicate": {
+        "Name": "Block double damage",
+        "Hint": "If the module already applied the damage to the parts and global HP, ignore the dnd5e card's apply-damage button for that same damage."
       }
     },
     "Errors": {

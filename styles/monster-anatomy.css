@@ -1818,6 +1818,46 @@
     overflow-y: auto;
     padding-right: 0.3rem;
   }
+
+  /* ======================================================================
+     Mira com acesso ao tracker (1.6)
+     ====================================================================== */
+  .ma-aim-chip {
+    padding: 0;
+    gap: 0;
+    cursor: default;
+    align-items: stretch;
+  }
+  .ma-aim-chip button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0;
+    height: auto;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    letter-spacing: inherit;
+    text-transform: inherit;
+    cursor: pointer;
+  }
+  .ma-aim-chip .ma-aim-main { padding: 0.4rem 0.9rem 0.4rem 1.3rem; }
+  .ma-aim-chip .ma-aim-tracker {
+    padding: 0 1.1rem 0 0.8rem;
+    border-left: 1px solid var(--ma-gold-dim);
+    color: var(--ma-gold);
+  }
+  .ma-aim-chip .ma-aim-main:hover,
+  .ma-aim-chip .ma-aim-tracker:hover { background: rgb(244 208 104 / 14%); }
+  .monster-anatomy .ma-target-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.6rem;
+  }
+  .monster-anatomy .ma-target-head .ma-target-prompt { flex: 1; min-width: 0; }
 }
 
 @media (prefers-reduced-motion: reduce) {

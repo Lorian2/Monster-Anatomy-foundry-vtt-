@@ -161,7 +161,9 @@
       "NoGM": "Sem Mestre online para aplicar dano na parte.",
       "Hint": "Onde você vai atacar?",
       "Aiming": "Mirando: {part}",
-      "AimClear": "Limpar mira (ataque normal)"
+      "AimClear": "Limpar mira (ataque normal)",
+      "OpenTracker": "Ver o estado das partes do monstro",
+      "DuplicateBlocked": "O dano em {actor} já foi aplicado pelo Monster Anatomy. A aplicação pelo card foi ignorada para não contar em dobro."
     },
     "Attack": {
       "Hit": "⚔️ {attacker} → {part} ({actor}): {total} vs CA {ac} — ACERTO",
@@ -283,6 +285,10 @@
       "TemplatesJson": {
         "Name": "Modelos de anatomia (interno)",
         "Hint": "Modelos de anatomia do mundo, gerenciados no painel de anatomia."
+      },
+      "BlockDuplicate": {
+        "Name": "Bloquear dano em dobro",
+        "Hint": "Se o módulo já aplicou o dano nas partes e no HP global, ignora o botão de aplicar dano do card do dnd5e para aquele mesmo dano."
       }
     },
     "Errors": {

@@ -46,6 +46,7 @@ declare global {
     "monster-anatomy.breakSound": string;
     "monster-anatomy.promptOnTarget": boolean;
     "monster-anatomy.attackNotes": boolean;
+    "monster-anatomy.blockDuplicateDamage": boolean;
     "monster-anatomy.announceTheme": string;
     "monster-anatomy.customKickerBreak": string;
     "monster-anatomy.customKickerSever": string;

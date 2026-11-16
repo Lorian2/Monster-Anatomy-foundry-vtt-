@@ -6,6 +6,7 @@
 import type { DeepPartial } from "fvtt-types/utils";
 import { addPart, canEdit, getParts, isAcSecret, isGm } from "../anatomy-store.js";
 import { getSetting, t } from "../fvtt.js";
+import { AnatomyTracker } from "./anatomy-tracker.js";
 import { PART_STATE_CHOICES, createDefaultPart, type MonsterPart } from "../part-model.js";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
@@ -121,6 +122,9 @@ export class TargetMapDialog extends HandlebarsApplicationMixin(ApplicationV2) {
     this.element
       .querySelector("[data-normal]")
       ?.addEventListener("click", () => pick(null));
+    this.element
+      .querySelector("[data-tracker]")
+      ?.addEventListener("click", () => void AnatomyTracker.openFor(this.actor));
     this.#wireQuickAdd();
   }
 

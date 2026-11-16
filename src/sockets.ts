@@ -9,6 +9,7 @@
  */
 import { getParts, getPhase } from "./anatomy-store.js";
 import { MODULE_ID } from "./constants.js";
+import { addClaim, findDamageMessageId, sigOf } from "./claims.js";
 import { damagePartDetailed, type DamageComponent } from "./damage.js";
 import {
   showBreakAnnouncement,
@@ -46,6 +47,8 @@ interface WireMsg {
   attackerUuid?: unknown;
   by?: unknown;
   kind?: unknown;
+  sig?: unknown;
+  messageId?: unknown;
 }
 
 function str(v: unknown): string {
@@ -92,12 +95,14 @@ async function onSocketMessage(msg: unknown): Promise<void> {
     if (!(actor instanceof Actor)) return;
     const attacker = typeof m.attacker === "string" ? m.attacker : undefined;
     const attackerUuid = typeof m.attackerUuid === "string" ? m.attackerUuid : undefined;
-    const result = await damagePartDetailed(
-      actor,
-      str(m.partId),
-      sanitizeComponents(m.components),
-      { attacker, attackerUuid },
-    );
+    const components = sanitizeComponents(m.components);
+    const result = await damagePartDetailed(actor, str(m.partId), components, {
+      attacker,
+      attackerUuid,
+    });
+    if (result.globalApplied > 0) {
+      announceClaim(actor.uuid, sigOf(components.map((c) => c.amount)), typeof m.by === "string" ? m.by : undefined);
+    }
     await sendRoutedNote(
       actor,
       getParts(actor).find((p) => p.id === str(m.partId))?.name ?? str(m.partId),
@@ -109,6 +114,13 @@ async function onSocketMessage(msg: unknown): Promise<void> {
     if (result.broke) emitPresent(str(m.actorUuid), str(m.partId), "break");
     if (result.severed) emitPresent(str(m.actorUuid), str(m.partId), "sever");
     if (result.phased !== "") emitPresent(str(m.actorUuid), str(m.partId), "phase");
+  } else if (m.t === "claim") {
+    // Dano já aplicado pelo módulo em outro cliente: guarda para bloquear o card.
+    addClaim(
+      str(m.actorUuid),
+      str(m.sig),
+      typeof m.messageId === "string" && m.messageId !== "" ? m.messageId : undefined,
+    );
   } else if (m.t === "present") {
     if (typeof m.by === "string" && m.by === game.user?.id) return; // quem aplicou já apresentou
     const actor = (await fromUuid(
@@ -129,6 +141,18 @@ function emit(msg: object): void {
   } catch (err) {
     console.warn("monster-anatomy | falha no socket", err);
   }
+}
+
+/**
+ * Registra (aqui e nos outros clientes) que o dano de uma rolagem já foi aplicado
+ * às partes e ao HP global, para o card do dnd5e não aplicar de novo.
+ * `userId` é quem rolou (a mensagem de dano é dele); padrão: o usuário atual.
+ */
+export function announceClaim(actorUuid: string, sig: string, userId?: string): void {
+  if (!sig) return;
+  const messageId = findDamageMessageId(sig, userId ?? game.user?.id ?? undefined);
+  addClaim(actorUuid, sig, messageId);
+  emit({ t: "claim", actorUuid, sig, ...(messageId ? { messageId } : {}) });
 }
 
 export function emitApply(

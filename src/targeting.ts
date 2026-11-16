@@ -10,6 +10,7 @@
 import { getParts } from "./anatomy-store.js";
 import { getSetting, t, tf, tokenUuid } from "./fvtt.js";
 import { TargetMapDialog } from "./apps/target-map.js";
+import { AnatomyTracker } from "./apps/anatomy-tracker.js";
 
 export interface TargetSelection {
   tokenUuid: string;
@@ -35,19 +36,34 @@ function updateAimChip(): void {
   const actor = fromUuidSync(selection.actorUuid as Parameters<typeof fromUuidSync>[0]) as unknown;
   const part = actor instanceof Actor ? getParts(actor).find((p) => p.id === selection?.partId) : undefined;
   if (!part) return;
-  const chip = document.createElement("button");
-  chip.type = "button";
+  const aimActor = actor as Actor;
+  const chip = document.createElement("div");
   chip.id = "monster-anatomy-aim";
   chip.className = "monster-anatomy ma-aim-chip";
-  chip.title = t("MONSTER_ANATOMY.Target.AimClear");
+
+  const main = document.createElement("button");
+  main.type = "button";
+  main.className = "ma-aim-main";
+  main.title = t("MONSTER_ANATOMY.Target.AimClear");
   const icon = document.createElement("i");
   icon.className = "fa-solid fa-crosshairs";
   const label = document.createElement("span");
   label.textContent = tf("MONSTER_ANATOMY.Target.Aiming", { part: part.name });
   const close = document.createElement("i");
   close.className = "fa-solid fa-xmark";
-  chip.append(icon, label, close);
-  chip.addEventListener("click", () => clearSelection());
+  main.append(icon, label, close);
+  main.addEventListener("click", () => clearSelection());
+
+  const tracker = document.createElement("button");
+  tracker.type = "button";
+  tracker.className = "ma-aim-tracker";
+  tracker.title = t("MONSTER_ANATOMY.Target.OpenTracker");
+  const eye = document.createElement("i");
+  eye.className = "fa-solid fa-heart-pulse";
+  tracker.append(eye);
+  tracker.addEventListener("click", () => void AnatomyTracker.openFor(aimActor));
+
+  chip.append(main, tracker);
   document.body.append(chip);
 }
 

@@ -2,6 +2,19 @@
 
 Todas as mudanças notáveis deste módulo. Formato inspirado no Keep a Changelog.
 
+## [1.6.0] — 2026-11-16
+
+### Jogador vê o estado das partes
+- O seletor de parte e a plaquinha "Mirando" ganharam um botão ❤ que abre o **tracker** do monstro
+  mirado (somente leitura). Jogadores que não podem abrir a ficha do monstro agora conseguem
+  acompanhar o HP e o estado das partes
+
+### Dano em dobro bloqueado
+- Quando o módulo já aplicou o dano nas partes **e** no HP global, o botão "aplicar dano" do card
+  do dnd5e para aquele mesmo dano é ignorado (com aviso), inclusive quando quem clica é o Mestre.
+  Identifica a mensagem de dano e vale por 10 minutos; nova opção "Bloquear dano em dobro"
+  (ligada por padrão) nas configurações
+
 ## [1.5.0] — 2026-11-16
 
 ### Criação de partes simplificada
