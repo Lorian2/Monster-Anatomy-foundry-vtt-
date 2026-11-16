@@ -2,6 +2,19 @@
 
 Todas as mudanças notáveis deste módulo. Formato inspirado no Keep a Changelog.
 
+## [1.5.0] — 2026-11-16
+
+### Criação de partes simplificada
+- **Gerar anatomia pela ficha**: num monstro sem partes, o painel mostra "Gerar anatomia".
+  Os modelos embutidos agora escalam pelo monstro: HP de cada parte = % do HP máximo da ficha
+  e CA = CA da ficha + bônus da parte (cabeça mais difícil, cauda ainda mais). A notificação
+  informa o HP e a CA usados. Fichas sem HP/CA caem nos valores fixos de referência
+- Novos modelos: **Quadrúpede**, **Serpente** e **Ave** (além de Draconídeo e Humanoide)
+- Modelos salvos pelo Mestre continuam com os números exatos que ele definiu
+- **Editor básico + avançado**: o editor abre só com nome, imagem, CA, HP e as marcações
+  quebrável/cortável. Notas, regeneração, bônus, estado, corte, hitzones, "ao quebrar" e
+  recompensas ficam em "Avançado" (recolhido)
+
 ## [1.4.0] — 2026-11-16
 
 ### Identidade celestial

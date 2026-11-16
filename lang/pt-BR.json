@@ -28,7 +28,12 @@
       "Damage": "Aplicar dano",
       "Heal": "Aplicar cura",
       "SeverLabel": "Reserva de corte (dano cortante)",
-      "GmTools": "Modelos e ferramentas"
+      "GmTools": "Modelos e ferramentas",
+      "GenerateTitle": "Gerar anatomia",
+      "GenerateHint": "Escolha um modelo: o HP e a CA de cada parte são calculados a partir do HP e da CA deste monstro.",
+      "Generate": "Gerar partes",
+      "GenerateOr": "Ou use “Adicionar parte” acima para criar uma a uma.",
+      "Advanced": "Avançado"
     },
     "Editor": {
       "Title": "Editar parte",
@@ -173,7 +178,11 @@
       "Saved": "Modelo salvo: {name}",
       "Deleted": "Modelo excluído.",
       "Protected": "Presets embutidos não podem ser excluídos.",
-      "Applied": "{count} partes aplicadas."
+      "Applied": "{count} partes aplicadas.",
+      "Quadruped": "Quadrúpede",
+      "Serpent": "Serpente",
+      "Avian": "Ave",
+      "AppliedScaled": "{count} partes criadas, escaladas pela ficha (HP {hp}, CA {ac})."
     },
     "Settings": {
       "ShowHeaderButton": {

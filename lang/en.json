@@ -28,7 +28,12 @@
       "Damage": "Apply damage",
       "Heal": "Apply healing",
       "SeverLabel": "Sever pool (cutting damage)",
-      "GmTools": "Templates and tools"
+      "GmTools": "Templates and tools",
+      "GenerateTitle": "Generate anatomy",
+      "GenerateHint": "Pick a template: each part's HP and AC are computed from this monster's HP and AC.",
+      "Generate": "Generate parts",
+      "GenerateOr": "Or use “Add part” above to create them one by one.",
+      "Advanced": "Advanced"
     },
     "Editor": {
       "Title": "Edit Part",
@@ -173,7 +178,11 @@
       "Saved": "Template saved: {name}",
       "Deleted": "Template deleted.",
       "Protected": "Built-in templates cannot be deleted.",
-      "Applied": "{count} parts applied."
+      "Applied": "{count} parts applied.",
+      "Quadruped": "Quadruped",
+      "Serpent": "Serpent",
+      "Avian": "Avian",
+      "AppliedScaled": "{count} parts created, scaled from the sheet (HP {hp}, AC {ac})."
     },
     "Settings": {
       "ShowHeaderButton": {

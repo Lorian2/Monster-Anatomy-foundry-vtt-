@@ -1764,6 +1764,60 @@
   }
   .monster-anatomy-announce .ma-announce-band { display: none; }
   .monster-anatomy-announce.theme-celestial .ma-announce-band { display: block; }
+
+  /* ======================================================================
+     Criação simplificada (1.5): gerar anatomia + editor básico/avançado
+     ====================================================================== */
+  .monster-anatomy .ma-empty-cta {
+    text-align: center;
+    padding: 1.1rem 0.9rem;
+    border: 1px solid var(--ma-gold-faint);
+    background: rgb(5 6 10 / 45%);
+    clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 0 100%);
+  }
+  .monster-anatomy .ma-empty-title {
+    margin: 0 0 0.2rem;
+    font-family: var(--ma-serif);
+    font-weight: 700;
+    font-size: 18px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ma-gold);
+    text-shadow: 0 0 12px rgb(244 208 104 / 35%);
+  }
+  .monster-anatomy .ma-empty-hint {
+    margin: 0.25rem 0;
+    font-size: 13px;
+    color: var(--ma-mute);
+  }
+  .monster-anatomy .ma-empty-cta .ma-templates {
+    justify-content: center;
+    margin: 0.8rem auto;
+    max-width: 24rem;
+  }
+  .monster-anatomy .ma-advanced {
+    margin-top: 0.6rem;
+    padding: 0.35rem 0.6rem;
+    border: 1px solid var(--ma-gold-faint);
+    background: rgb(5 6 10 / 45%);
+  }
+  .monster-anatomy .ma-advanced > summary {
+    cursor: pointer;
+    font-family: var(--ma-sans);
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ma-gold);
+  }
+  .monster-anatomy .ma-advanced[open] > summary { margin-bottom: 0.5rem; }
+  .monster-anatomy .ma-advanced-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    max-height: 55vh;
+    overflow-y: auto;
+    padding-right: 0.3rem;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

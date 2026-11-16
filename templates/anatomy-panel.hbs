@@ -49,7 +49,26 @@
 {{/if}}
 
 {{#if empty}}
+{{#if canEdit}}
+<div class="ma-empty-cta">
+  <p class="ma-empty-title">{{localize "MONSTER_ANATOMY.Panel.GenerateTitle"}}</p>
+  <p class="ma-empty-hint">{{localize "MONSTER_ANATOMY.Panel.GenerateHint"}}</p>
+  <div class="ma-templates">
+    <select class="ma-template-select">
+      {{#each templates}}
+      <option value="{{id}}">{{name}}</option>
+      {{/each}}
+    </select>
+    <button type="button" class="ma-add" data-action="apply-template">
+      <i class="fa-solid fa-wand-magic-sparkles"></i>
+      <span>{{localize "MONSTER_ANATOMY.Panel.Generate"}}</span>
+    </button>
+  </div>
+  <p class="ma-empty-hint">{{localize "MONSTER_ANATOMY.Panel.GenerateOr"}}</p>
+</div>
+{{else}}
 <p class="ma-empty">{{localize "MONSTER_ANATOMY.Panel.Empty"}}</p>
+{{/if}}
 {{else}}
 <ul class="ma-parts">
   {{#each parts}}

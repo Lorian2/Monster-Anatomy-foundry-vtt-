@@ -23,7 +23,7 @@ import {
 import { damagePart, healPart } from "../damage.js";
 import { HOOKS } from "../constants.js";
 import { callHook, t, tf } from "../fvtt.js";
-import { PART_STATE_CHOICES, deriveStateFromHp, linkageActive, linkageOf, type MonsterPart } from "../part-model.js";
+import { PART_STATE_CHOICES, actorBaseStats, deriveStateFromHp, linkageActive, linkageOf, type MonsterPart } from "../part-model.js";
 import { PartEditor } from "./part-editor.js";
 import { AnatomyTracker } from "./anatomy-tracker.js";
 import { LootSummary } from "./loot-summary.js";
@@ -235,15 +235,29 @@ export class AnatomyPanel extends HandlebarsApplicationMixin(ApplicationV2) {  s
     // O hook updateActor (disparado pelo setFlag) já re-renderiza o painel.
   }
 
-  static async onApplyTemplate(this: unknown, _event: PointerEvent, _target: HTMLElement): Promise<void> {
+  static async onApplyTemplate(this: unknown, _event: PointerEvent, target: HTMLElement): Promise<void> {
     const panel = this as AnatomyPanel;
     if (!canEdit(panel.actor)) return;
-    const select = panel.element.querySelector<HTMLSelectElement>("select.ma-template-select");
+    // O select vizinho do botão clicado (há um no estado vazio e outro nas ferramentas).
+    const select =
+      target.parentElement?.querySelector<HTMLSelectElement>("select.ma-template-select") ??
+      panel.element.querySelector<HTMLSelectElement>("select.ma-template-select");
     const id = select?.value;
     if (!id) return;
     try {
       const n = await applyTemplate(panel.actor, id);
-      ui.notifications?.info(tf("MONSTER_ANATOMY.Template.Applied", { count: String(n) }));
+      const base = actorBaseStats(panel.actor);
+      const scaled =
+        id.startsWith("builtin-") && base.hp !== null && base.ac !== null;
+      ui.notifications?.info(
+        scaled
+          ? tf("MONSTER_ANATOMY.Template.AppliedScaled", {
+              count: String(n),
+              hp: String(base.hp),
+              ac: String(base.ac),
+            })
+          : tf("MONSTER_ANATOMY.Template.Applied", { count: String(n) }),
+      );
     } catch (err) {
       console.warn("monster-anatomy | falha ao aplicar modelo", err);
     }

@@ -20,15 +20,10 @@
       </div>
     </div>
 
-    <div class="ma-field">
-      <label for="ma-notes">{{localize "MONSTER_ANATOMY.Editor.Notes"}}</label>
-      <textarea id="ma-notes" name="notes" rows="2">{{part.notes}}</textarea>
-    </div>
   </fieldset>
 
-  <fieldset class="ma-section">
+  <fieldset class="ma-section ma-basic">
     <legend><i class="fa-solid fa-swords"></i> {{localize "MONSTER_ANATOMY.Editor.SectionCombat"}}</legend>
-
     <div class="ma-row">
       <div class="ma-field">
         <label for="ma-ac">{{localize "MONSTER_ANATOMY.Editor.Ac"}}</label>
@@ -42,12 +37,35 @@
         <label for="ma-hpmax">{{localize "MONSTER_ANATOMY.Editor.HpMax"}}</label>
         <input id="ma-hpmax" name="hpMax" type="number" min="1" step="1" value="{{part.hp.max}}" />
       </div>
+    </div>
+
+    <div class="ma-row">
+      <label class="ma-check">
+        <input name="breakable" type="checkbox" {{checked part.breakable}} />
+        {{localize "MONSTER_ANATOMY.Editor.Breakable"}}
+      </label>
+      <label class="ma-check">
+        <input name="severable" type="checkbox" {{checked part.severable}} />
+        {{localize "MONSTER_ANATOMY.Editor.Severable"}}
+      </label>
+    </div>
+
+  </fieldset>
+
+  <details class="ma-advanced">
+    <summary><i class="fa-solid fa-sliders"></i> {{localize "MONSTER_ANATOMY.Panel.Advanced"}}</summary>
+    <div class="ma-advanced-body">
+    <div class="ma-field">
+      <label for="ma-notes">{{localize "MONSTER_ANATOMY.Editor.Notes"}}</label>
+      <textarea id="ma-notes" name="notes" rows="2">{{part.notes}}</textarea>
+    </div>
+
+    <div class="ma-row">
       <div class="ma-field">
         <label for="ma-regen">{{localize "MONSTER_ANATOMY.Editor.Regen"}}</label>
         <input id="ma-regen" name="regen" type="number" min="0" step="1" value="{{part.regen}}" />
       </div>
     </div>
-
     <div class="ma-row">
       <div class="ma-field">
         <label for="ma-bonusmode">{{localize "MONSTER_ANATOMY.Editor.BonusMode"}}</label>
@@ -71,17 +89,6 @@
     </div>
 
     <div class="ma-row">
-      <label class="ma-check">
-        <input name="breakable" type="checkbox" {{checked part.breakable}} />
-        {{localize "MONSTER_ANATOMY.Editor.Breakable"}}
-      </label>
-      <label class="ma-check">
-        <input name="severable" type="checkbox" {{checked part.severable}} />
-        {{localize "MONSTER_ANATOMY.Editor.Severable"}}
-      </label>
-    </div>
-
-    <div class="ma-row">
       <div class="ma-field">
         <label for="ma-severmax">{{localize "MONSTER_ANATOMY.Editor.SeverHp"}}</label>
         <input id="ma-severmax" name="severMax" type="number" min="1" step="1" value="{{sever.max}}" />
@@ -99,8 +106,6 @@
         {{/each}}
       </div>
     </div>
-  </fieldset>
-
   <details class="ma-section">
     <summary><i class="fa-solid fa-table-cells"></i> {{localize "MONSTER_ANATOMY.Editor.Hitzones"}}</summary>
     <div class="ma-hzgrid">
@@ -196,6 +201,9 @@
       <span>{{localize "MONSTER_ANATOMY.Editor.RewardAdd"}}</span>
     </button>
   </fieldset>
+
+    </div>
+  </details>
 
   <footer class="ma-form-footer">
     <button type="submit" class="ma-save">

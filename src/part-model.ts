@@ -207,6 +207,10 @@ export interface TemplatePart {
   onBreak: BreakLinkage;
   rewards: PartReward[];
   bonus?: PartBonus;
+  /** Presets: % do HP máximo do monstro (ausente = usa `hpMax` fixo). */
+  hpPct?: number;
+  /** Presets: CA da parte relativa à CA do monstro (ausente = usa `ac` fixo). */
+  acDelta?: number;
 }
 
 export interface AnatomyTemplate {
@@ -252,12 +256,27 @@ export function templateFromParts(
   };
 }
 
+/** HP máximo e CA do monstro (dnd5e); null quando a ficha não tem o dado. */
+export function actorBaseStats(actor: Actor): { hp: number | null; ac: number | null } {
+  const num = (path: string): number | null => {
+    const v = foundry.utils.getProperty(actor, path) as unknown;
+    return typeof v === "number" && Number.isFinite(v) && v > 0 ? v : null;
+  };
+  return { hp: num("system.attributes.hp.max"), ac: num("system.attributes.ac.value") };
+}
+
 /** Materializa um modelo em partes novas (ids frescos, HP cheio, íntegras). */
 export function partsFromTemplate(t: AnatomyTemplate, actor: Actor): MonsterPart[] {
+  const base = actorBaseStats(actor);
   return t.parts.map((tp) => {
-    const max = Math.max(1, Math.floor(tp.hpMax));
+    // Presets escalam pela ficha; modelos salvos pelo Mestre mantêm os números dele.
+    const scaledHp =
+      typeof tp.hpPct === "number" && base.hp !== null ? Math.round((base.hp * tp.hpPct) / 100) : null;
+    const max = Math.max(1, Math.floor(scaledHp ?? tp.hpMax));
+    const ac =
+      typeof tp.acDelta === "number" && base.ac !== null ? base.ac + tp.acDelta : tp.ac;
     const part = createDefaultPart(tp.name || "Nova parte", {
-      ac: Math.max(0, Math.floor(tp.ac)),
+      ac: Math.max(0, Math.floor(ac)),
       hp: max,
     });
     part.img = typeof tp.img === "string" ? tp.img : "";
@@ -266,7 +285,12 @@ export function partsFromTemplate(t: AnatomyTemplate, actor: Actor): MonsterPart
     part.breakable = tp.breakable !== false;
     part.severable = tp.severable === true;
     part.hitzone = { ...(tp.hitzone ?? {}) };
-    const severMax = Math.max(1, Math.floor(tp.severMax || max));
+    // Corte mantém a proporção do preset em relação ao HP da parte.
+    const severRatio = tp.hpMax > 0 ? tp.severMax / tp.hpMax : 1;
+    const severMax = Math.max(
+      1,
+      Math.floor(scaledHp !== null ? max * severRatio : tp.severMax || max),
+    );
     part.sever = { value: severMax, max: severMax };
     part.severTypes = [...(tp.severTypes ?? ["slashing"])];
     part.onBreak = { ...EMPTY_LINKAGE, ...(tp.onBreak ?? {}) };
@@ -288,7 +312,33 @@ export function partsFromTemplate(t: AnatomyTemplate, actor: Actor): MonsterPart
   });
 }
 
-/** Presets embutidos (nomes via i18n, prefixo builtin-). */
+/** Parte de preset: HP em % do monstro e CA relativa (escalam pela ficha). */
+function bp(
+  name: string,
+  hpPct: number,
+  acDelta: number,
+  extra: Partial<TemplatePart> = {},
+): TemplatePart {
+  // hpMax/ac fixos são só o fallback para fichas sem HP/CA (referência: monstro de 320 HP, CA 19).
+  const hpMax = Math.max(1, Math.round((320 * hpPct) / 100));
+  return {
+    name,
+    ac: 19 + acDelta,
+    hpMax,
+    hpPct,
+    acDelta,
+    breakable: true,
+    severable: false,
+    hitzone: {},
+    severMax: hpMax,
+    severTypes: ["slashing"],
+    onBreak: { ...EMPTY_LINKAGE },
+    rewards: [],
+    ...extra,
+  };
+}
+
+/** Presets embutidos (nomes via i18n, prefixo builtin-). HP e CA escalam pela ficha. */
 export const BUILTIN_TEMPLATES: AnatomyTemplate[] = [
   {
     id: "builtin-dragonoid",
@@ -296,11 +346,15 @@ export const BUILTIN_TEMPLATES: AnatomyTemplate[] = [
     builtin: true,
     map: "dragonoid",
     parts: [
-      { name: "Cabeça", ac: 21, hpMax: 80, breakable: true, severable: false, hitzone: { bludgeoning: 1.5, piercing: 0.8 }, severMax: 80, severTypes: ["slashing"], onBreak: { ...EMPTY_LINKAGE }, rewards: [] },
-      { name: "Corpo", ac: 19, hpMax: 100, breakable: true, severable: false, hitzone: {}, severMax: 100, severTypes: ["slashing"], onBreak: { ...EMPTY_LINKAGE }, rewards: [] },
-      { name: "Asa Esquerda", ac: 20, hpMax: 60, breakable: true, severable: false, hitzone: {}, severMax: 60, severTypes: ["slashing"], onBreak: { ...EMPTY_LINKAGE }, rewards: [] },
-      { name: "Asa Direita", ac: 20, hpMax: 60, breakable: true, severable: false, hitzone: {}, severMax: 60, severTypes: ["slashing"], onBreak: { ...EMPTY_LINKAGE }, rewards: [] },
-      { name: "Cauda", ac: 22, hpMax: 70, breakable: true, severable: true, hitzone: {}, severMax: 40, severTypes: ["slashing"], onBreak: { ...EMPTY_LINKAGE, disableItemName: "Tail Swipe" }, rewards: [] },
+      bp("Cabeça", 25, 2, { hitzone: { bludgeoning: 1.5, piercing: 0.8 } }),
+      bp("Corpo", 40, 0),
+      bp("Asa Esquerda", 20, 1),
+      bp("Asa Direita", 20, 1),
+      bp("Cauda", 22, 3, {
+        severable: true,
+        severMax: Math.round((320 * 22) / 100 * 0.57),
+        onBreak: { ...EMPTY_LINKAGE, disableItemName: "Tail Swipe" },
+      }),
     ],
   },
   {
@@ -309,12 +363,52 @@ export const BUILTIN_TEMPLATES: AnatomyTemplate[] = [
     builtin: true,
     map: "humanoid",
     parts: [
-      { name: "Cabeça", ac: 20, hpMax: 50, breakable: true, severable: false, hitzone: { bludgeoning: 1.5 }, severMax: 50, severTypes: ["slashing"], onBreak: { ...EMPTY_LINKAGE }, rewards: [] },
-      { name: "Corpo", ac: 18, hpMax: 80, breakable: true, severable: false, hitzone: {}, severMax: 80, severTypes: ["slashing"], onBreak: { ...EMPTY_LINKAGE }, rewards: [] },
-      { name: "Braço Esquerdo", ac: 18, hpMax: 40, breakable: true, severable: false, hitzone: {}, severMax: 40, severTypes: ["slashing"], onBreak: { ...EMPTY_LINKAGE }, rewards: [] },
-      { name: "Braço Direito", ac: 18, hpMax: 40, breakable: true, severable: false, hitzone: {}, severMax: 40, severTypes: ["slashing"], onBreak: { ...EMPTY_LINKAGE }, rewards: [] },
-      { name: "Perna Esquerda", ac: 18, hpMax: 50, breakable: true, severable: false, hitzone: {}, severMax: 50, severTypes: ["slashing"], onBreak: { ...EMPTY_LINKAGE }, rewards: [] },
-      { name: "Perna Direita", ac: 18, hpMax: 50, breakable: true, severable: false, hitzone: {}, severMax: 50, severTypes: ["slashing"], onBreak: { ...EMPTY_LINKAGE }, rewards: [] },
+      bp("Cabeça", 20, 2, { hitzone: { bludgeoning: 1.5 } }),
+      bp("Corpo", 35, 0),
+      bp("Braço Esquerdo", 15, 0),
+      bp("Braço Direito", 15, 0),
+      bp("Perna Esquerda", 18, 0),
+      bp("Perna Direita", 18, 0),
+    ],
+  },
+  {
+    id: "builtin-quadruped",
+    name: "MONSTER_ANATOMY.Template.Quadruped",
+    builtin: true,
+    map: "dragonoid",
+    parts: [
+      bp("Cabeça", 22, 2, { hitzone: { bludgeoning: 1.5 } }),
+      bp("Corpo", 40, 0),
+      bp("Pata Dianteira Esquerda", 15, 1),
+      bp("Pata Dianteira Direita", 15, 1),
+      bp("Pata Traseira Esquerda", 15, 1),
+      bp("Pata Traseira Direita", 15, 1),
+      bp("Cauda", 15, 2, { severable: true, severMax: Math.round((320 * 15) / 100 * 0.6) }),
+    ],
+  },
+  {
+    id: "builtin-serpent",
+    name: "MONSTER_ANATOMY.Template.Serpent",
+    builtin: true,
+    map: "dragonoid",
+    parts: [
+      bp("Cabeça", 25, 2, { hitzone: { bludgeoning: 1.5 } }),
+      bp("Corpo", 45, 0),
+      bp("Cauda", 25, 1, { severable: true, severMax: Math.round((320 * 25) / 100 * 0.6) }),
+    ],
+  },
+  {
+    id: "builtin-avian",
+    name: "MONSTER_ANATOMY.Template.Avian",
+    builtin: true,
+    map: "dragonoid",
+    parts: [
+      bp("Cabeça", 20, 2, { hitzone: { bludgeoning: 1.5 } }),
+      bp("Corpo", 35, 0),
+      bp("Asa Esquerda", 20, 1),
+      bp("Asa Direita", 20, 1),
+      bp("Pata Esquerda", 15, 1),
+      bp("Pata Direita", 15, 1),
     ],
   },
 ];
